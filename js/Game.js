@@ -4,7 +4,8 @@ var player;
 var ball;
 var box;
 var cursors;
-
+var kickButton;
+var kickBool=false;
 
 function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
@@ -82,20 +83,47 @@ function create() {
     player.body.setCircle(33); //원으로 충돌 반경 설정
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
-    player.body.collides(ballCollisionGroup);   //player랑 충돌할 그룹 설정
-
+    player.body.collides(ballCollisionGroup, hitBall, ball);   //player랑 충돌할 그룹 설정
 
     //축구공 ball 설정
     ball = game.add.sprite(664,game.world.centerY,'spr_ball'); //스프라이트 추가
     game.physics.p2.enable(ball, false); 
     ball.body.setCircle(17); //원으로 충돌 반경 설정
+    ball.body.fixedRotation = true; //회전 고정 설정
+    ball.body.damping = 0.9; //댐핑 설정 공이 느려짐
     //ball.body.collideWorldBounds = true; //벽 충돌 설정
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
-
     //방향키
     cursors = game.input.keyboard.createCursorKeys();
+
+    //스페이스바
+    kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //kickButton에 스페이스바 추가
+    game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
 }
+
+function kick(){
+    if(player.body.x-ball.body.x<0){
+        ball.body.velocity.x = 1000;
+    }
+    else if(player.body.x-ball.body.x>0){
+        ball.body.velocity.x = -1000;
+    }
+    if(player.body.y-ball.body.y>0){
+        ball.body.velocity.y = -1000;
+    }
+    else if(player.body.y-ball.body.y<0){
+        ball.body.velocity.y = 1000;
+    }
+}
+
+function hitBall(body1, body2) {
+     if(kickButton.isDown){
+        kickBool=true;
+     }
+
+}
+
 function update() {
 
     //player 속도 0으로 설정
@@ -104,23 +132,30 @@ function update() {
     //방향키로 움직이는 조건
     if (cursors.left.isDown)
     {
-		player.body.moveLeft(200);
+		player.body.moveLeft(150);
     }
     else if (cursors.right.isDown)
     {
-		player.body.moveRight(200);
+		player.body.moveRight(150);
     }
 
     if (cursors.up.isDown)
     {
-    	player.body.moveUp(200);
+    	player.body.moveUp(150);
     }
     else if (cursors.down.isDown)
     {
-        player.body.moveDown(200);
+        player.body.moveDown(150);
+    }
+
+    if(kickBool == true){
+        for(var i=0 ;i<1 ;i++){
+            kick();
+        }
+        kickBool = false;
     }
 }
 
 function render() {
-
+    game.debug.spriteInfo(ball, 32, 32);
 }
