@@ -5,7 +5,7 @@ var ball;
 var box;
 var cursors;
 var kickButton;
-var kickBool=false;
+var isKickBool=false;
 
 function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
@@ -81,19 +81,23 @@ function create() {
     //player.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
     game.physics.p2.enable(player, false);
     player.body.setCircle(33); //원으로 충돌 반경 설정
+    player.body.fixedRotation = true; //회전 고정 설정
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
-    player.body.collides(ballCollisionGroup, hitBall, ball);   //player랑 충돌할 그룹 설정
+    player.body.collides(ballCollisionGroup);   //player랑 충돌할 그룹 설정
 
     //축구공 ball 설정
     ball = game.add.sprite(664,game.world.centerY,'spr_ball'); //스프라이트 추가
     game.physics.p2.enable(ball, false); 
     ball.body.setCircle(17); //원으로 충돌 반경 설정
-    ball.body.fixedRotation = true; //회전 고정 설정
+    ball.body.fixedRotation = false; //회전 고정 설정
     ball.body.damping = 0.9; //댐핑 설정 공이 느려짐
     //ball.body.collideWorldBounds = true; //벽 충돌 설정
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
+
+    ball.body.createBodyCallback(player, hitBall, this); //공 차기
+
     //방향키
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -103,23 +107,13 @@ function create() {
 }
 
 function kick(){
-    if(player.body.x-ball.body.x<0){
-        ball.body.velocity.x = 1000;
-    }
-    else if(player.body.x-ball.body.x>0){
-        ball.body.velocity.x = -1000;
-    }
-    if(player.body.y-ball.body.y>0){
-        ball.body.velocity.y = -1000;
-    }
-    else if(player.body.y-ball.body.y<0){
-        ball.body.velocity.y = 1000;
-    }
+    ball.body.velocity.x *= 7;
+    ball.body.velocity.y *= 7;
 }
 
 function hitBall(body1, body2) {
      if(kickButton.isDown){
-        kickBool=true;
+        isKickBool=true;
      }
 
 }
@@ -148,11 +142,11 @@ function update() {
         player.body.moveDown(150);
     }
 
-    if(kickBool == true){
-        for(var i=0 ;i<1 ;i++){
-            kick();
-        }
-        kickBool = false;
+    if(isKickBool == true){
+        
+        kick();
+        
+        isKickBool = false;
     }
 }
 
