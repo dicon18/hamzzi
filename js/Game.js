@@ -38,14 +38,14 @@ function create() {
 
     game.physics.p2.updateBoundsCollisionGroup();
 
-
+    //////////////////////////////////////////////////////////////////////////////////////////
     //축구장 라인 충돌 박스 설정
     var boxes = game.add.group(); //boxes에 그룹화
     boxes.enableBody = true; 
     boxes.physicsBodyType = Phaser.Physics.P2JS; //P2JS 적용
-    for (var i = 0; i < 1150; i++){
+    for (var i = 0; i < 228; i++){
         //윗쪽 라인 박스생성 후 고정
-        box = boxes.create(i+70, 40, 'spr_box');
+        box = boxes.create(i*5+68, 40, 'spr_box');
         box.body.static = true;
 
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
@@ -53,16 +53,16 @@ function create() {
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //아래쪽 라인 박스생성 후 고정
-        box = boxes.create(i+70, 680, 'spr_box');
+        box = boxes.create(i*5+68, 680, 'spr_box');
         box.body.static = true;
 
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
-    for (var i = 0; i < 65; i++){
+    for (var i = 0; i < 43; i++){
         //왼쪽 라인 박스생성 후 고정
-        box = boxes.create(67, i*10+40, 'spr_box');
+        box = boxes.create(67, i*5+40, 'spr_box');
         box.body.static = true;
 
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
@@ -70,14 +70,34 @@ function create() {
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //오른쪽 라인 박스생성 후 고정
-        box = boxes.create(1280-70, i*10+40, 'spr_box');
+        box = boxes.create(1280-70, i*5+40, 'spr_box');
         box.body.static = true;
         
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
-    
+    for (var i = 0; i < 44; i++){
+        //왼쪽 라인 박스생성 후 고정
+        box = boxes.create(67, i*5+465, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+
+        //오른쪽 라인 박스생성 후 고정
+        box = boxes.create(1280-70, i*5+465, 'spr_box');
+        box.body.static = true;
+        
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //골대 충돌 박스
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     //player 설정
     player = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
@@ -155,5 +175,5 @@ function update() {
 }
 
 function render() {
-    game.debug.spriteInfo(ball, 32, 32);
+    //game.debug.spriteInfo(ball, 32, 32);
 }
