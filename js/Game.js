@@ -7,12 +7,16 @@ var cursors;
 var kickButton;
 var isKickBool=false;
 
+//  골대
+var goleLineSize = 100;
+var lineSize = 70;
+
 function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
 
     game.load.image('spr_player','assets/sprites/spr_player.png');
     game.load.image('spr_ball','assets/sprites/spr_ball.png');
-    game.load.image('spr_box','assets/sprites/spr_transbox.png');
+    game.load.image('spr_box','assets/sprites/spr_box.png');
 }
 
 function create() {
@@ -39,9 +43,9 @@ function create() {
     var boxes = game.add.group(); //boxes에 그룹화
     boxes.enableBody = true; 
     boxes.physicsBodyType = Phaser.Physics.P2JS; //P2JS 적용
-    for (var i = 0; i < 115; i++){
+    for (var i = 0; i < 1150; i++){
         //윗쪽 라인 박스생성 후 고정
-        box = boxes.create(i*10+70, 40, 'spr_box');
+        box = boxes.create(i+70, 40, 'spr_box');
         box.body.static = true;
 
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
@@ -49,7 +53,7 @@ function create() {
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //아래쪽 라인 박스생성 후 고정
-        box = boxes.create(i*10+70, 680, 'spr_box');
+        box = boxes.create(i+70, 680, 'spr_box');
         box.body.static = true;
 
         box.body.setRectangle(1,1); //사각형 충돌 반경 설정
