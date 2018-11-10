@@ -97,6 +97,54 @@ function create() {
     //////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
     //골대 충돌 박스
+    for (var i = 0; i < 14; i++){
+        //윗쪽 라인 박스생성 후 고정
+        box = boxes.create(i*5+3, 250, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+
+        box = boxes.create(i*5+1270-60, 250, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+
+        //아래쪽 라인 박스생성 후 고정
+        box = boxes.create(i*5+3, 465, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+
+        box = boxes.create(i*5+1270-60, 465, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+    }
+    for (var i = 0; i < 44; i++){
+        //왼쪽 라인 박스생성 후 고정
+        box = boxes.create(4, i*5+250, 'spr_box');
+        box.body.static = true;
+
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+
+        //오른쪽 라인 박스생성 후 고정
+        box = boxes.create(1280-4, i*5+250, 'spr_box');
+        box.body.static = true;
+        
+        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
+        box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
+    }
     //////////////////////////////////////////////////////////////////////////////////////////
 
     //player 설정
