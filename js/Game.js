@@ -190,6 +190,20 @@ function hitBall(body1, body2) {
 
 }
 
+function orangeGoalText(){
+    var text;
+    var style = {font:"bold 32px Arial",fill:"#e67e22",boundsAlignH:"center",boundsAlignV:"middle"};
+    text=game.add.text(0,0,"Orange Team GOAL!",style);
+    text.setTextBounds(250, 100,800,100);
+}
+
+function buleGoalText(){
+    var text;
+    var style = {font:"bold 32px Arial",fill:"#4834d4",boundsAlignH:"center",boundsAlignV:"middle"};
+    text=game.add.text(0,0,"Blue Team GOAL!",style);
+    text.setTextBounds(250, 100,800,100);
+}
+
 function update() {
 
     //player 속도 0으로 설정
@@ -219,6 +233,13 @@ function update() {
         kick();
         
         isKickBool = false;
+    }
+    
+    if(ball.body.x<=31.4&&ball.body.y>=252.5&&ball.body.y<=431.5){
+        orangeGoalText();
+    }
+    if(ball.body.x>=1215.5&&ball.body.y>=252&&ball.body.y<=431.5){
+        buleGoalText();
     }
 }
 
