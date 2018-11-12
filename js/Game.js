@@ -210,6 +210,11 @@ function buleGoalText(){
     text.setTextBounds(250, 100,800,100);
 }
 
+function restartGame(){
+    game.state.restart();
+    goalCount=0;
+}
+
 function update() {
 
     //player 속도 0으로 설정
@@ -249,11 +254,13 @@ function update() {
         orangeGoalText();
         orangeScore++;
         goalCount++;
+        game.time.events.add(Phaser.Timer.SECOND * 5,restartGame);
     }
     if(ball.body.x>=1215.5&&ball.body.y>=252&&ball.body.y<=431.5&&goalCount==0){
         buleGoalText();
         blueScore++;
         goalCount++;
+        game.time.events.add(Phaser.Timer.SECOND * 5,restartGame);
     }
     scoreText.setText(blueScore+" : "+orangeScore);
 }
