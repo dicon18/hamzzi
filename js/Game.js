@@ -1,5 +1,6 @@
 var game = new Phaser.Game(1280, 720, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
+//#region 변수
 var player;
 var ball;
 var box;
@@ -7,6 +8,10 @@ var cursors;
 var kickButton;
 var isKickBool=false;
 var playerSpeed = 150;
+var scoreText;
+var orangeScore=0, blueScore=0;
+var goalCount=0;
+//#endregion 변수
 
 function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
@@ -174,8 +179,10 @@ function create() {
     //ball.body.collideWorldBounds = true; //벽 충돌 설정
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
-
     ball.body.createBodyCallback(player, hitBall, this); //플레이어와 공이 충돌했을때 발생 함수
+
+    scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{font: "65px Arial", fill: "#000000", align: "center"});
+    scoreText.anchor.setTo(0.5,0.5);
 }
 
 function kick(){
@@ -238,12 +245,17 @@ function update() {
         isKickBool = false;
     }
     
-    if(ball.body.x<=31.4&&ball.body.y>=252.5&&ball.body.y<=431.5){
+    if(ball.body.x<=31.4&&ball.body.y>=252.5&&ball.body.y<=431.5&&goalCount==0){
         orangeGoalText();
+        orangeScore++;
+        goalCount++;
     }
-    if(ball.body.x>=1215.5&&ball.body.y>=252&&ball.body.y<=431.5){
+    if(ball.body.x>=1215.5&&ball.body.y>=252&&ball.body.y<=431.5&&goalCount==0){
         buleGoalText();
+        blueScore++;
+        goalCount++;
     }
+    scoreText.setText(blueScore+" : "+orangeScore);
 }
 
 function render() {
