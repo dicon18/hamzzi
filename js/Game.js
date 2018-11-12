@@ -6,17 +6,14 @@ var box;
 var cursors;
 var kickButton;
 var isKickBool=false;
-
-//  골대
-var goleLineSize = 100;
-var lineSize = 70;
+var playerSpeed = 150;
 
 function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
 
     game.load.image('spr_player','assets/sprites/spr_player.png');
     game.load.image('spr_ball','assets/sprites/spr_ball.png');
-    game.load.image('spr_box','assets/sprites/spr_box.png');
+    game.load.image('spr_box','assets/sprites/spr_transbox.png');
 }
 
 function create() {
@@ -25,6 +22,14 @@ function create() {
     game.physics.p2.setImpactEvents(true); //충돌 콜백 방지용
     game.physics.p2.restitution = 0.8; // 조금 더 탄력있게(?)만듬
 
+    //#region key setting
+    //방향키
+    cursors = game.input.keyboard.createCursorKeys();
+
+    //스페이스바
+    kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //kickButton에 스페이스바 추가
+    game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
+    //#endregion key setting
     
     //배경 설정
     game.stage.backgroundColor = "#7befb2";
@@ -39,6 +44,7 @@ function create() {
     game.physics.p2.updateBoundsCollisionGroup();
 
     //////////////////////////////////////////////////////////////////////////////////////////
+    //#region collision box
     //축구장 라인 충돌 박스 설정
     var boxes = game.add.group(); //boxes에 그룹화
     boxes.enableBody = true; 
@@ -145,6 +151,7 @@ function create() {
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
+    //#endregion collision box
     //////////////////////////////////////////////////////////////////////////////////////////
 
     //player 설정
@@ -168,14 +175,7 @@ function create() {
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
 
-    ball.body.createBodyCallback(player, hitBall, this); //공 차기
-
-    //방향키
-    cursors = game.input.keyboard.createCursorKeys();
-
-    //스페이스바
-    kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //kickButton에 스페이스바 추가
-    game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
+    ball.body.createBodyCallback(player, hitBall, this); //플레이어와 공이 충돌했을때 발생 함수
 }
 
 function kick(){
@@ -187,7 +187,6 @@ function hitBall(body1, body2) {
      if(kickButton.isDown){
         isKickBool=true;
      }
-
 }
 
 function orangeGoalText(){
@@ -209,29 +208,33 @@ function update() {
     //player 속도 0으로 설정
     player.body.setZeroVelocity();
 
-    //방향키로 움직이는 조건
-    if (cursors.left.isDown)
-    {
-		player.body.moveLeft(150);
-    }
-    else if (cursors.right.isDown)
-    {
-		player.body.moveRight(150);
+    
+    //console.log(playerSpeed)
+    //플레이어 드리블시 속도 낮춤 안그럴시 원래속도로 복원
+    if (Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds())){
+        playerSpeed=130;
+    } 
+    else if(Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds()) == false){
+        playerSpeed=150;
     }
 
-    if (cursors.up.isDown)
-    {
-    	player.body.moveUp(150);
+    //방향키로 움직이는 조건
+    if (cursors.left.isDown){
+		player.body.moveLeft(playerSpeed);
     }
-    else if (cursors.down.isDown)
-    {
-        player.body.moveDown(150);
+    else if (cursors.right.isDown){
+		player.body.moveRight(playerSpeed);
+    }
+
+    if (cursors.up.isDown){
+    	player.body.moveUp(playerSpeed);
+    }
+    else if (cursors.down.isDown){
+        player.body.moveDown(playerSpeed);
     }
 
     if(isKickBool == true){
-        
-        kick();
-        
+        kick(); 
         isKickBool = false;
     }
     
