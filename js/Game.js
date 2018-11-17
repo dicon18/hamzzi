@@ -1,4 +1,3 @@
-var game = new Phaser.Game(1280, 720, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 //#region 변수
 var player;
@@ -41,12 +40,14 @@ function create() {
     game.add.image(0,0,'bg_field');
 
 
+    //#region set collision group
     //충돌그룹 설정
     var playerCollisionGroup = game.physics.p2.createCollisionGroup();
     var ballCollisionGroup = game.physics.p2.createCollisionGroup();
     var boxCollisionGroup = game.physics.p2.createCollisionGroup();
 
     game.physics.p2.updateBoundsCollisionGroup();
+    //#endregion set collision group
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //#region collision box
@@ -159,7 +160,7 @@ function create() {
     //#endregion collision box
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    //player 설정
+    //#region player setting
     player = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
     player.scale.set(1); //크기 설정
     //player.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
@@ -169,8 +170,9 @@ function create() {
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
     player.body.collides(ballCollisionGroup);   //player랑 충돌할 그룹 설정
+    //#endregion player setting
 
-    //축구공 ball 설정
+    //#region ball setting
     ball = game.add.sprite(664,game.world.centerY,'spr_ball'); //스프라이트 추가
     game.physics.p2.enable(ball, false); 
     ball.body.setCircle(17); //원으로 충돌 반경 설정
@@ -180,7 +182,9 @@ function create() {
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
     ball.body.createBodyCallback(player, hitBall, this); //플레이어와 공이 충돌했을때 발생 함수
+    //#endregion ball setting
 
+    //점수
     scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{font: "65px Arial", fill: "#000000", align: "center"});
     scoreText.anchor.setTo(0.5,0.5);
 }
