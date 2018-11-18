@@ -5,7 +5,6 @@ var nickname;
 
 Phaser.Device.whenReady(function () {
     game.plugins.add(PhaserInput.Plugin);
-    game.plugins.add(PhaserNineSlice.Plugin);
 });
 
 function preload(){
@@ -15,20 +14,18 @@ function preload(){
 function create(){
     game.stage.backgroundColor = "#1dd1a1";
 
-    var login = game.add.text(game.width/2,100,'잘 만든 축구깸',{
-        font: '80px',
-        fontWeight: 'bold',
-        fill: '#ffffff'
+    var login = game.add.text(game.width/2,100,'햄 찌 볼',{
+        font: '80px BMJUA',
+        fill: '#000000'
     });
     login.anchor.set(0.5);
 
-    user = game.add.inputField(game.width/2-258, 300, {
-        font: '30px Arial',
+    user = game.add.inputField(game.width/2-250, 300, {
+        font: '30px BMJUA',
         fill: '#212121',
-        fontWeight: 'bold',
         width: 500,
         max: 30,
-        padding: 8,
+        padding: 10,
         borderWidth: 1,
         borderColor: '#000',
         borderRadius: 6,
@@ -37,10 +34,10 @@ function create(){
         type: PhaserInput.InputType.text
     });
 
-    var submitBtn = game.add.nineSlice(game.width / 2, 400, 'btn', null, 100, 70);
+    var submitBtn = game.add.image(game.width / 2 + 10, 400, 'btn');
     submitBtn.anchor.set(0.5);
-    var submit = game.add.text(game.width / 2, 405, 'play!', {
-        font: '18px Arial'
+    var submit = game.add.text(game.width / 2 + 10, 400, 'p l a y !', {
+        font: '35px BMJUA',
     });
     submit.anchor.set(0.5);
     submitBtn.inputEnabled = true;
@@ -48,7 +45,7 @@ function create(){
     submitBtn.events.onInputDown.add(function() {
         nickname = user.value;
         game.add.text(30, 10, 'Welcome ' + user.value + '!', {
-            font: '18px Arial'
+            font: '18px BMJUA'
         });
 
     });

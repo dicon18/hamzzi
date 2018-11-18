@@ -1,3 +1,4 @@
+var game = new Phaser.Game(1280, 720, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 //#region 변수
 var player;
@@ -5,7 +6,6 @@ var ball;
 var box;
 var cursors;
 var kickButton;
-var isKickBool=false;
 var playerSpeed = 150;
 var scoreText;
 var orangeScore=0, blueScore=0;
@@ -162,11 +162,13 @@ function create() {
 
     //#region player setting
     player = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
+    player.anchor.set(0.5);
     player.scale.set(1); //크기 설정
     //player.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
     game.physics.p2.enable(player, false);
     player.body.setCircle(33); //원으로 충돌 반경 설정
     player.body.fixedRotation = true; //회전 고정 설정
+    player.body.damping = 0.75;
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
     player.body.collides(ballCollisionGroup);   //player랑 충돌할 그룹 설정
@@ -174,42 +176,40 @@ function create() {
 
     //#region ball setting
     ball = game.add.sprite(664,game.world.centerY,'spr_ball'); //스프라이트 추가
+    ball.anchor.set(0.5);
     game.physics.p2.enable(ball, false); 
     ball.body.setCircle(17); //원으로 충돌 반경 설정
     ball.body.fixedRotation = false; //회전 고정 설정
-    ball.body.damping = 0.9; //댐핑 설정 공이 느려짐
+    ball.body.damping = 0.5; //댐핑 설정 공이 느려짐
     //ball.body.collideWorldBounds = true; //벽 충돌 설정
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
-    ball.body.createBodyCallback(player, hitBall, this); //플레이어와 공이 충돌했을때 발생 함수
+    ball.body.createBodyCallback(player, kick, this); //ball 차기
     //#endregion ball setting
 
     //점수
-    scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{font: "65px Arial", fill: "#000000", align: "center"});
+    scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{font: "65px BMJUA", fill: "#000000", align: "center"});
     scoreText.anchor.setTo(0.5,0.5);
 }
-
 function kick(){
-    ball.body.velocity.x *= 7;
-    ball.body.velocity.y *= 7;
-}
-
-function hitBall(body1, body2) {
-     if(kickButton.isDown){
-        isKickBool=true;
-     }
+    if (kickButton.isDown) {
+        for(var i = 0;i < 2; i++){
+            ball.body.velocity.x *= 2;
+            ball.body.velocity.y *= 2;
+        }
+    }
 }
 
 function orangeGoalText(){
     var text;
-    var style = {font:"bold 32px Arial",fill:"#e67e22",boundsAlignH:"center",boundsAlignV:"middle"};
+    var style = {font:"bold 32px BMJUA",fill:"#e67e22",boundsAlignH:"center",boundsAlignV:"middle"};
     text=game.add.text(0,0,"Orange Team GOAL!",style);
     text.setTextBounds(250, 100,800,100);
 }
 
 function buleGoalText(){
     var text;
-    var style = {font:"bold 32px Arial",fill:"#4834d4",boundsAlignH:"center",boundsAlignV:"middle"};
+    var style = {font:"bold 32px BMJUA",fill:"#4834d4",boundsAlignH:"center",boundsAlignV:"middle"};
     text=game.add.text(0,0,"Blue Team GOAL!",style);
     text.setTextBounds(250, 100,800,100);
 }
@@ -222,45 +222,67 @@ function restartGame(){
 function update() {
 
     //player 속도 0으로 설정
-    player.body.setZeroVelocity();
-
+    // player.body.setZeroVelocity();
     
-    //console.log(playerSpeed)
+    // console.log(ball.body.velocity.x)
     //플레이어 드리블시 속도 낮춤 안그럴시 원래속도로 복원
-    if (Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds())){
-        playerSpeed=130;
-    } 
-    else if(Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds()) == false){
-        playerSpeed=150;
-    }
+    // if (Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds())){
+    //     playerSpeed=100;
+    // } 
+    // else if(Phaser.Rectangle.intersects (player.getBounds(), ball.getBounds()) == false){
+    //     playerSpeed=150;
+    // }
 
     //방향키로 움직이는 조건
-    if (cursors.left.isDown){
-		player.body.moveLeft(playerSpeed);
-    }
-    else if (cursors.right.isDown){
-		player.body.moveRight(playerSpeed);
-    }
+    // if (cursors.left.isDown){
+	// 	player.body.moveLeft(playerSpeed);
+    // }
+    // else if (cursors.right.isDown){
+	// 	player.body.moveRight(playerSpeed);
+    // }
 
-    if (cursors.up.isDown){
-    	player.body.moveUp(playerSpeed);
-    }
-    else if (cursors.down.isDown){
-        player.body.moveDown(playerSpeed);
-    }
+    // if (cursors.up.isDown){
+    // 	player.body.moveUp(playerSpeed);
+    // }
+    // else if (cursors.down.isDown){
+    //     player.body.moveDown(playerSpeed);
+    // }
 
-    if(isKickBool == true){
-        kick(); 
-        isKickBool = false;
+    var pVelocity = player.body.velocity;
+
+    if (cursors.left.isDown && pVelocity.x >= -120) {
+        pVelocity.x -= 5;
+    } 
+    else if (cursors.right.isDown && pVelocity.x <= 120) {
+        pVelocity.x += 5;
+    }
+    if (cursors.up.isDown && pVelocity.y >= -120) {
+        pVelocity.y -= 5;
+    } 
+    else if (cursors.down.isDown && pVelocity.y <= 120) {
+        pVelocity.y += 5;
     }
     
-    if(ball.body.x<=31.4&&ball.body.y>=252.5&&ball.body.y<=431.5&&goalCount==0){
+    if(ball.body.velocity.x>100){
+        ball.body.velocity.x-=5;
+    }
+    if(ball.body.velocity.x<-100){
+        ball.body.velocity.x+=5;
+    }
+    if(ball.body.velocity.y>100){
+        ball.body.velocity.y-=5;
+    }
+    if(ball.body.velocity.y<-100){
+        ball.body.velocity.y+=5;
+    }
+
+    if(ball.body.x<=48.3&&ball.body.y>=252.5&&ball.body.y<=447.6&&goalCount==0){
         orangeGoalText();
         orangeScore++;
         goalCount++;
         game.time.events.add(Phaser.Timer.SECOND * 5,restartGame);
     }
-    if(ball.body.x>=1215.5&&ball.body.y>=252&&ball.body.y<=431.5&&goalCount==0){
+    if(ball.body.x>=1232.9&&ball.body.y>=252.5&&ball.body.y<=447.6&&goalCount==0){
         buleGoalText();
         blueScore++;
         goalCount++;
@@ -270,5 +292,5 @@ function update() {
 }
 
 function render() {
-    //game.debug.spriteInfo(ball, 32, 32);
+    // game.debug.spriteInfo(ball, 32, 32);
 }
