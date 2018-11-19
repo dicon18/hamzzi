@@ -35,7 +35,8 @@ function create() {
     //킥 버튼
     kickButton = game.input.keyboard.addKey(Phaser.Keyboard.K); //kickButton에 K 추가
     kickButton2 = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_0); //kickButton2에 넘패드 0 추가
-    // game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
+
+    game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
     //#endregion key setting
     
     //배경 설정
@@ -212,8 +213,30 @@ function create() {
         backgroundColor: "#ffffff",
         align: "center"
     });
+    game.time.events.add(Phaser.Timer.SECOND * 5,scoreTextAlpha1);
+    game.time.events.add(Phaser.Timer.SECOND * 5.1,scoreTextAlpha2);
+    game.time.events.add(Phaser.Timer.SECOND * 5.2,scoreTextAlpha3);
+    game.time.events.add(Phaser.Timer.SECOND * 5.3,scoreTextAlpha4);
+    game.time.events.add(Phaser.Timer.SECOND * 5.4,scoreTextAlpha5);
     scoreText.anchor.setTo(0.5,0.5);
 }
+
+function scoreTextAlpha1(){
+    scoreText.alpha = 0.9;
+}
+function scoreTextAlpha2(){
+    scoreText.alpha = 0.8;
+}
+function scoreTextAlpha3(){
+    scoreText.alpha = 0.7;
+}
+function scoreTextAlpha4(){
+    scoreText.alpha = 0.6;
+}
+function scoreTextAlpha5(){
+    scoreText.alpha = 0.5;
+}
+
 function kick(){
     if (kickButton.isDown) {
         for(var i = 0;i < 2; i++){
@@ -242,7 +265,6 @@ function orangeGoalText(){
     text=game.add.text(0,0,"Orange Team GOAL!",style);
     text.setTextBounds(250, 100,800,100);
 }
-
 function buleGoalText(){
     var text;
     var style = {
@@ -336,12 +358,14 @@ function update() {
     if(ball.body.x<=48.3&&ball.body.y>=252.5&&ball.body.y<=447.6&&goalCount==0){
         orangeGoalText();
         orangeScore++;
+        scoreText.alpha = 1;
         goalCount++;
         game.time.events.add(Phaser.Timer.SECOND * 5,restartGame);
     }
     if(ball.body.x>=1232.9&&ball.body.y>=252.5&&ball.body.y<=447.6&&goalCount==0){
         buleGoalText();
         blueScore++;
+        scoreText.alpha = 1;
         goalCount++;
         game.time.events.add(Phaser.Timer.SECOND * 5,restartGame);
     }
