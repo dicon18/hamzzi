@@ -2,11 +2,12 @@ var game = new Phaser.Game(1280, 720, Phaser.AUTO, '', { preload: preload, creat
 
 //#region 변수
 var player;
+var player2;
 var ball;
 var box;
 var cursors;
 var kickButton;
-var playerSpeed = 150;
+// var playerSpeed = 150;
 var scoreText;
 var orangeScore=0, blueScore=0;
 var goalCount=0;
@@ -171,8 +172,22 @@ function create() {
     player.body.damping = 0.75;
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
-    player.body.collides(ballCollisionGroup);   //player랑 충돌할 그룹 설정
+    player.body.collides([ballCollisionGroup,playerCollisionGroup]);   //player랑 충돌할 그룹 설정
     //#endregion player setting
+
+    //#region player2 setting
+    player2 = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
+    player2.anchor.set(0.5);
+    player2.scale.set(1); //크기 설정
+    //player2.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
+    game.physics.p2.enable(player2, false);
+    player2.body.setCircle(33); //원으로 충돌 반경 설정
+    player2.body.fixedRotation = true; //회전 고정 설정
+    player2.body.damping = 0.75;
+    //player2.body.collideWorldBounds = true; //벽 충돌 설정
+    player2.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
+    player2.body.collides([ballCollisionGroup,playerCollisionGroup]);   //player랑 충돌할 그룹 설정
+    //#endregion player2 setting
 
     //#region ball setting
     ball = game.add.sprite(664,game.world.centerY,'spr_ball'); //스프라이트 추가
