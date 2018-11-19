@@ -6,7 +6,7 @@ var player2;
 var ball;
 var box;
 var cursors;
-var kickButton;
+var kickButton, kickButton2;
 // var playerSpeed = 150;
 var scoreText;
 var orangeScore=0, blueScore=0;
@@ -17,6 +17,7 @@ function preload() {
     game.load.image('bg_field','assets/bg/bg_field.png');
 
     game.load.image('spr_player','assets/sprites/spr_player.png');
+    game.load.image('spr_player2','assets/sprites/spr_player2.png');
     game.load.image('spr_ball','assets/sprites/spr_ball.png');
     game.load.image('spr_box','assets/sprites/spr_transbox.png');
 }
@@ -31,9 +32,10 @@ function create() {
     //방향키
     cursors = game.input.keyboard.createCursorKeys();
 
-    //스페이스바
-    kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //kickButton에 스페이스바 추가
-    game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
+    //킥 버튼
+    kickButton = game.input.keyboard.addKey(Phaser.Keyboard.K); //kickButton에 K 추가
+    kickButton2 = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_0); //kickButton2에 넘패드 0 추가
+    // game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
     //#endregion key setting
     
     //배경 설정
@@ -162,7 +164,7 @@ function create() {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     //#region player setting
-    player = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
+    player = game.add.sprite(264, game.world.centerY, 'spr_player'); //스프라이트 추가
     player.anchor.set(0.5);
     player.scale.set(1); //크기 설정
     //player.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
@@ -176,7 +178,7 @@ function create() {
     //#endregion player setting
 
     //#region player2 setting
-    player2 = game.add.sprite(200, 200, 'spr_player'); //스프라이트 추가
+    player2 = game.add.sprite(1064, game.world.centerY, 'spr_player2'); //스프라이트 추가
     player2.anchor.set(0.5);
     player2.scale.set(1); //크기 설정
     //player2.smoothed = false; 이미지 안티에일리언싱 false는 적용안함. 기본 값은 true
@@ -200,10 +202,16 @@ function create() {
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
     ball.body.createBodyCallback(player, kick, this); //ball 차기
+    ball.body.createBodyCallback(player2, kick2, this); //ball 차기
     //#endregion ball setting
 
     //점수
-    scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{font: "65px BMJUA", fill: "#000000", align: "center"});
+    scoreText = game.add.text(664, 40,blueScore+" : "+orangeScore,{
+        font: "65px BMJUA", 
+        fill: "#000000",
+        backgroundColor: "#ffffff",
+        align: "center"
+    });
     scoreText.anchor.setTo(0.5,0.5);
 }
 function kick(){
@@ -214,17 +222,35 @@ function kick(){
         }
     }
 }
+function kick2(){
+    if (kickButton2.isDown) {
+        for(var i = 0;i < 2; i++){
+            ball.body.velocity.x *= 2;
+            ball.body.velocity.y *= 2;
+        }
+    }
+}
 
 function orangeGoalText(){
     var text;
-    var style = {font:"bold 32px BMJUA",fill:"#e67e22",boundsAlignH:"center",boundsAlignV:"middle"};
+    var style = {
+        font:"bold 32px BMJUA",
+        fill:"#e67e22",
+        boundsAlignH:"center",
+        boundsAlignV:"middle"
+    };
     text=game.add.text(0,0,"Orange Team GOAL!",style);
     text.setTextBounds(250, 100,800,100);
 }
 
 function buleGoalText(){
     var text;
-    var style = {font:"bold 32px BMJUA",fill:"#4834d4",boundsAlignH:"center",boundsAlignV:"middle"};
+    var style = {
+        font:"bold 32px BMJUA",
+        fill:"#4834d4",
+        boundsAlignH:"center",
+        boundsAlignV:"middle"
+    };
     text=game.add.text(0,0,"Blue Team GOAL!",style);
     text.setTextBounds(250, 100,800,100);
 }
@@ -263,20 +289,36 @@ function update() {
     //     player.body.moveDown(playerSpeed);
     // }
 
+    //#region players move
     var pVelocity = player.body.velocity;
+    var p2Velocity = player2.body.velocity;
 
-    if (cursors.left.isDown && pVelocity.x >= -120) {
+    if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown && pVelocity.x >= -120) {
         pVelocity.x -= 5;
     } 
-    else if (cursors.right.isDown && pVelocity.x <= 120) {
+    else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown && pVelocity.x <= 120) {
         pVelocity.x += 5;
     }
-    if (cursors.up.isDown && pVelocity.y >= -120) {
+    if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && pVelocity.y >= -120) {
         pVelocity.y -= 5;
     } 
-    else if (cursors.down.isDown && pVelocity.y <= 120) {
+    else if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown && pVelocity.y <= 120) {
         pVelocity.y += 5;
     }
+
+    if (cursors.left.isDown && p2Velocity.x >= -120) {
+        p2Velocity.x -= 5;
+    } 
+    else if (cursors.right.isDown && p2Velocity.x <= 120) {
+        p2Velocity.x += 5;
+    }
+    if (cursors.up.isDown && p2Velocity.y >= -120) {
+        p2Velocity.y -= 5;
+    } 
+    else if (cursors.down.isDown && p2Velocity.y <= 120) {
+        p2Velocity.y += 5;
+    }
+    //#endregion players move
     
     if(ball.body.velocity.x>100){
         ball.body.velocity.x-=5;
