@@ -173,6 +173,7 @@ function create() {
     player.body.setCircle(33); //원으로 충돌 반경 설정
     player.body.fixedRotation = true; //회전 고정 설정
     player.body.damping = 0.75;
+    player.body.mass = 1000;
     //player.body.collideWorldBounds = true; //벽 충돌 설정
     player.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
     player.body.collides([ballCollisionGroup,playerCollisionGroup]);   //player랑 충돌할 그룹 설정
@@ -187,6 +188,7 @@ function create() {
     player2.body.setCircle(33); //원으로 충돌 반경 설정
     player2.body.fixedRotation = true; //회전 고정 설정
     player2.body.damping = 0.75;
+    player2.body.mass = 1000;
     //player2.body.collideWorldBounds = true; //벽 충돌 설정
     player2.body.setCollisionGroup(playerCollisionGroup); //player에 충돌 그룹 설정
     player2.body.collides([ballCollisionGroup,playerCollisionGroup]);   //player랑 충돌할 그룹 설정
