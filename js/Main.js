@@ -1,19 +1,15 @@
 //  플레이어 이름 받기 및 커스텀마이징
-Phaser.Device.whenReady(function() {
-    game.plugins.add(PhaserInput.Plugin);
-});
-
-var boot = {
-    create: function() {
+var main = {
+    create: function () {
         game.stage.backgroundColor = "#1dd1a1";
 
-        var login = game.add.text(game.width/2,100,'햄 찌 볼',{
+        var logo = game.add.text(game.width / 2, 100, '햄 찌 볼', {
             font: '80px BMJUA',
             fill: '#000000'
         });
-        login.anchor.set(0.5);
+        logo.anchor.set(0.5);
 
-        var user = game.add.inputField(game.width/2-250, 300, {
+        var inputBox = game.add.inputField(game.width / 2 - 250, 300, {
             font: '30px BMJUA',
             fill: '#212121',
             width: 500,
@@ -27,16 +23,13 @@ var boot = {
             type: PhaserInput.InputType.text
         });
 
-        var submitBtn = game.add.image(game.width / 2 + 10, 400, 'btn');
+        var submitBtn = game.add.image(game.width / 2 + 10, 400, 'submitBtn');
         submitBtn.anchor.set(0.5);
-        var submit = game.add.text(game.width / 2 + 10, 400, 'p l a y !', {
-            font: '35px BMJUA',
-        });
-        submit.anchor.set(0.5);
+
         submitBtn.inputEnabled = true;
         submitBtn.input.useHandCursor = true;
-        submitBtn.events.onInputDown.add(function() {
-            nickname = user.value;
+        submitBtn.events.onInputDown.add(function () {
+            nickname = inputBox.value;
             game.state.start('Game');
         });
     }
