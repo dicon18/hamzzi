@@ -7,6 +7,7 @@ var ball;
 var box;
 var cursors;
 var kickButton, kickButton2;
+var kickCnt=0,kickCnt2=0;
 // var playerSpeed = 150;
 var scoreText;
 var orangeScore=0, blueScore=0;
@@ -34,7 +35,7 @@ function create() {
 
     //킥 버튼
     kickButton = game.input.keyboard.addKey(Phaser.Keyboard.K); //kickButton에 K 추가
-    kickButton2 = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_0); //kickButton2에 넘패드 0 추가
+    kickButton2 = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_5); //kickButton2에 NUMPAD_0 추가
 
     game.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //스페이스바가 브라우저 영향 못 미치게함
     //#endregion key setting
@@ -63,16 +64,16 @@ function create() {
         //윗쪽 라인 박스생성 후 고정
         box = boxes.create(i*5+68, 40, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //아래쪽 라인 박스생성 후 고정
         box = boxes.create(i*5+68, 680, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
@@ -80,16 +81,16 @@ function create() {
         //왼쪽 라인 박스생성 후 고정
         box = boxes.create(67, i*5+40, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //오른쪽 라인 박스생성 후 고정
         box = boxes.create(1280-70, i*5+40, 'spr_box');
         box.body.static = true;
-        
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
@@ -97,16 +98,16 @@ function create() {
         //왼쪽 라인 박스생성 후 고정
         box = boxes.create(67, i*5+465, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //오른쪽 라인 박스생성 후 고정
         box = boxes.create(1280-70, i*5+465, 'spr_box');
         box.body.static = true;
-        
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
@@ -117,30 +118,30 @@ function create() {
         //윗쪽 라인 박스생성 후 고정
         box = boxes.create(i*5+3, 250, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         box = boxes.create(i*5+1270-60, 250, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //아래쪽 라인 박스생성 후 고정
         box = boxes.create(i*5+3, 465, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         box = boxes.create(i*5+1270-60, 465, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
@@ -148,16 +149,16 @@ function create() {
         //왼쪽 라인 박스생성 후 고정
         box = boxes.create(4, i*5+250, 'spr_box');
         box.body.static = true;
-
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
 
         //오른쪽 라인 박스생성 후 고정
         box = boxes.create(1280-4, i*5+250, 'spr_box');
         box.body.static = true;
-        
-        box.body.setRectangle(1,1); //사각형 충돌 반경 설정
+        box.scale.set(5);
+        // box.body.setRectangle(1,1); //사각형 충돌 반경 설정
         box.body.setCollisionGroup(boxCollisionGroup);  //box에 충돌 그룹 설정
         box.body.collides(ballCollisionGroup);  //box랑 충돌할 그룹 설정
     }
@@ -198,7 +199,7 @@ function create() {
     game.physics.p2.enable(ball, false); 
     ball.body.setCircle(17); //원으로 충돌 반경 설정
     ball.body.fixedRotation = false; //회전 고정 설정
-    ball.body.damping = 0.5; //댐핑 설정 공이 느려짐
+    ball.body.damping = 0.7; //댐핑 설정 공이 느려짐
     //ball.body.collideWorldBounds = true; //벽 충돌 설정
     ball.body.setCollisionGroup(ballCollisionGroup);    //ball에 충돌 그룹 설정
     ball.body.collides([playerCollisionGroup, boxCollisionGroup]);  //ball이랑 충돌할 그룹 설정
@@ -239,17 +240,19 @@ function scoreTextAlpha5(){
 
 function kick(){
     if (kickButton.isDown) {
-        for(var i = 0;i < 2; i++){
-            ball.body.velocity.x *= 2;
-            ball.body.velocity.y *= 2;
+        kickCnt++;
+        if(kickCnt==1){
+            ball.body.velocity.x *= 3;
+            ball.body.velocity.y *= 3;
         }
     }
 }
 function kick2(){
     if (kickButton2.isDown) {
-        for(var i = 0;i < 2; i++){
-            ball.body.velocity.x *= 2;
-            ball.body.velocity.y *= 2;
+        kickCnt2++;
+        if(kickCnt2==1){
+            ball.body.velocity.x *= 3;
+            ball.body.velocity.y *= 3;
         }
     }
 }
@@ -315,45 +318,38 @@ function update() {
     var pVelocity = player.body.velocity;
     var p2Velocity = player2.body.velocity;
 
-    if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown && pVelocity.x >= -120) {
-        pVelocity.x -= 5;
+    if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown && pVelocity.x >= -150) {
+        pVelocity.x -= 10;
     } 
-    else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown && pVelocity.x <= 120) {
-        pVelocity.x += 5;
+    else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown && pVelocity.x <= 150) {
+        pVelocity.x += 10;
     }
-    if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && pVelocity.y >= -120) {
-        pVelocity.y -= 5;
+    if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && pVelocity.y >= -150) {
+        pVelocity.y -= 10;
     } 
-    else if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown && pVelocity.y <= 120) {
-        pVelocity.y += 5;
+    else if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown && pVelocity.y <= 150) {
+        pVelocity.y += 10;
     }
 
-    if (cursors.left.isDown && p2Velocity.x >= -120) {
-        p2Velocity.x -= 5;
+    if (cursors.left.isDown && p2Velocity.x >= -150) {
+        p2Velocity.x -= 10;
     } 
-    else if (cursors.right.isDown && p2Velocity.x <= 120) {
-        p2Velocity.x += 5;
+    else if (cursors.right.isDown && p2Velocity.x <= 150) {
+        p2Velocity.x += 10;
     }
-    if (cursors.up.isDown && p2Velocity.y >= -120) {
-        p2Velocity.y -= 5;
+    if (cursors.up.isDown && p2Velocity.y >= -150) {
+        p2Velocity.y -= 10;
     } 
-    else if (cursors.down.isDown && p2Velocity.y <= 120) {
-        p2Velocity.y += 5;
+    else if (cursors.down.isDown && p2Velocity.y <= 150) {
+        p2Velocity.y += 10;
     }
     //#endregion players move
-    
-    if(ball.body.velocity.x>100){
-        ball.body.velocity.x-=5;
-    }
-    if(ball.body.velocity.x<-100){
-        ball.body.velocity.x+=5;
-    }
-    if(ball.body.velocity.y>100){
-        ball.body.velocity.y-=5;
-    }
-    if(ball.body.velocity.y<-100){
-        ball.body.velocity.y+=5;
-    }
+
+    if(!kickButton.isDown)
+        kickCnt=0;
+    if(!kickButton2.isDown)
+        kickCnt2=0;
+    // console.log(`kickCnt : ${kickCnt} kickCnt2 : ${kickCnt2}`);
 
     if(ball.body.x<=48.3&&ball.body.y>=252.5&&ball.body.y<=447.6&&goalCount==0){
         orangeGoalText();
