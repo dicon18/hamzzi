@@ -3,10 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>햄찌볼</title>
-    <link href="https://fonts.googleapis.com/css?family=Gaegu&amp;subset=korean" rel="stylesheet">
     <link rel="shortcut icon" href="assets/sprites/spr_ball.png">
-    <script src="js/phaser.min.js?ver=5"></script>
-    <script src="node_modules/@orange-games/phaser-input/build/phaser-input.js?ver=5"></script>
     <style>
         @font-face{
             font-family: 'BMJUA';
@@ -22,8 +19,21 @@
     </style>
 </head>
 <body>
-    <h1>햄 찌 볼</h1>
-    <!-- <script src="js/nickname.js?ver=4"></script> -->
-    <script src="js/Game.js?ver=10"></script>
+    <!-- 파일 불러오기 -->
+    <script src="js/phaser.min.js"></script>
+    <script src="node_modules/@orange-games/phaser-input/build/phaser-input.js"></script>
+
+    <script src="js/Boot.js"></script>
+    <script src="js/Main.js"></script>
+    <script src="js/Game.js"></script>
+
+    <!-- 메인 -->
+    <script>
+        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, PHASER.AUTO);
+        game.state.add('boot', boot);
+        game.state.add('main', main);
+        game.state.add('Game', Game);
+        game.state.start('boot');
+    </script>
 </body>
 </html>
