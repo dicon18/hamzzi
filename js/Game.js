@@ -13,6 +13,7 @@ var scoreText,timerText;
 var timerSec = '00', timerMin = 5;
 var orangeScore = 0, blueScore = 0;
 var isGoal = false;
+var isTimeOver = false;
 //#endregion
 
 var Game = {
@@ -281,11 +282,47 @@ var Game = {
         
         if(timerMin == 0 && timerSec == '00'){
             timer.stop();
-            
+
+            player.body.velocity.x = game.math.clamp(player.body.velocity.x, 0, 0);
+            player.body.velocity.y = game.math.clamp(player.body.velocity.y, 0, 0);
+            player2.body.velocity.x = game.math.clamp(player2.body.velocity.x, 0, 0);
+            player2.body.velocity.y = game.math.clamp(player2.body.velocity.y, 0, 0);
+
+            if(blueScore > orangeScore && isTimeOver == false){
+                var BlueWinText = game.add.text(664, game.world.centerY, "Blue Team Win!", {
+                    font: "bold 100px BMJUA",
+                    fill: "#4834d4",
+                    backgroundColor: "#ffffff"
+                });
+                console.log("Blue Team Win!")
+                BlueWinText.anchor.set(0.5);
+                isTimeOver = true;
+            }
+
+            else if(orangeScore > blueScore && isTimeOver == false){
+                var OrangeWinText = game.add.text(664, game.world.centerY, "Orange Team Win!", {
+                    font: "bold 100px BMJUA",
+                    fill: "#e67e22",
+                    backgroundColor: "#ffffff"
+                });
+                console.log("Orange Team Win!")
+                OrangeWinText.anchor.set(0.5);
+                isTimeOver = true;
+            }
+
+            else if(blueScore == orangeScore && isTimeOver == false){
+                var drawText = game.add.text(664, game.world.centerY, "Draw!", {
+                    font: "bold 100px BMJUA",
+                    fill: "#000000",
+                    backgroundColor: "#ffffff"
+                });
+                console.log("Draw!")
+                drawText.anchor.set(0.5);
+                isTimeOver = true;
+            }
+
         }
         //#endregion
-
-        console.log(ball.body.velocity.x);
     },
 
     //  외부 함수
