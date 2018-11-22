@@ -230,40 +230,35 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어
-        //  이동
-        var pVelocity = player.body.velocity;
-        var p2Velocity = player2.body.velocity;
+        //  플레이어
+        var playerAccSpeed = 10;
+        var playerMaxSpeed = 150;
 
-        if (game.input.keyboard.addKey(Phaser.Keyboard.A).isDown && pVelocity.x >= -150) {
-            pVelocity.x -= 10;
-        }
-        else if (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown && pVelocity.x <= 150) {
-            pVelocity.x += 10;
-        }
-        if (game.input.keyboard.addKey(Phaser.Keyboard.W).isDown && pVelocity.y >= -150) {
-            pVelocity.y -= 10;
-        }
-        else if (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown && pVelocity.y <= 150) {
-            pVelocity.y += 10;
-        }
+        var pHspd = (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown - game.input.keyboard.addKey(Phaser.Keyboard.A).isDown);
+        player.body.velocity.x += pHspd * playerAccSpeed;
+        var pVspd = (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown - game.input.keyboard.addKey(Phaser.Keyboard.W).isDown);
+        player.body.velocity.y += pVspd * playerAccSpeed;
 
-        if (cursors.left.isDown && p2Velocity.x >= -150) {
-            p2Velocity.x -= 10;
-        }
-        else if (cursors.right.isDown && p2Velocity.x <= 150) {
-            p2Velocity.x += 10;
-        }
-        if (cursors.up.isDown && p2Velocity.y >= -150) {
-            p2Velocity.y -= 10;
-        }
-        else if (cursors.down.isDown && p2Velocity.y <= 150) {
-            p2Velocity.y += 10;
-        }
+        var p2Hspd = cursors.right.isDown - cursors.left.isDown;
+        player2.body.velocity.x += p2Hspd * playerAccSpeed;
+        var p2vspd = cursors.down.isDown - cursors.up.isDown;
+        player2.body.velocity.y += p2vspd * playerAccSpeed;
 
+        player.body.velocity.x = game.math.clamp(player.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
+        player.body.velocity.y = game.math.clamp(player.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+        player2.body.velocity.x = game.math.clamp(player2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
+        player2.body.velocity.y = game.math.clamp(player2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+
+        //  슛
         if (!kickButton.isDown)
             isKick = false;
         if (!kickButton2.isDown)
             isKick2 = false;
+
+        //  볼
+        var ballMaxSpeed = 1000;
+        ball.body.velocity.x = game.math.clamp(ball.body.velocity.x, -ballMaxSpeed, ballMaxSpeed);
+        ball.body.velocity.y = game.math.clamp(ball.body.velocity.y, -ballMaxSpeed, ballMaxSpeed);
 
         //  골
         if (ball.body.x <= 48.3 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false) {
@@ -289,6 +284,8 @@ var Game = {
             
         }
         //#endregion
+
+        console.log(ball.body.velocity.x);
     },
 
     //  외부 함수
