@@ -9,7 +9,8 @@ var cursors;
 var kickButton, kickButton2;
 var isKick = false, isKick2 = false;
 
-var scoreText;
+var scoreText,timerText;
+var timerSec = '00', timerMin = 5;
 var orangeScore = 0, blueScore = 0;
 var isGoal = false;
 //#endregion
@@ -197,22 +198,36 @@ var Game = {
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region UI 설정
         //  점수
-        scoreText = game.add.text(664, 40, blueScore + " : " + orangeScore, {
-            font: "65px BMJUA",
+        scoreText = game.add.text(664, 20, blueScore + " : " + orangeScore, {
+            font: "35px BMJUA",
+            fill: "#000000",
+            // backgroundColor: "#ffffff",
+            align: "center"
+        });
+        scoreText.anchor.setTo(0.5);
+        // game.time.events.add(Phaser.Timer.SECOND * 5, this.scoreTextAlpha1);
+        // game.time.events.add(Phaser.Timer.SECOND * 5.1, this.scoreTextAlpha2);
+        // game.time.events.add(Phaser.Timer.SECOND * 5.2, this.scoreTextAlpha3);
+        // game.time.events.add(Phaser.Timer.SECOND * 5.3, this.scoreTextAlpha4);
+        // game.time.events.add(Phaser.Timer.SECOND * 5.4, this.scoreTextAlpha5);
+        //#endregion
+
+        timer = game.time.create(false);
+        timerText = game.add.text(664, 60, timerMin + " : " + timerSec, {
+            font: "30px BMJUA",
             fill: "#000000",
             backgroundColor: "#ffffff",
             align: "center"
         });
-        scoreText.anchor.setTo(0.5, 0.5);
-        game.time.events.add(Phaser.Timer.SECOND * 5, this.scoreTextAlpha1);
-        game.time.events.add(Phaser.Timer.SECOND * 5.1, this.scoreTextAlpha2);
-        game.time.events.add(Phaser.Timer.SECOND * 5.2, this.scoreTextAlpha3);
-        game.time.events.add(Phaser.Timer.SECOND * 5.3, this.scoreTextAlpha4);
-        game.time.events.add(Phaser.Timer.SECOND * 5.4, this.scoreTextAlpha5);
-        //#endregion
+        timerText.anchor.setTo(0.5);
+        timer.loop(1000, this.timerSecCnt,this);
+        timer.start();
     },
 
     update: function () {
+
+        timerText.setText(timerMin + " : " + timerSec);
+
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어
         //  이동
@@ -252,6 +267,7 @@ var Game = {
 
         //  골
         if (ball.body.x <= 48.3 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false) {
+            timer.stop();
             this.orangeGoalText();
             orangeScore++;
             scoreText.alpha = 1;
@@ -259,6 +275,7 @@ var Game = {
             game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
         }
         if (ball.body.x >= 1232.9 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false) {
+            timer.stop();
             this.buleGoalText();
             blueScore++;
             scoreText.alpha = 1;
@@ -266,6 +283,11 @@ var Game = {
             game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
         }
         scoreText.setText(blueScore + " : " + orangeScore);
+        
+        if(timerMin == 0 && timerSec == '00'){
+            timer.stop();
+            
+        }
         //#endregion
     },
 
@@ -284,6 +306,16 @@ var Game = {
     },
     scoreTextAlpha5: function () {
         scoreText.alpha = 0.5;
+    },
+
+    timerSecCnt: function () {
+        timerSec--;
+        if(timerSec == 0)
+            timerSec = '00';
+        if(timerSec < 0){
+            timerMin--;
+            timerSec = 59;
+        }
     },
 
     kick: function () {
