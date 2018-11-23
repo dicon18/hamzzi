@@ -234,6 +234,9 @@ var Game = {
         player2.body.velocity.x = game.math.clamp(player2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
         player2.body.velocity.y = game.math.clamp(player2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
 
+        player.scale.x = (pHspd == 0) + pHspd;
+        player2.scale.x = (p2Hspd == 0) + p2Hspd;
+
         //  슛
         if (!kickButton.isDown)
             isKick = false;
