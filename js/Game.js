@@ -10,7 +10,7 @@ var kickButton, kickButton2;
 var isKick = false, isKick2 = false;
 
 var scoreText,timerText;
-var timerSec = '00', timerMin = 5;
+var timerSec = '10', timerMin = 0;
 var orangeScore = 0, blueScore = 0;
 var isGoal = false;
 var isTimeOver = false;
@@ -271,7 +271,7 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 골
-        if (ball.body.x <= 48.3 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false) {
+        if (ball.body.x <= 48.3 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false && isTimeOver == false) {
             timer.stop();
             this.orangeGoalText();
             orangeScore++;
@@ -279,7 +279,7 @@ var Game = {
             isGoal = true;
             game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
         }
-        if (ball.body.x >= 1232.9 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false) {
+        if (ball.body.x >= 1232.9 && ball.body.y >= 252.5 && ball.body.y <= 447.6 && isGoal == false && isTimeOver == false) {
             timer.stop();
             this.buleGoalText();
             blueScore++;
