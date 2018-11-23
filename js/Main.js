@@ -3,13 +3,11 @@ var main = {
     create: function () {
         game.stage.backgroundColor = "#1dd1a1";
 
-        var logo = game.add.text(game.width / 2, 100, '햄 찌 볼', {
-            font: '80px BMJUA',
-            fill: '#000000'
-        });
+        var logo = game.add.image(game.width / 2, 150,'img_logo');
+        logo.scale.set(0.6);
         logo.anchor.set(0.5);
 
-        var inputBox = game.add.inputField(game.width / 2 - 250, 300, {
+        var inputBox = game.add.inputField(game.width / 2 - 250, 325, {
             font: '30px BMJUA',
             fill: '#212121',
             width: 500,
@@ -23,7 +21,7 @@ var main = {
             type: PhaserInput.InputType.text
         });
 
-        var submitBtn = game.add.image(game.width / 2 + 10, 400, 'submitBtn');
+        var submitBtn = game.add.image(game.width / 2 + 10, 550, 'submitBtn');
         submitBtn.anchor.set(0.5);
 
         submitBtn.inputEnabled = true;
