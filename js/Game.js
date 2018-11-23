@@ -1,16 +1,25 @@
 //  인 게임
 //#region 글로벌 변수
-var player;
-var player2;
+var playerName_1;
+var playerName_2;
+
+var playerSprite_1;
+var playerSprite_2;
+
+var player_1;
+var player_2;
 var ball;
 var box;
+
+var playerAccSpeed = 10;
+var playerMaxSpeed = 150;
 
 var cursors;
 var kickButton, kickButton2;
 var isKick = false, isKick2 = false;
 
-var scoreText,timerText;
-var timerSec = '10', timerMin = 0;
+var scoreText, timerText;
+var timerSec = '00', timerMin = 3;
 var orangeScore = 0, blueScore = 0;
 var isGoal = false;
 var isTimeOver = false;
@@ -41,9 +50,8 @@ var Game = {
         game.physics.p2.updateBoundsCollisionGroup();
 
         //  사운드
-        bgm_inGame = game.add.audio('bgm_inGame');
-        bgm_inGame.loopFull(1);
-
+        // bgm_inGame = game.add.audio('bgm_inGame');
+        // bgm_inGame.loopFull(1);
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -159,30 +167,30 @@ var Game = {
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어 설정
         //  플레이어1
-        player = game.add.sprite(264, game.world.centerY, 'spr_player');
-        player.anchor.set(0.5);
-        player.scale.set(1);
+        player_1 = game.add.sprite(264, game.world.centerY, chr_sprite[chr_select_1]);
+        player_1.anchor.set(0.5);
+        player_1.scale.set(1);
 
-        game.physics.p2.enable(player, false);
-        player.body.mass = 5;
-        player.body.setCircle(player.width / 2);
-        player.body.fixedRotation = true;
-        player.body.damping = 0.75;
-        player.body.setCollisionGroup(playerCollisionGroup);
-        player.body.collides([ballCollisionGroup, playerCollisionGroup]);
+        game.physics.p2.enable(player_1, false);
+        player_1.body.mass = 5;
+        player_1.body.setCircle(player_1.width / 2);
+        player_1.body.fixedRotation = true;
+        player_1.body.damping = 0.75;
+        player_1.body.setCollisionGroup(playerCollisionGroup);
+        player_1.body.collides([ballCollisionGroup, playerCollisionGroup]);
 
         //  플레이어2
-        player2 = game.add.sprite(1064, game.world.centerY, 'spr_player2');
-        player2.anchor.set(0.5);
-        player2.scale.set(1);
+        player_2 = game.add.sprite(1064, game.world.centerY, chr_sprite[chr_select_2]);
+        player_2.anchor.set(0.5);
+        player_2.scale.set(1);
 
-        game.physics.p2.enable(player2, false);
-        player2.body.mass = 5;
-        player2.body.setCircle(player2.width / 2);
-        player2.body.fixedRotation = true;
-        player2.body.damping = 0.75;
-        player2.body.setCollisionGroup(playerCollisionGroup);
-        player2.body.collides([ballCollisionGroup, playerCollisionGroup]);
+        game.physics.p2.enable(player_2, false);
+        player_2.body.mass = 5;
+        player_2.body.setCircle(player_2.width / 2);
+        player_2.body.fixedRotation = true;
+        player_2.body.damping = 0.75;
+        player_2.body.setCollisionGroup(playerCollisionGroup);
+        player_2.body.collides([ballCollisionGroup, playerCollisionGroup]);
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -197,8 +205,8 @@ var Game = {
         ball.body.fixedRotation = false;
         ball.body.setCollisionGroup(ballCollisionGroup);
         ball.body.collides([playerCollisionGroup, boxCollisionGroup]);
-        ball.body.createBodyCallback(player, this.kick, this);
-        ball.body.createBodyCallback(player2, this.kick2, this);
+        ball.body.createBodyCallback(player_1, this.kick, this);
+        ball.body.createBodyCallback(player_2, this.kick2, this);
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -207,15 +215,9 @@ var Game = {
         scoreText = game.add.text(664, 20, blueScore + " : " + orangeScore, {
             font: "35px BMJUA",
             fill: "#000000",
-            // backgroundColor: "#ffffff",
             align: "center"
         });
         scoreText.anchor.setTo(0.5);
-        // game.time.events.add(Phaser.Timer.SECOND * 5, this.scoreTextAlpha1);
-        // game.time.events.add(Phaser.Timer.SECOND * 5.1, this.scoreTextAlpha2);
-        // game.time.events.add(Phaser.Timer.SECOND * 5.2, this.scoreTextAlpha3);
-        // game.time.events.add(Phaser.Timer.SECOND * 5.3, this.scoreTextAlpha4);
-        // game.time.events.add(Phaser.Timer.SECOND * 5.4, this.scoreTextAlpha5);
 
         timer = game.time.create(false);
         timerText = game.add.text(664, 60, timerMin + " : " + timerSec, {
@@ -233,27 +235,27 @@ var Game = {
     update: function () {
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어
-        //  플레이어
-        var playerAccSpeed = 10;
-        var playerMaxSpeed = 150;
-
+        //  플레이어 이동
         var pHspd = (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown - game.input.keyboard.addKey(Phaser.Keyboard.A).isDown);
-        player.body.velocity.x += pHspd * playerAccSpeed;
+        player_1.body.velocity.x += pHspd * playerAccSpeed;
         var pVspd = (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown - game.input.keyboard.addKey(Phaser.Keyboard.W).isDown);
-        player.body.velocity.y += pVspd * playerAccSpeed;
+        player_1.body.velocity.y += pVspd * playerAccSpeed;
 
         var p2Hspd = cursors.right.isDown - cursors.left.isDown;
-        player2.body.velocity.x += p2Hspd * playerAccSpeed;
+        player_2.body.velocity.x += p2Hspd * playerAccSpeed;
         var p2vspd = cursors.down.isDown - cursors.up.isDown;
-        player2.body.velocity.y += p2vspd * playerAccSpeed;
+        player_2.body.velocity.y += p2vspd * playerAccSpeed;
 
-        player.body.velocity.x = game.math.clamp(player.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        player.body.velocity.y = game.math.clamp(player.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
-        player2.body.velocity.x = game.math.clamp(player2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        player2.body.velocity.y = game.math.clamp(player2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+        player_1.body.velocity.x = game.math.clamp(player_1.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
+        player_1.body.velocity.y = game.math.clamp(player_1.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+        player_2.body.velocity.x = game.math.clamp(player_2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
+        player_2.body.velocity.y = game.math.clamp(player_2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
 
-        player.scale.x = (pHspd == 0) + pHspd;
-        player2.scale.x = (p2Hspd == 0) + p2Hspd;
+        //  방향
+        if (pHspd != 0)
+            player_1.scale.x = pHspd;
+        if (p2Hspd != 0)
+            player_2.scale.x = p2Hspd;
     
         //  슛
         if (!kickButton.isDown)
@@ -295,10 +297,10 @@ var Game = {
         if (timerMin == 0 && timerSec == '00'){
             timer.stop();
 
-            player.body.velocity.x = game.math.clamp(player.body.velocity.x, 0, 0);
-            player.body.velocity.y = game.math.clamp(player.body.velocity.y, 0, 0);
-            player2.body.velocity.x = game.math.clamp(player2.body.velocity.x, 0, 0);
-            player2.body.velocity.y = game.math.clamp(player2.body.velocity.y, 0, 0);
+            player_1.body.velocity.x = game.math.clamp(player_1.body.velocity.x, 0, 0);
+            player_1.body.velocity.y = game.math.clamp(player_1.body.velocity.y, 0, 0);
+            player_2.body.velocity.x = game.math.clamp(player_2.body.velocity.x, 0, 0);
+            player_2.body.velocity.y = game.math.clamp(player_2.body.velocity.y, 0, 0);
 
             if (blueScore > orangeScore && isTimeOver == false){
                 var BlueWinText = game.add.text(664, game.world.centerY, "Blue Team Win!", {
@@ -339,22 +341,6 @@ var Game = {
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //#region 외부 함수
-    scoreTextAlpha1: function () {
-        scoreText.alpha = 0.9;
-    },
-    scoreTextAlpha2: function () {
-        scoreText.alpha = 0.8;
-    },
-    scoreTextAlpha3: function () {
-        scoreText.alpha = 0.7;
-    },
-    scoreTextAlpha4: function () {
-        scoreText.alpha = 0.6;
-    },
-    scoreTextAlpha5: function () {
-        scoreText.alpha = 0.5;
-    },
-
     timerSecCnt: function () {
         timerSec--;
         if(timerSec == 0)
