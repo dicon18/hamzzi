@@ -7,7 +7,7 @@ var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
 var playerMaxSpeed = 150;
-var playerShootPower = 3;
+var playerShootPower = 2;
 
 //  볼
 var ballMaxSpeed = 1000;
@@ -30,13 +30,12 @@ var Game = {
         game.physics.p2.restitution = 0.5;
 
         //  배경
-        game.stage.backgroundColor = "#7befb2";
         game.add.image(0, 0, bg_sprite[bg_select]);
 
         //  입력
         this.cursors = game.input.keyboard.createCursorKeys();
-        this.kickButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.K);
-        this.kickButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_5);
+        this.kickButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.kickButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
         //  충돌 그룹
         this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
