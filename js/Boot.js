@@ -5,7 +5,7 @@ const CANVAS_HEIGHT = 720;
 /// 환경 변수
 //  캐릭터
 var chr_numberMax = 7;
-var chr_select_1 = 7, chr_select_2 = 7;
+var chr_select_1 = getRandomInt(0, chr_numberMax), chr_select_2 = getRandomInt(0, chr_numberMax);
 
 var chr_sprite = [];
     chr_sprite[0] = "spr_chr_1";
@@ -18,14 +18,14 @@ var chr_sprite = [];
     chr_sprite[7] = "spr_chr_8";
 
 var chr_name = [];
-    chr_name[0] = "햄찌";
-    chr_name[1] = "앙찌";
-    chr_name[2] = "준찌";
-    chr_name[3] = "사찌";
-    chr_name[4] = "오찌";
-    chr_name[5] = "육찌";
-    chr_name[6] = "칠찌";
-    chr_name[7] = "팔찌";
+    chr_name[0] = "곰찌";
+    chr_name[1] = "공룡찌";
+    chr_name[2] = "햄찌";
+    chr_name[3] = "은찌";
+    chr_name[4] = "넛찌";
+    chr_name[5] = "무지개찌";
+    chr_name[6] = "흰찌";
+    chr_name[7] = "토끼찌";
 
 //  맵
 var bg_numberMax = 2;
@@ -41,8 +41,19 @@ var bg_name = [];
     bg_name[1] = "철수집";
     bg_name[2] = "하수구";
 
+//  입력
+var isAnyKey = false;
+
+//  UTIL
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 var boot = {
     preload: function () {
+        //  해상도
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.setShowAll();
         window.addEventListener('resize', function () {

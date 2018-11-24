@@ -16,7 +16,7 @@
         }
 
         body {
-            overflow: hidden;
+            margin: 0;
         }
     </style>
 </head>
@@ -35,7 +35,7 @@
 
     <!-- 메인 -->
     <script>
-        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.SHOW_ALL, false, false);
+        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.AUTO, false, false);
         game.state.add('boot', boot);
         game.state.add('main', main);
         game.state.add('custom', custom);

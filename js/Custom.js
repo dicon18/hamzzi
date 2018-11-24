@@ -44,8 +44,8 @@ var custom = {
 
         //  맵 스프라이트
         this.sprite_mapIndex = game.add.sprite(900, 300, bg_sprite[bg_select]);
-            this.sprite_mapIndex.scale.set(0.1);
             this.sprite_mapIndex.anchor.set(0.5);
+            this.sprite_mapIndex.scale.set(0.1);
 
         //  게임 시작 버튼
         this.bt_gameStart = game.add.button(CANVAS_WIDTH / 2, 600, 'spr_button', this.gameStart, this);
