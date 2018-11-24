@@ -4,8 +4,6 @@ const CANVAS_HEIGHT = 720;
 
 /// 환경 변수
 //  캐릭터
-var chr_numberMax = 7;
-var chr_select_1 = getRandomInt(0, chr_numberMax), chr_select_2 = getRandomInt(0, chr_numberMax);
 
 var chr_sprite = [];
     chr_sprite[0] = "spr_chr_1";
@@ -16,6 +14,8 @@ var chr_sprite = [];
     chr_sprite[5] = "spr_chr_6";
     chr_sprite[6] = "spr_chr_7";
     chr_sprite[7] = "spr_chr_8";
+
+var chr_select_1 = getRandomInt(0, chr_sprite.length), chr_select_2 = getRandomInt(0, chr_sprite.length);
 
 var chr_name = [];
     chr_name[0] = "곰찌";
@@ -28,18 +28,15 @@ var chr_name = [];
     chr_name[7] = "토끼찌";
 
 //  맵
-var bg_numberMax = 2;
 var bg_select = 0;
 
 var bg_sprite = [];
-    bg_sprite[0] = "bg_inGame_1";
-    bg_sprite[1] = "bg_inGame_2";
-    bg_sprite[2] = "bg_inGame_3";
+    bg_sprite[0] = "bg_tob";
+    bg_sprite[1] = "bg_jan";
 
 var bg_name = [];
-    bg_name[0] = "앞마당";
-    bg_name[1] = "철수집";
-    bg_name[2] = "하수구";
+    bg_name[0] = "햄스터집";
+    bg_name[1] = "운동장";
 
 //  입력
 var isAnyKey = false;
@@ -73,16 +70,21 @@ var boot = {
 
         //  Image
         game.load.image('spr_logo', 'assets/sprites/spr_logo.png');
+        game.load.image('spr_pressAnyKey','assets/sprites/spr_pressAnyKey.png');
         game.load.image('spr_arrow', 'assets/sprites/spr_arrow.png');
         game.load.image('spr_button', 'assets/sprites/spr_button.png');
         game.load.image('spr_ball', 'assets/sprites/spr_ball.png');
         game.load.image('spr_box', 'assets/sprites/spr_transbox_5x5.png');
 
         //  Background
+        game.load.image('bg_background','assets/bg/bg_background.png');
         game.load.image('spr_tutorial_1', 'assets/bg/bg_tutorial_1.png');
+        game.load.image('bg_line', 'assets/bg/bg_line.png');
         game.load.image('bg_inGame_1', 'assets/bg/bg_inGame_1.png');
         game.load.image('bg_inGame_2', 'assets/bg/bg_inGame_2.png');
         game.load.image('bg_inGame_3', 'assets/bg/bg_inGame_3.png');
+        game.load.image('bg_tob','assets/bg/bg_tob.png');
+        game.load.image('bg_jan','assets/bg/bg_jan.png');
         //  Tile
         //TODO
 

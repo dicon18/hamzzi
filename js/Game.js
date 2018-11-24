@@ -2,7 +2,9 @@
 //#region 글로벌 변수
 //  플레이어
 var playerName_1 = null;
+var onPlayerName_1;
 var playerName_2 = null;
+var onPlayerName_2;
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
@@ -32,6 +34,7 @@ var Game = {
         //  배경
         game.stage.backgroundColor = "#7befb2";
         game.add.image(0, 0, bg_sprite[bg_select]);
+        game.add.image(0,0, 'bg_line');
 
         //  입력
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -175,7 +178,7 @@ var Game = {
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어 설정
         //  플레이어1
-        this.player_1 = game.add.sprite(264, game.world.centerY, chr_sprite[chr_select_1]);
+        this.player_1 = game.add.sprite(game.world.centerX - 400, game.world.centerY, chr_sprite[chr_select_1]);
         this.player_1.anchor.set(0.5);
         this.player_1.scale.set(playerScale_1);
 
@@ -195,8 +198,13 @@ var Game = {
         this.playerHspd_1 = 1;
         this.isKick_1 = false;
 
+        onPlayerName_1 = game.add.text(this.player_1.body.x,this.player_1.body.y-30,playerName_1,{
+            font: '20px'
+        });
+        onPlayerName_1.anchor.set(0.5);
+
         //  플레이어2
-        this.player_2 = game.add.sprite(1064, game.world.centerY, chr_sprite[chr_select_2]);
+        this.player_2 = game.add.sprite(game.world.centerX + 400, game.world.centerY, chr_sprite[chr_select_2]);
         this.player_2.anchor.set(0.5);
         this.player_2.scale.set(playerScale_2);
 
@@ -215,6 +223,12 @@ var Game = {
 
         this.playerHspd_2 = -1;
         this.isKick_2 = false;
+
+        onPlayerName_2 = game.add.text(this.player_2.body.x,this.player_2.body.y-30,playerName_2,{
+            font: '20px'
+        });
+        onPlayerName_2.anchor.set(0.5);
+
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -278,6 +292,12 @@ var Game = {
             this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
             this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
         }
+
+        onPlayerName_1.x = this.player_1.x;
+        onPlayerName_1.y = this.player_1.y-30;
+
+        onPlayerName_2.x = this.player_2.x;
+        onPlayerName_2.y = this.player_2.y-30;
 
         //  애니메이션 설정
         if (Math.max(Math.abs(this.player_1.body.velocity.x), Math.abs(this.player_1.body.velocity.y)) < 10)
@@ -346,24 +366,21 @@ var Game = {
             if (blueScore > orangeScore) {
                 this.BlueWinText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "Blue Team Win!", {
                     font: "bold 100px BMJUA",
-                    fill: "#4834d4",
-                    backgroundColor: "#ffffff"
+                    fill: "#4834d4"
                 });
                     this.BlueWinText.anchor.set(0.5);
             }
             if (blueScore < orangeScore) {
                 this.OrangeWinText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "Orange Team Win!", {
                     font: "bold 100px BMJUA",
-                    fill: "#e67e22",
-                    backgroundColor: "#ffffff"
+                    fill: "#e67e22"
                 });
                     this.OrangeWinText.anchor.set(0.5);
             }
             if (blueScore == orangeScore) {
                 this.drawText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "Draw!", {
                     font: "bold 100px BMJUA",
-                    fill: "#000000",
-                    backgroundColor: "#ffffff"
+                    fill: "#000000"
                 });
                     this.drawText.anchor.set(0.5);
             }
