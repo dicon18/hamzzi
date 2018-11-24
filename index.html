@@ -11,13 +11,12 @@
             src: url(assets/font/BMJUA_ttf.ttf) format('truetype');
         }
 
-        h1 {
-            text-align: center;
-            font-family: 'BMJUA';
-        }
-
         canvas {
             margin: 0 auto;
+        }
+
+        body {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -36,7 +35,7 @@
 
     <!-- 메인 -->
     <script>
-        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.AUTO);
+        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.SHOW_ALL, false, false);
         game.state.add('boot', boot);
         game.state.add('main', main);
         game.state.add('custom', custom);

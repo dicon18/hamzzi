@@ -32,9 +32,9 @@ var bg_numberMax = 2;
 var bg_select = 0;
 
 var bg_sprite = [];
-    bg_sprite[0] = "bgIndex1";
-    bg_sprite[1] = "bgIndex2";
-    bg_sprite[2] = "bgIndex3";
+    bg_sprite[0] = "bg_inGame_1";
+    bg_sprite[1] = "bg_inGame_2";
+    bg_sprite[2] = "bg_inGame_3";
 
 var bg_name = [];
     bg_name[0] = "앞마당";
@@ -43,14 +43,21 @@ var bg_name = [];
 
 var boot = {
     preload: function () {
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.setShowAll();
+        window.addEventListener('resize', function () {
+            this.game.scale.refresh();
+        });
+        this.game.scale.refresh();
+  
         //  Animation
-        game.load.spritesheet('spr_chr_1', 'assets/anim/spr_chr_1.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_2', 'assets/anim/spr_chr_2.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_3', 'assets/anim/spr_chr_3.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_4', 'assets/anim/spr_chr_4.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_5', 'assets/anim/spr_chr_5.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_6', 'assets/anim/spr_chr_6.png', 20, 24, 9);
-        game.load.spritesheet('spr_chr_7', 'assets/anim/spr_chr_7.png', 20, 24, 9);
+        game.load.spritesheet('spr_chr_1', 'assets/anim/spr_chr_1.png', 20, 20, 9);
+        game.load.spritesheet('spr_chr_2', 'assets/anim/spr_chr_2.png', 25, 19, 9);
+        game.load.spritesheet('spr_chr_3', 'assets/anim/spr_chr_3.png', 20, 20, 9);
+        game.load.spritesheet('spr_chr_4', 'assets/anim/spr_chr_4.png', 20, 20, 9);
+        game.load.spritesheet('spr_chr_5', 'assets/anim/spr_chr_5.png', 20, 20, 9);
+        game.load.spritesheet('spr_chr_6', 'assets/anim/spr_chr_6.png', 20, 20, 9);
+        game.load.spritesheet('spr_chr_7', 'assets/anim/spr_chr_7.png', 20, 20, 9);
         game.load.spritesheet('spr_chr_8', 'assets/anim/spr_chr_8.png', 20, 24, 9);
 
         //  Image
@@ -62,7 +69,11 @@ var boot = {
 
         //  Background
         game.load.image('spr_tutorial_1', 'assets/bg/bg_tutorial_1.png');
-        game.load.image('bg_field', 'assets/bg/bg_field.png');
+        game.load.image('bg_inGame_1', 'assets/bg/bg_inGame_1.png');
+        game.load.image('bg_inGame_2', 'assets/bg/bg_inGame_2.png');
+        game.load.image('bg_inGame_3', 'assets/bg/bg_inGame_3.png');
+        //  Tile
+        //TODO
 
         //  Sound
         game.load.audio('bgm_inGame', 'assets/sound/bgm/bgm_inGame.mp3');

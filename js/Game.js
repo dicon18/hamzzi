@@ -35,7 +35,7 @@ var Game = {
 
         //  배경
         game.stage.backgroundColor = "#7befb2";
-        game.add.image(0, 0, 'bg_field');
+        game.add.image(0, 0, bg_sprite[bg_select]);
 
         //  충돌 그룹
         var playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -225,7 +225,7 @@ var Game = {
             fill: "#000000",
             align: "center"
         });
-        this.scoreText.anchor.setTo(0.5);
+        this.scoreText.anchor.set(0.5);
 
         this.timerText = game.add.text(664, 60, timerMin + " : " + timerSec, {
             font: "30px BMJUA",
@@ -233,7 +233,7 @@ var Game = {
             backgroundColor: "#ffffff",
             align: "center"
         });
-        this.timerText.anchor.setTo(0.5);
+        this.timerText.anchor.set(0.5);
 
         this.timer = game.time.create(false);
         this.timer.loop(1000, this.timerSecCnt,this);
@@ -288,6 +288,7 @@ var Game = {
         //#region 볼
         this.ball.body.velocity.x = game.math.clamp(this.ball.body.velocity.x, -ballMaxSpeed, ballMaxSpeed);
         this.ball.body.velocity.y = game.math.clamp(this.ball.body.velocity.y, -ballMaxSpeed, ballMaxSpeed);
+        this.ball.body.angle += (Math.abs(this.ball.body.velocity.x) > Math.abs(this.ball.body.velocity.y) ? this.ball.body.velocity.x : this.ball.body.velocity.y) / 20;
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
