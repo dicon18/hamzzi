@@ -16,7 +16,7 @@ var ballMaxSpeed = 1000;
 var ballScale = 1.5;
 
 //  환경
-var timerSec = '00';
+var timerSec = "00";
 var timerMin = 3;
 var orangeScore = 0;
 var blueScore = 0;
@@ -24,8 +24,11 @@ var blueScore = 0;
 
 var Game = {
     create: function() {
+        //  씬 전환 효과
+        this.camera.flash("#000000");
+        
         //////////////////////////////////////////////////////////////////////////////////////////
-        //#region 예외처리
+        //#region 예외 초기화
         if (playerName_1 == "") {
             playerName_1 = "플레이어1";
         }
@@ -36,9 +39,6 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 게임 설정
-        //  씬 전환 효과
-        this.camera.flash('#000000');
-
         //  물리
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
@@ -69,22 +69,24 @@ var Game = {
             fill: "#000000",
         });
             this.text_ready.anchor.set(0.5);
+            this.text_ready.stroke = "#ffffff";
+            this.text_ready.strokeThickness = 6;
 
         //  사운드
-        // bgm_inGame = game.add.audio('bgm_inGame');
+        // bgm_inGame = game.add.audio("bgm_inGame");
         // bgm_inGame.loopFull(1);
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 충돌 박스 생성
         var boxes = game.add.group();
-        boxes.enableBody = true;
-        boxes.physicsBodyType = Phaser.Physics.P2JS;
+            boxes.enableBody = true;
+            boxes.physicsBodyType = Phaser.Physics.P2JS;
 
         //  라인
         for (var i = 0; i < 228; i++) {
             //  윗쪽 라인 박스
-            this.box = boxes.create(i * 5 + 68, 40, 'spr_box');
+            this.box = boxes.create(i * 5 + 68, 40, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -92,7 +94,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             //  아래쪽 라인 박스
-            this.box = boxes.create(i * 5 + 68, 680, 'spr_box');
+            this.box = boxes.create(i * 5 + 68, 680, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -101,7 +103,7 @@ var Game = {
         }
         for (var i = 0; i < 43; i++) {
             //  왼쪽 라인 박스
-            this.box = boxes.create(67, i * 5 + 40, 'spr_box');
+            this.box = boxes.create(67, i * 5 + 40, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -109,7 +111,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             //  오른쪽 라인 박스
-            this.box = boxes.create(1280 - 70, i * 5 + 40, 'spr_box');
+            this.box = boxes.create(1280 - 70, i * 5 + 40, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -118,7 +120,7 @@ var Game = {
         }
         for (var i = 0; i < 44; i++) {
             //  왼쪽 라인 박스
-            this.box = boxes.create(67, i * 5 + 465, 'spr_box');
+            this.box = boxes.create(67, i * 5 + 465, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -126,7 +128,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             //  오른쪽 라인 박스
-            this.box = boxes.create(1280 - 70, i * 5 + 465, 'spr_box');
+            this.box = boxes.create(1280 - 70, i * 5 + 465, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -137,14 +139,14 @@ var Game = {
         //  골대
         for (var i = 0; i < 14; i++) {
             //  윗쪽 라인 박스
-            this.box = boxes.create(i * 5 + 3, 250, 'spr_box');
+            this.box = boxes.create(i * 5 + 3, 250, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
             this.box.body.setCollisionGroup(this.boxCollisionGroup);
             this.box.body.collides(this.ballCollisionGroup);
 
-            this.box = boxes.create(i * 5 + 1270 - 60, 250, 'spr_box');
+            this.box = boxes.create(i * 5 + 1270 - 60, 250, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -152,14 +154,14 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             //  아래쪽 라인 박스
-            this.box = boxes.create(i * 5 + 3, 465, 'spr_box');
+            this.box = boxes.create(i * 5 + 3, 465, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
             this.box.body.setCollisionGroup(this.boxCollisionGroup);
             this.box.body.collides(this.ballCollisionGroup);
 
-            this.box = boxes.create(i * 5 + 1270 - 60, 465, 'spr_box');
+            this.box = boxes.create(i * 5 + 1270 - 60, 465, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -168,7 +170,7 @@ var Game = {
         }
         for (var i = 0; i < 44; i++) {
             //  왼쪽 라인 박스
-            this.box = boxes.create(4, i * 5 + 250, 'spr_box');
+            this.box = boxes.create(4, i * 5 + 250, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -176,7 +178,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             //  오른쪽 라인 박스
-            this.box = boxes.create(1280 - 4, i * 5 + 250, 'spr_box');
+            this.box = boxes.create(1280 - 4, i * 5 + 250, "spr_box");
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -190,13 +192,13 @@ var Game = {
         //  플레이어1
         this.player_1 = game.add.sprite(game.world.centerX - 400, game.world.centerY, chr_sprite[chr_select_1]);
         this.player_1.anchor.set(0.5);
-        this.player_1.scale.set(playerScale_1);
 
         game.physics.p2.enable(this.player_1, false);
         this.player_1.body.mass = 5;
-        this.player_1.body.setCircle(this.player_1.width / 2);
         this.player_1.body.fixedRotation = true;
         this.player_1.body.damping = 0.75;
+        this.player_1.scale.set(playerScale_1);
+        this.player_1.body.setCircle(this.player_1.width / 2);
         this.player_1.body.setCollisionGroup(this.playerCollisionGroup);
         this.player_1.body.collides([this.ballCollisionGroup, this.playerCollisionGroup]);
 
@@ -206,10 +208,12 @@ var Game = {
         this.player_1.animations.add("lose", [7,8], 10 ,true);
 
         this.onPlayerName_1 = game.add.text(this.player_1.body.x, this.player_1.body.y - 30, playerName_1, {
-            font: 'bold 20px BMJUA',
+            font: "bold 20px BMJUA",
             fill: "#4834d4"
         });
             this.onPlayerName_1.anchor.set(0.5);
+            this.onPlayerName_1.stroke = "#ffffff";
+            this.onPlayerName_1.strokeThickness = 3;
 
         this.playerHspd_1 = 1;
         this.isKick_1 = false;
@@ -217,13 +221,13 @@ var Game = {
         //  플레이어2
         this.player_2 = game.add.sprite(game.world.centerX + 400, game.world.centerY, chr_sprite[chr_select_2]);
         this.player_2.anchor.set(0.5);
-        this.player_2.scale.set(playerScale_2);
 
         game.physics.p2.enable(this.player_2, false);
         this.player_2.body.mass = 5;
-        this.player_2.body.setCircle(this.player_2.width / 2);
         this.player_2.body.fixedRotation = true;
         this.player_2.body.damping = 0.75;
+        this.player_2.scale.set(playerScale_2);
+        this.player_2.body.setCircle(this.player_2.width / 2);
         this.player_2.body.setCollisionGroup(this.playerCollisionGroup);
         this.player_2.body.collides([this.ballCollisionGroup, this.playerCollisionGroup]);
 
@@ -233,10 +237,12 @@ var Game = {
         this.player_2.animations.add("lose", [7,8], 10 ,true);
 
         this.onPlayerName_2 = game.add.text(this.player_2.body.x, this.player_2.body.y - 30, playerName_2, {
-            font: 'bold 20px BMJUA',
+            font: "bold 20px BMJUA",
             fill: "#e67e22"
         });
             this.onPlayerName_2.anchor.set(0.5);
+            this.onPlayerName_2.stroke = "#ffffff";
+            this.onPlayerName_2.strokeThickness = 3;
 
         this.playerHspd_2 = -1;
         this.isKick_2 = false;
@@ -244,19 +250,23 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 공 설정
-        this.ball = game.add.sprite(CANVAS_WIDTH / 2, game.world.centerY, 'spr_ball');
+        this.ball = game.add.sprite(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "spr_ball");
         this.ball.anchor.set(0.5);
-        this.ball.scale.set(ballScale);
 
         game.physics.p2.enable(this.ball, false);
         this.ball.body.mass = 1;
         this.ball.body.damping = 0.7;
-        this.ball.body.setCircle(this.ball.width / 2);
         this.ball.body.fixedRotation = false;
+        this.ball.scale.set(ballScale);
+        this.ball.body.setCircle(this.ball.width / 2);
         this.ball.body.setCollisionGroup(this.ballCollisionGroup);
         this.ball.body.collides([this.playerCollisionGroup, this.boxCollisionGroup]);
         this.ball.body.createBodyCallback(this.player_1, this.kick, this);
         this.ball.body.createBodyCallback(this.player_2, this.kick2, this);
+
+        //  이펙트 초기화
+        this.ball.scale.set(ballScale * 5);
+        this.ball.alpha = 0;
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -267,6 +277,8 @@ var Game = {
             fill: "#000000"
         });
             this.timerText.anchor.set(0.5);
+            this.timerText.stroke = "#ffffff";
+            this.timerText.strokeThickness = 3;
 
         this.scoreText = game.add.text(CANVAS_WIDTH / 2, 90, blueScore + " : " + orangeScore, {
             font: "30px BMJUA",
@@ -276,6 +288,7 @@ var Game = {
             this.scoreText.addColor("#4834d4", 0);
             this.scoreText.addColor("#000000", 2);
             this.scoreText.addColor("#e67e22", 4);
+            this.scoreText.stroke = "#ffffff";
 
         this.timer = game.time.create(false);
         this.timer.loop(1000, this.timerSecCnt,this);
@@ -286,8 +299,8 @@ var Game = {
     update: function() {
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어
-        //  이동
-        if (this.isGameStart) {
+        if (this.isGameStart && this.isTimeOver == false && this.isGoal == false) {
+            //  이동
             this.playerHspd_1 = (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown - game.input.keyboard.addKey(Phaser.Keyboard.A).isDown);
                 this.player_1.body.velocity.x += this.playerHspd_1 * playerAccSpeed;
             this.playerVspd_1 = (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown - game.input.keyboard.addKey(Phaser.Keyboard.W).isDown);
@@ -297,6 +310,17 @@ var Game = {
                 this.player_2.body.velocity.x += this.playerHspd_2 * playerAccSpeed;
             this.playerVspd_2 = this.cursors.down.isDown - this.cursors.up.isDown;
                 this.player_2.body.velocity.y += this.playerVspd_2 * playerAccSpeed;
+
+            //  애니메이션 설정
+            if (Math.max(Math.abs(this.player_1.body.velocity.x), Math.abs(this.player_1.body.velocity.y)) < 10)
+                this.player_1.animations.play("stand");
+            else
+                this.player_1.animations.play("walk");
+
+            if (Math.max(Math.abs(this.player_2.body.velocity.x), Math.abs(this.player_2.body.velocity.y)) < 10)
+                this.player_2.animations.play("stand");
+            else
+                this.player_2.animations.play("walk");
         }
 
         //  속도 제한
@@ -305,21 +329,11 @@ var Game = {
         this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
         this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
 
+        //  이름표
         this.onPlayerName_1.x = this.player_1.x;
         this.onPlayerName_1.y = this.player_1.y - 30;
         this.onPlayerName_2.x = this.player_2.x;
         this.onPlayerName_2.y = this.player_2.y - 30;
-
-        //  애니메이션 설정
-        if (Math.max(Math.abs(this.player_1.body.velocity.x), Math.abs(this.player_1.body.velocity.y)) < 10)
-            this.player_1.animations.play("stand");
-        else
-            this.player_1.animations.play("walk");
-
-        if (Math.max(Math.abs(this.player_2.body.velocity.x), Math.abs(this.player_2.body.velocity.y)) < 10)
-            this.player_2.animations.play("stand");
-        else
-            this.player_2.animations.play("walk");
 
         //  방향 설정
         if (this.playerHspd_1 != 0)
@@ -336,8 +350,26 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////            
         //#region 볼
+        //  시작 이펙트
+        if (this.isGameStart) {
+            if (this.ball.scale.x > ballScale) {
+                if (this.ball.scale.x + 1 / 10 > ballScale) {
+                    this.ball.scale.x -= 1 / 10;
+                    this.ball.scale.y -= 1 / 10;
+                }
+                else {
+                    this.ball.scale.x = ballScale;
+                    this.ball.scale.y = ballScale;
+                }
+            }
+            this.ball.alpha = Math.min(1, ballScale / this.ball.scale.x);
+        }
+
+        //  속도 제한
         this.ball.body.velocity.x = game.math.clamp(this.ball.body.velocity.x, -ballMaxSpeed, ballMaxSpeed);
         this.ball.body.velocity.y = game.math.clamp(this.ball.body.velocity.y, -ballMaxSpeed, ballMaxSpeed);
+
+        //  각도 설정
         this.ball.body.angle += (Math.abs(this.ball.body.velocity.x) > Math.abs(this.ball.body.velocity.y) ? this.ball.body.velocity.x : this.ball.body.velocity.y) / 20;
         //#endregion
 
@@ -346,18 +378,22 @@ var Game = {
         if (this.isGoal == false && this.isTimeOver == false) {
             if (this.ball.body.x >= 1232.9 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 blueScore++;
-                this.isGoal = true;
-                this.scoreText.alpha = 1;
-                this.timer.stop();
+                this.player_1.animations.play("win");
+                this.player_2.animations.play("lose");
                 this.blueGoalText();
-                game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
+                this.isGoal = true;
+                this.timer.stop();
+                this.scoreText.stroke = "#ffffff";
+                this.scoreText.strokeThickness = 3;
+                game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);           
             }
             if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 orangeScore++;
-                this.isGoal = true;
-                this.scoreText.alpha = 1;
-                this.timer.stop();
+                this.player_1.animations.play("lose");
+                this.player_2.animations.play("win");
                 this.orangeGoalText();
+                this.isGoal = true;
+                this.timer.stop();
                 game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
             }
         }
@@ -365,35 +401,44 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 경기 종료
-        if (timerMin == 0 && timerSec == '00' && this.isTimeOver == false) {
-            this.timer.stop();
-            this.isTimeOver = true;
-            this.player_1.body.velocity.x = game.math.clamp(this.player_1.body.velocity.x, 0, 0);
-            this.player_1.body.velocity.y = game.math.clamp(this.player_1.body.velocity.y, 0, 0);
-            this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, 0, 0);
-            this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, 0, 0);
-
+        if (timerMin == 0 && timerSec == "00" && this.isTimeOver == false) {
             if (blueScore > orangeScore) {
                 this.BlueWinText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, playerName_1 + "팀 승리", {
-                    font: "bold 100px BMJUA",
+                    font: "100px BMJUA",
                     fill: "#4834d4"
                 });
                     this.BlueWinText.anchor.set(0.5);
+                    this.scoreText.stroke = "#ffffff";
+                    this.scoreText.strokeThickness = 3;
+                this.player_1.animations.play("win");
+                this.player_2.animations.play("lose");
             }
             if (blueScore < orangeScore) {
                 this.OrangeWinText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, playerName_2 + "팀 승리", {
-                    font: "bold 100px BMJUA",
+                    font: "100px BMJUA",
                     fill: "#e67e22"
                 });
                     this.OrangeWinText.anchor.set(0.5);
+                    this.scoreText.stroke = "#ffffff";
+                    this.scoreText.strokeThickness = 3;
+                this.player_1.animations.play("lose");
+                this.player_2.animations.play("win");
             }
             if (blueScore == orangeScore) {
                 this.drawText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "무승부", {
-                    font: "bold 100px BMJUA",
+                    font: "100px BMJUA",
                     fill: "#000000"
                 });
+                    this.scoreText.stroke = "#ffffff";
+                    this.scoreText.strokeThickness = 3;
                     this.drawText.anchor.set(0.5);
+                this.player_1.animations.play("stand");
+                this.player_2.animations.play("stand");
             }
+            this.timer.stop();
+            this.isTimeOver = true;
+
+            game.time.events.add(Phaser.Timer.SECOND * 5, this.resetGame);
         }
         //#endregion
 
@@ -415,7 +460,7 @@ var Game = {
         if (Game.isGameStart) {
             timerSec--;
             if(timerSec == 0)
-                timerSec = '00';
+                timerSec = "00";
             if(timerSec < 0){
                 timerMin--;
                 timerSec = 59;
@@ -440,24 +485,36 @@ var Game = {
 
     orangeGoalText: function() {
         var style = {
-            font: "bold 100px BMJUA",
+            font: "100px BMJUA",
             fill: "#e67e22",
             align: "center"
         };
-        this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_2 + "팀 득점!", style);
+        this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_2 + "팀 득점", style);
         this.text.anchor.set(0.5);
+        this.text.stroke = "#ffffff";
+        this.text.strokeThickness = 3;
     }, 
     blueGoalText: function() {
         var style = {
-            font: "bold 100px BMJUA",
+            font: "100px BMJUA",
             fill: "#4834d4",
             align: "center"
         };
-        this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_1 + "팀 득점!", style);
+        this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_1 + "팀 득점", style);
         this.text.anchor.set(0.5);
+        this.text.stroke = "#ffffff";
+        this.text.strokeThickness = 3;
     },
 
     restartGame: function() {
+        game.state.restart();
+    },
+
+    resetGame: function() {
+        timerSec = "00";
+        timerMin = 3;
+        orangeScore = 0;
+        blueScore = 0;
         game.state.restart();
     }
     //#endregion

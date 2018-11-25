@@ -2,19 +2,19 @@
 var main = {
     create: function() {
         //  씬 전환 효과
-        this.camera.flash('#000000');
+        this.camera.flash("#000000");
 
         //  배경
-        this.bg_loby = this.game.add.tileSprite(0, CANVAS_HEIGHT - this.game.cache.getImage('bg_loby').height, 
-            CANVAS_WIDTH, this.game.cache.getImage('bg_loby').height, 'bg_loby');
+        this.bg_loby = this.game.add.tileSprite(0, CANVAS_HEIGHT - this.game.cache.getImage("bg_loby").height, 
+            CANVAS_WIDTH, this.game.cache.getImage("bg_loby").height, "bg_loby");
 
         //  로고
-        this.logo = game.add.image(CANVAS_WIDTH / 2, 130,'spr_logo');
+        this.logo = game.add.image(CANVAS_WIDTH / 2, 130,"spr_logo");
             this.logo.anchor.set(0.5);
             this.logo.scale.set(0.6);
 
         //  도움말
-        this.pressAnyKey = game.add.image(CANVAS_WIDTH / 2, 550,'spr_pressAnyKey');
+        this.pressAnyKey = game.add.image(CANVAS_WIDTH / 2, 550,"spr_pressAnyKey");
             this.pressAnyKey.anchor.set(0.5);
             this.pressAnyKey.scale.set(0.6);
             this.pressAnyKey.alpha = 1;
@@ -26,11 +26,11 @@ var main = {
         })
             this.text_credit.anchor.set(0.5);
 
-        //  게임시작 콜백
+        //  씬 이동 콜백
         isAnyKey = false;
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
-                game.state.start('custom');
+                game.state.start("custom");
                 isAnyKey = true;
             }
         }

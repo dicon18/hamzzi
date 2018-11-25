@@ -7,8 +7,8 @@
     <link rel="shortcut icon" href="assets/sprites/spr_ball.png">
     <style>
         @font-face {
-            font-family: 'BMJUA';
-            src: url(assets/font/BMJUA_ttf.ttf) format('truetype');
+            font-family: "BMJUA";
+            src: url(assets/font/BMJUA_ttf.ttf) format("truetype");
         }
 
         canvas {
@@ -35,13 +35,13 @@
 
     <!-- 메인 -->
     <script>
-        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.AUTO, 'canvas_game', this, false, false);
-        game.state.add('boot', boot);
-        game.state.add('main', main);
-        game.state.add('custom', custom);
-        game.state.add('tutorial', tutorial);
-        game.state.add('Game', Game);
-        game.state.start('boot');
+        var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.AUTO, "canvas_game", this, false, false);
+        game.state.add("boot", boot);
+        game.state.add("main", main);
+        game.state.add("custom", custom);
+        game.state.add("tutorial", tutorial);
+        game.state.add("Game", Game);
+        game.state.start("boot");
     </script>
 </body>
 

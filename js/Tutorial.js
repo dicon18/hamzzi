@@ -1,14 +1,17 @@
 //  게임 설명
 var tutorial = {
     create: function () {
-        this.camera.flash('#000000');
-        
-        game.add.image(0, 0, 'spr_tutorial_1');
+        //  씬 전환 효과
+        this.camera.flash("#000000");
 
+        //  배경
+        game.add.image(0, 0, "spr_tutorial_1");
+
+        //  씬 이동 콜백
         isAnyKey = false;
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
-                game.state.start('Game');
+                game.state.start("Game");
                 isAnyKey = true;
             }
         }

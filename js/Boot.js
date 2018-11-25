@@ -13,7 +13,7 @@ var chr_sprite = [];
     chr_sprite[5] = "spr_chr_6";
     chr_sprite[6] = "spr_chr_7";
     chr_sprite[7] = "spr_chr_8";
-    
+
 var chr_select_1 = getRandomInt(0, chr_sprite.length - 1);
 var chr_select_2 = getRandomInt(0, chr_sprite.length - 1);
 
@@ -35,8 +35,8 @@ var bg_sprite = [];
     bg_sprite[1] = "bg_inGame_2";
 
 var bg_name = [];
-    bg_name[0] = "햄스터집";
-    bg_name[1] = "운동장";
+    bg_name[0] = "운동장";
+    bg_name[1] = "햄스터집";
 
 //  기타
 var isAnyKey = false;
@@ -50,48 +50,55 @@ function getRandomInt(min, max) {
 
 var boot = {
     preload: function () {
+        //  환경설정
+        game.stage.disableVisibilityChange = true;
+
         //  해상도
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.setShowAll();
-        window.addEventListener('resize', function () {
+        window.addEventListener("resize", function () {
             this.game.scale.refresh();
         });
         this.game.scale.refresh();
   
         //  Animation
-        game.load.spritesheet('spr_chr_1', 'assets/anim/spr_chr_1.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_2', 'assets/anim/spr_chr_2.png', 25, 19, 9);
-        game.load.spritesheet('spr_chr_3', 'assets/anim/spr_chr_3.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_4', 'assets/anim/spr_chr_4.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_5', 'assets/anim/spr_chr_5.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_6', 'assets/anim/spr_chr_6.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_7', 'assets/anim/spr_chr_7.png', 20, 20, 9);
-        game.load.spritesheet('spr_chr_8', 'assets/anim/spr_chr_8.png', 20, 24, 9);
+        game.load.spritesheet("spr_chr_1", "assets/anim/spr_chr_1.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_2", "assets/anim/spr_chr_2.png", 25, 19, 9);
+        game.load.spritesheet("spr_chr_3", "assets/anim/spr_chr_3.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_4", "assets/anim/spr_chr_4.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_5", "assets/anim/spr_chr_5.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_6", "assets/anim/spr_chr_6.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_7", "assets/anim/spr_chr_7.png", 20, 20, 9);
+        game.load.spritesheet("spr_chr_8", "assets/anim/spr_chr_8.png", 20, 24, 9);
 
         //  Image
-        game.load.image('spr_logo', 'assets/sprites/spr_logo.png');
-        game.load.image('spr_pressAnyKey','assets/sprites/spr_pressAnyKey.png');
-        game.load.image('spr_arrow', 'assets/sprites/spr_arrow.png');
-        game.load.image('spr_button', 'assets/sprites/spr_button.png');
-        game.load.image('spr_ball', 'assets/sprites/spr_ball.png');
-        game.load.image('spr_box', 'assets/sprites/spr_transbox_5x5.png');
+        game.load.image("spr_logo", "assets/sprites/spr_logo.png");
+        game.load.image("spr_pressAnyKey","assets/sprites/spr_pressAnyKey.png");
+        game.load.image("spr_arrow", "assets/sprites/spr_arrow.png");
+        game.load.image("spr_button", "assets/sprites/spr_button.png");
+        game.load.image("spr_ball", "assets/sprites/spr_ball.png");
+        game.load.image("spr_box", "assets/sprites/spr_transbox_5x5.png");
 
         //  Background
-        game.load.image('bg_loby','assets/bg/bg_loby.png');
-        game.load.image('spr_tutorial_1', 'assets/bg/bg_tutorial_1.png');
-        game.load.image('bg_inGame_1', 'assets/bg/bg_inGame_1.png');
-        game.load.image('bg_inGame_2', 'assets/bg/bg_inGame_2.png');
-        //  Tile
-        //TODO
+        game.load.image("bg_loby","assets/bg/bg_loby.png");
+        game.load.image("spr_tutorial_1", "assets/bg/bg_tutorial_1.png");
+        game.load.image("bg_inGame_1", "assets/bg/bg_inGame_2.png");
+        game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
+        // game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
 
         //  Sound
-        game.load.audio('bgm_inGame', 'assets/sound/bgm/bgm_inGame.mp3');
+        game.load.audio("bgm_inGame", "assets/sound/bgm/bgm_inGame.mp3");
 
         //  Plugin
         game.plugins.add(PhaserInput.Plugin);
+
+        //  Font
+        this.font_cache = game.add.text(0, 0, "", {
+            font: "1px BMJUA"
+        });
     },
 
     create: function () {
-        game.state.start('main');
+        game.state.start("main");
     }
 }
