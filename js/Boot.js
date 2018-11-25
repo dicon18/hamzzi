@@ -4,7 +4,6 @@ const CANVAS_HEIGHT = 720;
 
 /// 환경 변수
 //  캐릭터
-
 var chr_sprite = [];
     chr_sprite[0] = "spr_chr_1";
     chr_sprite[1] = "spr_chr_2";
@@ -14,8 +13,9 @@ var chr_sprite = [];
     chr_sprite[5] = "spr_chr_6";
     chr_sprite[6] = "spr_chr_7";
     chr_sprite[7] = "spr_chr_8";
-
-var chr_select_1 = getRandomInt(0, chr_sprite.length), chr_select_2 = getRandomInt(0, chr_sprite.length);
+    
+var chr_select_1 = getRandomInt(0, chr_sprite.length - 1);
+var chr_select_2 = getRandomInt(0, chr_sprite.length - 1);
 
 var chr_name = [];
     chr_name[0] = "곰찌";
@@ -31,14 +31,14 @@ var chr_name = [];
 var bg_select = 0;
 
 var bg_sprite = [];
-    bg_sprite[0] = "bg_tob";
-    bg_sprite[1] = "bg_jan";
+    bg_sprite[0] = "bg_inGame_1";
+    bg_sprite[1] = "bg_inGame_2";
 
 var bg_name = [];
     bg_name[0] = "햄스터집";
     bg_name[1] = "운동장";
 
-//  입력
+//  기타
 var isAnyKey = false;
 
 //  UTIL
@@ -77,14 +77,10 @@ var boot = {
         game.load.image('spr_box', 'assets/sprites/spr_transbox_5x5.png');
 
         //  Background
-        game.load.image('bg_background','assets/bg/bg_background.png');
+        game.load.image('bg_loby','assets/bg/bg_loby.png');
         game.load.image('spr_tutorial_1', 'assets/bg/bg_tutorial_1.png');
-        game.load.image('bg_line', 'assets/bg/bg_line.png');
         game.load.image('bg_inGame_1', 'assets/bg/bg_inGame_1.png');
         game.load.image('bg_inGame_2', 'assets/bg/bg_inGame_2.png');
-        game.load.image('bg_inGame_3', 'assets/bg/bg_inGame_3.png');
-        game.load.image('bg_tob','assets/bg/bg_tob.png');
-        game.load.image('bg_jan','assets/bg/bg_jan.png');
         //  Tile
         //TODO
 
