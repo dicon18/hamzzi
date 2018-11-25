@@ -11,6 +11,8 @@ var tutorial = {
         isAnyKey = false;
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
+                ef_button = game.add.audio("ef_button");
+                ef_button.play();
                 game.state.start("Game");
                 isAnyKey = true;
             }

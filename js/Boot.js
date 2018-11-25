@@ -87,6 +87,11 @@ var boot = {
 
         //  Sound
         game.load.audio("bgm_inGame", "assets/sound/bgm/bensound-littleidea.mp3");
+        game.load.audio("ef_cheer","assets/sound/effect/ef_cheer.wav");
+        game.load.audio("ef_kick","assets/sound/effect/ef_kick.wav");
+        game.load.audio("ef_button","assets/sound/effect/ef_button.wav");
+        game.load.audio("ef_startWhistle","assets/sound/effect/ef_startWhistle.wav");
+        game.load.audio("ef_endWhistle","assets/sound/effect/ef_endWhistle.wav");
 
         //  Plugin
         game.plugins.add(PhaserInput.Plugin);

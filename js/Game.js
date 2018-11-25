@@ -16,10 +16,16 @@ var ballMaxSpeed = 1000;
 var ballScale = 1.5;
 
 //  환경
-var timerSec = "10";
-var timerMin = 0;
+var timerSec = "00";
+var timerMin = 3;
 var orangeScore = 0;
 var blueScore = 0;
+
+// 효과음
+var ef_cheer;
+var ef_kick;
+var ef_startWhistle;
+var ef_endWhistle;
 //#endregion
 
 var Game = {
@@ -72,8 +78,6 @@ var Game = {
             this.text_ready.stroke = "#ffffff";
             this.text_ready.strokeThickness = 6;
 
-        //  BGM
-        bgm_inGame.stop();
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +299,14 @@ var Game = {
         this.timer.start();
         //#endregion
 
+        //#region effect
+        // 효과음
+        this.ef_cheer = game.add.audio("ef_cheer");
+        this.ef_kick = game.add.audio("ef_kick");
+        this.ef_startWhistle = game.add.audio("ef_startWhistle");
+        this.ef_endWhistle = game.add.audio("ef_endWhistle");
+        //#endregion effect
+
         //#region 깊이
         this.onPlayerName_2.bringToTop();
         this.onPlayerName_1.bringToTop();
@@ -385,6 +397,7 @@ var Game = {
         //#region 골
         if (this.isGoal == false && this.isTimeOver == false) {
             if (this.ball.body.x >= 1232.9 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
+                this.ef_cheer.play();
                 blueScore++;
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
@@ -393,16 +406,17 @@ var Game = {
                 this.timer.stop();
                 this.scoreText.stroke = "#ffffff";
                 this.scoreText.strokeThickness = 3;
-                game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);           
+                game.time.events.add(Phaser.Timer.SECOND * 6, this.restartGame);           
             }
             if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
+                this.ef_cheer.play();
                 orangeScore++;
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
                 this.orangeGoalText();
                 this.isGoal = true;
                 this.timer.stop();
-                game.time.events.add(Phaser.Timer.SECOND * 5, this.restartGame);
+                game.time.events.add(Phaser.Timer.SECOND * 6, this.restartGame);
             }
         }
         //#endregion
@@ -448,7 +462,7 @@ var Game = {
             }
             this.timer.stop();
             this.isTimeOver = true;
-
+            this.ef_endWhistle.play();
             game.time.events.add(Phaser.Timer.SECOND * 5, this.resetGame);
         }
         //#endregion
@@ -465,6 +479,7 @@ var Game = {
     startGame: function() {
         Game.isGameStart = true;
         Game.text_ready.destroy();
+        Game.ef_startWhistle.play();
     },
 
     timerSecCnt: function() {
@@ -481,6 +496,7 @@ var Game = {
 
     kick: function() {
         if (this.kickButton_1.isDown && this.isKick_1 == false) {
+            this.ef_kick.play();
             this.ball.body.velocity.x *= playerShootPower;
             this.ball.body.velocity.y *= playerShootPower;
             this.isKick_1 = true;
@@ -488,6 +504,7 @@ var Game = {
     },
     kick2: function() {
         if (this.kickButton_2.isDown && this.isKick_2 == false) {
+            this.ef_kick.play();
             this.ball.body.velocity.x *= playerShootPower;
             this.ball.body.velocity.y *= playerShootPower;
             this.isKick_2 = true;

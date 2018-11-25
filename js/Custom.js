@@ -117,6 +117,8 @@ var custom = {
 
     //  외부 함수
     nextPlayer_1: function() {
+        ef_button = game.add.audio("ef_button");
+        ef_button.play();
         if (chr_select_1 < chr_sprite.length - 1)
             chr_select_1++;
         else
@@ -127,6 +129,8 @@ var custom = {
         this.sprite_playerIndex_1.animations.play("stand");
     },
     prevPlayer_1: function() {
+        ef_button = game.add.audio("ef_button");
+        ef_button.play();
         if (chr_select_1 > 0)
             chr_select_1--;
         else
@@ -138,6 +142,8 @@ var custom = {
     },
 
     nextPlayer_2: function() {
+        ef_button = game.add.audio("ef_button");
+        ef_button.play();
         if (chr_select_2 < chr_sprite.length - 1)
             chr_select_2++;
         else
@@ -148,6 +154,8 @@ var custom = {
         this.sprite_playerIndex_2.animations.play("stand");  
     },
     prevPlayer_2: function() {
+        ef_button = game.add.audio("ef_button");
+        ef_button.play();
         if (chr_select_2 > 0)
             chr_select_2--;
         else
@@ -166,6 +174,8 @@ var custom = {
     },
 
     gameStart: function() {
+        ef_button = game.add.audio("ef_button");
+        ef_button.play();
         playerName_1 = this.input_playerName_1.value;
         playerName_2 = this.input_playerName_2.value;
         game.state.start("tutorial");
