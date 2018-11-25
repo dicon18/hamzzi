@@ -77,7 +77,7 @@ var boot = {
         game.load.image("spr_arrow", "assets/sprites/spr_arrow.png");
         game.load.image("spr_button", "assets/sprites/spr_button.png");
         game.load.image("spr_ball", "assets/sprites/spr_ball.png");
-        game.load.image("spr_box", "assets/sprites/spr_transbox_5x5.png");
+        game.load.image("spr_box", "assets/sprites/spr_box_5x5.png");
 
         //  Background
         game.load.image("bg_loby","assets/bg/bg_loby.png");

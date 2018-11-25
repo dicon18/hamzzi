@@ -96,6 +96,7 @@ var Game = {
         for (var i = 0; i < 228; i++) {
             //  윗쪽 라인 박스
             this.box = boxes.create(i * 5 + 68, 40, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -104,6 +105,7 @@ var Game = {
 
             //  아래쪽 라인 박스
             this.box = boxes.create(i * 5 + 68, 680, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -113,6 +115,7 @@ var Game = {
         for (var i = 0; i < 43; i++) {
             //  왼쪽 라인 박스
             this.box = boxes.create(67, i * 5 + 40, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -121,6 +124,7 @@ var Game = {
 
             //  오른쪽 라인 박스
             this.box = boxes.create(1280 - 70, i * 5 + 40, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -130,6 +134,7 @@ var Game = {
         for (var i = 0; i < 44; i++) {
             //  왼쪽 라인 박스
             this.box = boxes.create(67, i * 5 + 465, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -138,6 +143,7 @@ var Game = {
 
             //  오른쪽 라인 박스
             this.box = boxes.create(1280 - 70, i * 5 + 465, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -149,6 +155,7 @@ var Game = {
         for (var i = 0; i < 14; i++) {
             //  윗쪽 라인 박스
             this.box = boxes.create(i * 5 + 3, 250, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -156,6 +163,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             this.box = boxes.create(i * 5 + 1270 - 60, 250, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -164,6 +172,7 @@ var Game = {
 
             //  아래쪽 라인 박스
             this.box = boxes.create(i * 5 + 3, 465, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -171,6 +180,7 @@ var Game = {
             this.box.body.collides(this.ballCollisionGroup);
 
             this.box = boxes.create(i * 5 + 1270 - 60, 465, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -180,6 +190,7 @@ var Game = {
         for (var i = 0; i < 44; i++) {
             //  왼쪽 라인 박스
             this.box = boxes.create(4, i * 5 + 250, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
@@ -188,6 +199,7 @@ var Game = {
 
             //  오른쪽 라인 박스
             this.box = boxes.create(1280 - 4, i * 5 + 250, "spr_box");
+            this.box.alpha = 0;
             this.box.body.static = true;
             this.box.scale.set(1);
             this.box.body.mass = 5;
