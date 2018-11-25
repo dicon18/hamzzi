@@ -1,6 +1,11 @@
 //  로고 & 크레딧
 var main = {
     create: function() {
+
+        // BGM
+        bgm_inGame = game.add.audio("bgm_inGame");
+        bgm_inGame.loopFull(1);
+
         //  씬 전환 효과
         this.camera.flash("#000000");
 

@@ -82,12 +82,11 @@ var boot = {
         //  Background
         game.load.image("bg_loby","assets/bg/bg_loby.png");
         game.load.image("spr_tutorial_1", "assets/bg/bg_tutorial_1.png");
-        game.load.image("bg_inGame_1", "assets/bg/bg_inGame_2.png");
+        game.load.image("bg_inGame_1", "assets/bg/bg_inGame_1.png");
         game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
-        // game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
 
         //  Sound
-        game.load.audio("bgm_inGame", "assets/sound/bgm/bgm_inGame.mp3");
+        game.load.audio("bgm_inGame", "assets/sound/bgm/bensound-littleidea.mp3");
 
         //  Plugin
         game.plugins.add(PhaserInput.Plugin);

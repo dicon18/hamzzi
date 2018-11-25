@@ -16,8 +16,8 @@ var ballMaxSpeed = 1000;
 var ballScale = 1.5;
 
 //  환경
-var timerSec = "00";
-var timerMin = 3;
+var timerSec = "10";
+var timerMin = 0;
 var orangeScore = 0;
 var blueScore = 0;
 //#endregion
@@ -72,9 +72,8 @@ var Game = {
             this.text_ready.stroke = "#ffffff";
             this.text_ready.strokeThickness = 6;
 
-        //  사운드
-        // bgm_inGame = game.add.audio("bgm_inGame");
-        // bgm_inGame.loopFull(1);
+        //  BGM
+        bgm_inGame.stop();
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +294,14 @@ var Game = {
         this.timer.loop(1000, this.timerSecCnt,this);
         this.timer.start();
         //#endregion
+
+        //#region 깊이
+        this.onPlayerName_2.bringToTop();
+        this.onPlayerName_1.bringToTop();
+        this.timerText.bringToTop();
+        this.scoreText.bringToTop();
+        //#endregion
+
     },
 
     update: function() {
@@ -413,6 +420,7 @@ var Game = {
                     this.scoreText.strokeThickness = 3;
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
+                this.BlueWinText.bringToTop();
             }
             if (blueScore < orangeScore) {
                 this.OrangeWinText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, playerName_2 + "팀 승리", {
@@ -424,6 +432,7 @@ var Game = {
                     this.scoreText.strokeThickness = 3;
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
+                this.OrangeWinText.bringToTop();
             }
             if (blueScore == orangeScore) {
                 this.drawText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "무승부", {
@@ -435,6 +444,7 @@ var Game = {
                     this.drawText.anchor.set(0.5);
                 this.player_1.animations.play("stand");
                 this.player_2.animations.play("stand");
+                this.drawText.bringToTop();
             }
             this.timer.stop();
             this.isTimeOver = true;
@@ -494,6 +504,7 @@ var Game = {
         this.text.anchor.set(0.5);
         this.text.stroke = "#ffffff";
         this.text.strokeThickness = 3;
+        this.text.bringToTop();
     }, 
     blueGoalText: function() {
         var style = {
@@ -505,6 +516,7 @@ var Game = {
         this.text.anchor.set(0.5);
         this.text.stroke = "#ffffff";
         this.text.strokeThickness = 3;
+        this.text.bringToTop();
     },
 
     restartGame: function() {
