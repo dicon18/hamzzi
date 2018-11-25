@@ -2,8 +2,8 @@
 //#region 글로벌 변수
 //  플레이어
 var playerName_1 = "";
-var onPlayerName_1;
 var playerName_2 = "";
+var onPlayerName_1;
 var onPlayerName_2;
 var playerScale_1 = 2;
 var playerScale_2 = 2;
@@ -52,6 +52,12 @@ var Game = {
 
         //  배경
         game.add.image(0, 0, bg_sprite[bg_select]);
+
+        // 효과음
+        this.ef_cheer = game.add.audio("ef_cheer");
+        this.ef_kick = game.add.audio("ef_kick");
+        this.ef_startWhistle = game.add.audio("ef_startWhistle");
+        this.ef_endWhistle = game.add.audio("ef_endWhistle");
 
         //  입력
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -299,21 +305,12 @@ var Game = {
         this.timer.start();
         //#endregion
 
-        //#region effect
-        // 효과음
-        this.ef_cheer = game.add.audio("ef_cheer");
-        this.ef_kick = game.add.audio("ef_kick");
-        this.ef_startWhistle = game.add.audio("ef_startWhistle");
-        this.ef_endWhistle = game.add.audio("ef_endWhistle");
-        //#endregion effect
-
         //#region 깊이
         this.onPlayerName_2.bringToTop();
         this.onPlayerName_1.bringToTop();
         this.timerText.bringToTop();
         this.scoreText.bringToTop();
         //#endregion
-
     },
 
     update: function() {
@@ -397,8 +394,8 @@ var Game = {
         //#region 골
         if (this.isGoal == false && this.isTimeOver == false) {
             if (this.ball.body.x >= 1232.9 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
-                this.ef_cheer.play();
                 blueScore++;
+                this.ef_cheer.play();
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
                 this.blueGoalText();
@@ -409,8 +406,8 @@ var Game = {
                 game.time.events.add(Phaser.Timer.SECOND * 6, this.restartGame);           
             }
             if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
-                this.ef_cheer.play();
                 orangeScore++;
+                this.ef_cheer.play();
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
                 this.orangeGoalText();
@@ -487,7 +484,7 @@ var Game = {
             timerSec--;
             if(timerSec == 0)
                 timerSec = "00";
-            if(timerSec < 0){
+            if(timerSec < 0) {
                 timerMin--;
                 timerSec = 59;
             }
@@ -518,10 +515,10 @@ var Game = {
             align: "center"
         };
         this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_2 + "팀 득점", style);
-        this.text.anchor.set(0.5);
-        this.text.stroke = "#ffffff";
-        this.text.strokeThickness = 3;
-        this.text.bringToTop();
+            this.text.anchor.set(0.5);
+            this.text.stroke = "#ffffff";
+            this.text.strokeThickness = 3;
+            this.text.bringToTop();
     }, 
     blueGoalText: function() {
         var style = {
@@ -530,10 +527,10 @@ var Game = {
             align: "center"
         };
         this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, playerName_1 + "팀 득점", style);
-        this.text.anchor.set(0.5);
-        this.text.stroke = "#ffffff";
-        this.text.strokeThickness = 3;
-        this.text.bringToTop();
+            this.text.anchor.set(0.5);
+            this.text.stroke = "#ffffff";
+            this.text.strokeThickness = 3;
+            this.text.bringToTop();
     },
 
     restartGame: function() {
@@ -545,7 +542,7 @@ var Game = {
         timerMin = 3;
         orangeScore = 0;
         blueScore = 0;
-        game.state.restart();
+        game.state.start("custom");
     }
     //#endregion
 }

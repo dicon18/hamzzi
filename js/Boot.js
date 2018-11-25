@@ -81,7 +81,7 @@ var boot = {
 
         //  Background
         game.load.image("bg_loby","assets/bg/bg_loby.png");
-        game.load.image("spr_tutorial_1", "assets/bg/bg_tutorial_1.png");
+        game.load.image("spr_tutorial", "assets/bg/bg_tutorial.png");
         game.load.image("bg_inGame_1", "assets/bg/bg_inGame_1.png");
         game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
 
@@ -103,6 +103,10 @@ var boot = {
     },
 
     create: function () {
+        //  사운드
+        ef_button = game.add.audio("ef_button");
+
+        
         game.state.start("main");
     }
 }

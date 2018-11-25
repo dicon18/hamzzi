@@ -1,20 +1,20 @@
 //  로고 & 크레딧
 var main = {
     create: function() {
+        //  씬 전환 효과
+        this.camera.flash("#000000");
 
         // BGM
         bgm_inGame = game.add.audio("bgm_inGame");
         bgm_inGame.loopFull(1);
-
-        //  씬 전환 효과
-        this.camera.flash("#000000");
+        bgm_inGame.volume = 0.2;
 
         //  배경
         this.bg_loby = this.game.add.tileSprite(0, CANVAS_HEIGHT - this.game.cache.getImage("bg_loby").height, 
             CANVAS_WIDTH, this.game.cache.getImage("bg_loby").height, "bg_loby");
 
         //  로고
-        this.logo = game.add.image(CANVAS_WIDTH / 2, 130,"spr_logo");
+        this.logo = game.add.image(CANVAS_WIDTH / 2, 200,"spr_logo");
             this.logo.anchor.set(0.5);
             this.logo.scale.set(0.6);
 
@@ -35,7 +35,6 @@ var main = {
         isAnyKey = false;
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
-                ef_button = game.add.audio("ef_button");
                 ef_button.play();
                 game.state.start("custom");
                 isAnyKey = true;

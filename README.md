@@ -1,10 +1,5 @@
-# 햄찌볼 클라이언트 부분
-
-
-이젠 더이상 Phaser physics test를 하는 곳이 아니다. 오늘 **2018.11.13**일부로 햄찌볼 **클라이언트 부분**이 되었다.
-
-
+# 햄찌볼
+![default](https://user-images.githubusercontent.com/36301491/48978208-45925980-f0eb-11e8-9046-2ff87479a250.PNG)
 ---
-
-
-# 예선 붙자 친구들~
+BGM<br>
+littleidea : https://www.bensound.com

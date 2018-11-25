@@ -5,17 +5,13 @@ var tutorial = {
         this.camera.flash("#000000");
 
         //  배경
-        game.add.image(0, 0, "spr_tutorial_1");
+        game.add.image(0, 0, "spr_tutorial");
 
         //  씬 이동 콜백
-        isAnyKey = false;
-        game.input.keyboard.onPressCallback = function(e) {
-            if (e != null && isAnyKey == false) {
-                ef_button = game.add.audio("ef_button");
-                ef_button.play();
-                game.state.start("Game");
-                isAnyKey = true;
-            }
-        }
+        game.time.events.add(Phaser.Timer.SECOND * 5, this.startGame);
+    },
+
+    startGame: function() {
+        game.state.start("Game");
     }
 }
