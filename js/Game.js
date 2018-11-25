@@ -284,11 +284,12 @@ var Game = {
             font: "30px BMJUA",
             fill: "#000000"
         });
-            this.scoreText.anchor.set(0.5);
             this.scoreText.addColor("#4834d4", 0);
             this.scoreText.addColor("#000000", 2);
             this.scoreText.addColor("#e67e22", 4);
+            this.scoreText.anchor.set(0.5);
             this.scoreText.stroke = "#ffffff";
+            this.scoreText.strokeThickness = 3;
 
         this.timer = game.time.create(false);
         this.timer.loop(1000, this.timerSecCnt,this);
