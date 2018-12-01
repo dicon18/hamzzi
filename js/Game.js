@@ -1,10 +1,5 @@
 //  인 게임
 //#region 글로벌 변수
-//  통신
-var socekt;
-var isConnected = false;
-var oPlayerList = [];
-
 //  플레이어
 var playerName_1 = "";
 var playerName_2 = "";
@@ -216,14 +211,6 @@ var Game = {
         this.player_1.animations.add("win", [6], 10 ,true);
         this.player_1.animations.add("lose", [7,8], 10 ,true);
 
-        this.onPlayerName_1 = game.add.text(this.player_1.body.x, this.player_1.body.y - 30, playerName_1, {
-            font: "bold 20px BMJUA",
-            fill: "#4834d4"
-        });
-            this.onPlayerName_1.anchor.set(0.5);
-            this.onPlayerName_1.stroke = "#ffffff";
-            this.onPlayerName_1.strokeThickness = 3;
-
         this.playerHspd_1 = 1;
         this.isKick_1 = false;
 
@@ -244,14 +231,6 @@ var Game = {
         this.player_2.animations.add("walk", [2,3,4,5], 10 ,true);
         this.player_2.animations.add("win", [6], 10 ,true);
         this.player_2.animations.add("lose", [7,8], 10 ,true);
-
-        this.onPlayerName_2 = game.add.text(this.player_2.body.x, this.player_2.body.y - 30, playerName_2, {
-            font: "bold 20px BMJUA",
-            fill: "#e67e22"
-        });
-            this.onPlayerName_2.anchor.set(0.5);
-            this.onPlayerName_2.stroke = "#ffffff";
-            this.onPlayerName_2.strokeThickness = 3;
 
         this.playerHspd_2 = -1;
         this.isKick_2 = false;
@@ -280,7 +259,7 @@ var Game = {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region UI 설정
-        //  점수
+        //  타이머
         this.timerText = game.add.text(CANVAS_WIDTH / 2, 50, timerMin + " : " + timerSec, {
             font: "50px BMJUA",
             fill: "#000000"
@@ -288,7 +267,12 @@ var Game = {
             this.timerText.anchor.set(0.5);
             this.timerText.stroke = "#ffffff";
             this.timerText.strokeThickness = 3;
+            
+        this.timer = game.time.create(false);
+        this.timer.loop(1000, this.timerSecCnt,this);
+        this.timer.start();
 
+        //  점수
         this.scoreText = game.add.text(CANVAS_WIDTH / 2, 90, blueScore + " : " + orangeScore, {
             font: "30px BMJUA",
             fill: "#000000"
@@ -300,12 +284,26 @@ var Game = {
             this.scoreText.stroke = "#ffffff";
             this.scoreText.strokeThickness = 3;
 
-        this.timer = game.time.create(false);
-        this.timer.loop(1000, this.timerSecCnt,this);
-        this.timer.start();
-        //#endregion
+        /// 플레이어 이름
+        //  플레이어1
+        this.onPlayerName_1 = game.add.text(this.player_1.body.x, this.player_1.body.y - 30, playerName_1, {
+            font: "bold 20px BMJUA",
+            fill: "#4834d4"
+        });
+            this.onPlayerName_1.anchor.set(0.5);
+            this.onPlayerName_1.stroke = "#ffffff";
+            this.onPlayerName_1.strokeThickness = 3;
 
-        //#region 깊이
+        //  플레이어2
+        this.onPlayerName_2 = game.add.text(this.player_2.body.x, this.player_2.body.y - 30, playerName_2, {
+            font: "bold 20px BMJUA",
+            fill: "#e67e22"
+        });
+            this.onPlayerName_2.anchor.set(0.5);
+            this.onPlayerName_2.stroke = "#ffffff";
+            this.onPlayerName_2.strokeThickness = 3;
+
+        //  깊이
         this.onPlayerName_2.bringToTop();
         this.onPlayerName_1.bringToTop();
         this.timerText.bringToTop();
