@@ -1,15 +1,18 @@
 //  인 게임
 //#region 글로벌 변수
+//  통신
+var socekt;
+var isConnected = false;
+var oPlayerList = [];
+
 //  플레이어
 var playerName_1 = "";
 var playerName_2 = "";
-var onPlayerName_1;
-var onPlayerName_2;
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
 var playerMaxSpeed = 150;
-var playerShootPower = 2;
+var playerShootPower = 500;
 
 //  볼
 var ballMaxSpeed = 1000;
@@ -20,28 +23,12 @@ var timerSec = "00";
 var timerMin = 3;
 var orangeScore = 0;
 var blueScore = 0;
-
-// 효과음
-var ef_cheer;
-var ef_kick;
-var ef_startWhistle;
-var ef_endWhistle;
 //#endregion
 
 var Game = {
     create: function() {
         //  씬 전환 효과
         this.camera.flash("#000000");
-        
-        //////////////////////////////////////////////////////////////////////////////////////////
-        //#region 예외 초기화
-        if (playerName_1 == "") {
-            playerName_1 = "플레이어1";
-        }
-        if (playerName_2 == "") {
-            playerName_2 = "플레이어2";
-        }
-        //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 게임 설정
@@ -52,12 +39,6 @@ var Game = {
 
         //  배경
         game.add.image(0, 0, bg_sprite[bg_select]);
-
-        // 효과음
-        this.ef_cheer = game.add.audio("ef_cheer");
-        this.ef_kick = game.add.audio("ef_kick");
-        this.ef_startWhistle = game.add.audio("ef_startWhistle");
-        this.ef_endWhistle = game.add.audio("ef_endWhistle");
 
         //  입력
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -83,7 +64,14 @@ var Game = {
             this.text_ready.anchor.set(0.5);
             this.text_ready.stroke = "#ffffff";
             this.text_ready.strokeThickness = 6;
-
+        
+        //  예외 처리
+        if (playerName_1 == "") {
+            playerName_1 = "플레이어1";
+        }
+        if (playerName_2 == "") {
+            playerName_2 = "플레이어2";
+        }
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -407,7 +395,7 @@ var Game = {
         if (this.isGoal == false && this.isTimeOver == false) {
             if (this.ball.body.x >= 1232.9 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 blueScore++;
-                this.ef_cheer.play();
+                ef_cheer.play();
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
                 this.blueGoalText();
@@ -419,7 +407,7 @@ var Game = {
             }
             if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 orangeScore++;
-                this.ef_cheer.play();
+                ef_cheer.play();
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
                 this.orangeGoalText();
@@ -471,7 +459,7 @@ var Game = {
             }
             this.timer.stop();
             this.isTimeOver = true;
-            this.ef_endWhistle.play();
+            ef_endWhistle.play();
             game.time.events.add(Phaser.Timer.SECOND * 5, this.resetGame);
         }
         //#endregion
@@ -488,7 +476,7 @@ var Game = {
     startGame: function() {
         Game.isGameStart = true;
         Game.text_ready.destroy();
-        Game.ef_startWhistle.play();
+        ef_startWhistle.play();
     },
 
     timerSecCnt: function() {
@@ -505,17 +493,17 @@ var Game = {
 
     kick: function() {
         if (this.kickButton_1.isDown && this.isKick_1 == false) {
-            this.ef_kick.play();
-            this.ball.body.velocity.x *= playerShootPower;
-            this.ball.body.velocity.y *= playerShootPower;
+            ef_kick.play();
+            this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+            this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
             this.isKick_1 = true;
         }
     },
     kick2: function() {
         if (this.kickButton_2.isDown && this.isKick_2 == false) {
-            this.ef_kick.play();
-            this.ball.body.velocity.x *= playerShootPower;
-            this.ball.body.velocity.y *= playerShootPower;
+            ef_kick.play();
+            this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+            this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
             this.isKick_2 = true;
         }
     },

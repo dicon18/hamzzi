@@ -4,10 +4,8 @@ var main = {
         //  씬 전환 효과
         this.camera.flash("#000000");
 
-        // BGM
-        bgm_inGame = game.add.audio("bgm_inGame");
+        //  BGM
         bgm_inGame.loopFull(1);
-        bgm_inGame.volume = 0.2;
 
         //  배경
         this.bg_loby = this.game.add.tileSprite(0, CANVAS_HEIGHT - this.game.cache.getImage("bg_loby").height, 

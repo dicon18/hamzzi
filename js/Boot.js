@@ -2,7 +2,7 @@
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
 
-/// 환경 변수
+//#region 환경 변수
 //  캐릭터
 var chr_sprite = [];
     chr_sprite[0] = "spr_chr_1";
@@ -38,6 +38,10 @@ var bg_name = [];
     bg_name[0] = "운동장";
     bg_name[1] = "햄스터집";
 
+//  사운드
+var bgm_inGame;
+var ef_button, ef_cheer, ef_kick, ef_startWhistle, ef_endWhistle;
+
 //  기타
 var isAnyKey = false;
 
@@ -47,6 +51,7 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+//#endregion
 
 var boot = {
     preload: function () {
@@ -96,17 +101,25 @@ var boot = {
         //  Plugin
         game.plugins.add(PhaserInput.Plugin);
 
-        //  Font
+        //  Font Cache
         this.font_cache = game.add.text(0, 0, "", {
             font: "1px BMJUA"
         });
     },
 
     create: function () {
-        //  사운드
-        ef_button = game.add.audio("ef_button");
-
+        /// 사운드
+        //  BGM
+        bgm_inGame = game.add.audio("bgm_inGame");
+        bgm_inGame.volume = 0.2;
         
+        //  SFX
+        ef_button = game.add.audio("ef_button");
+        ef_cheer = game.add.audio("ef_cheer");
+        ef_kick = game.add.audio("ef_kick");
+        ef_startWhistle = game.add.audio("ef_startWhistle");
+        ef_endWhistle = game.add.audio("ef_endWhistle");
+
         game.state.start("main");
     }
 }

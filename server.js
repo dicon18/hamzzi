@@ -1,4 +1,4 @@
-/// 게임 서버
+//  게임 서버
 var express = require("express");
 var p2 = require('p2');
 var app = express();
