@@ -120,6 +120,6 @@ var boot = {
         ef_startWhistle = game.add.audio("ef_startWhistle");
         ef_endWhistle = game.add.audio("ef_endWhistle");
 
-        game.state.start("main");
+        game.state.start("gameMulti");
     }
 }

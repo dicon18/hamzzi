@@ -17,9 +17,9 @@ var server = app.listen(80, function () {
 var playerList = [];
 
 //  실시간 물리 적용
-var startTime = (new Date).getTime();
+var startTime = (new Date()).getTime();
 var lastTime;
-var timeStep = 1 / 70; 
+var timeStep = 1 / 60; 
 var world = new p2.World({
     gravity : [0,0]
 });
@@ -107,14 +107,15 @@ function onInputFired(data) {
         return;
     }
     //  입력 지연
-    // setTimeout(function() { movePlayer.isInputDelay = true }, 50);
-    // movePlayer.isInputDelay = false;
+    setTimeout(function() { movePlayer.isInputDelay = true }, 10);
+    movePlayer.isInputDelay = false;
 
     //  플레이어 이동
-    movePlayer.playerBody.velocity[0] = data.hspd;
-    movePlayer.playerBody.velocity[1] = data.vspd;
-    movePlayer.x = movePlayer.playerBody.velocity[0];
-    movePlayer.y = movePlayer.playerBody.velocity[1];
+    movePlayer.playerBody.velocity[0] = data.hspd * movePlayer.speed;
+    movePlayer.playerBody.velocity[1] = data.vspd * movePlayer.speed;
+    movePlayer.x = movePlayer.playerBody.position[0];
+    movePlayer.y = movePlayer.playerBody.position[1];
+
     var info = {
 		x: movePlayer.x,
 		y: movePlayer.y
