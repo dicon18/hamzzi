@@ -3,3 +3,7 @@
 ---
 BGM<br>
 littleidea : https://www.bensound.com
+---
+## TODO
+Node.js, socket.io, socket.io-redis, sticky-seesion
+
