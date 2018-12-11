@@ -4,6 +4,12 @@
 BGM<br>
 littleidea : https://www.bensound.com
 ---
-## TODO
-Node.js, socket.io, socket.io-redis, sticky-seesion
+## TECH
+language: HTML/CSS/JS
+
+frontend: phaser
+
+backend: Node.js, socket.io
+
+Raspbard Pi 3 B Model -> Intel X3440 Server
 
