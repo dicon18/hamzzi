@@ -13,3 +13,8 @@ backend: Node.js, socket.io
 
 Raspbard Pi 3 B Model -> Intel X3440 Server
 
+## TODO
+1. 전체적인 디자인 **퀄리티** 향상
+> 햄스터 사이즈 조절 잘해보기
+2. 코드 정리
+> 주석 잘 달아
