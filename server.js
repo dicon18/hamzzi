@@ -1,9 +1,9 @@
 //	게임 서버
+//#region 모듈
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-
 const p2 = require('p2');
 
 app.use("/js", express.static(__dirname + "/js"));
@@ -15,6 +15,7 @@ app.get('/', function(req, res) {
 server.listen(80, function() {
 	console.log("Listening on port 80");
 });
+//#endregion
 
 //  플레이어 리스트
 var playerList = [];
@@ -23,15 +24,9 @@ var playerList = [];
 var world = new p2.World({
     gravity : [0,0]
 });
+
+//  Delta Time
 var lastTimeSeconds = (new Date).getTime();
-setInterval(function() {
-	var dt = (new Date).getTime() - lastTimeSeconds;
-	lastTimeSeconds = (new Date).getTime();
-	world.step(1 / 60, dt, 10);
-    
-    //  update
-    io.emit('updateBall', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
-}, 1000/60);
 
 //	볼 설정
 var ball = new p2.Body({
@@ -45,6 +40,24 @@ var ball = new p2.Body({
 ball.addShape(new p2.Circle({ radius: 16 }));
 world.addBody(ball);
 
+//#region main
+io.on('connection', function(socket) {
+    socket.on('new_player', onNewPlayer);
+    socket.on('disconnect', onDisconnect);
+    socket.on('input_fired', onInputFired);
+})
+
+setInterval(function() {
+	var dt = (new Date).getTime() - lastTimeSeconds;
+	lastTimeSeconds = (new Date).getTime();
+	world.step(1 / 60, dt, 10);
+    
+    //  Update
+    io.emit('updateBall', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
+}, 1000/60);
+//#endregion
+
+//#region 함수
 //  새로운 플레이어
 function onNewPlayer(data) {
     var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.speed);
@@ -87,7 +100,7 @@ function onNewPlayer(data) {
     playerList.push(newPlayer);
 
     //  볼 정보 전송
-	io.emit('createBall', { x: ball.position[0], y: ball.position[0], angle: ball.angle });
+	this.emit('createBall', { x: ball.position[0], y: ball.position[0], angle: ball.angle });
 
     console.log("created new player with id " + this.id);
 }
@@ -141,13 +154,6 @@ function find_playerID(id) {
 	}
 	return false; 
 }
-
-//#region main
-io.on('connection', function(socket) {
-    socket.on('new_player', onNewPlayer);
-    socket.on('disconnect', onDisconnect);
-    socket.on('input_fired', onInputFired);
-})
 //#endregion
 
 //#region 클래스

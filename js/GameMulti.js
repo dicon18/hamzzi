@@ -1,3 +1,4 @@
+//  멀티플레이 게임 클라이언트
 var socket;     
 var isConnected = false;
 var isBalled = false;
@@ -6,6 +7,40 @@ var oPlayerList = [];
 
 var player, ball;
 
+//#region main
+var gameMulti = {
+    init: function() {
+        socket = io();
+        game.stage.disableVisibilityChange = true;
+    },
+
+    create: function() {
+        this.cursors = game.input.keyboard.createCursorKeys();
+        
+        socket.on("connect", onConnected);
+        socket.on("remove_player", onRemovePlayer);
+        socket.on("new_oPlayer", onNewPlayer);
+        socket.on("input_recieved", onInputRecieved);
+        socket.on("move_oPlayer", onMovePlayer);
+        socket.on("createBall", onCreateBall);
+        socket.on("updateBall", onUpdateBall);
+
+        console.log("Client started");
+    },
+
+    update: function() {
+        if (isConnected) {
+            //  움직이기
+            socket.emit("input_fired", {
+                hspd: (this.cursors.right.isDown - this.cursors.left.isDown),
+                vspd: (this.cursors.down.isDown - this.cursors.up.isDown) 
+            });
+        }
+    },
+}
+//#endregion
+
+//#region 함수
 //  접속 완료
 function onConnected() {
     isConnected = true;
@@ -14,13 +49,6 @@ function onConnected() {
     socket.emit("new_player", { x: player.x, y: player.y, sprite: chr_sprite[0], radius: player.width, speed: 20 });
 
     console.log("Connected to server");
-}
-
-//  외부 플레이어 클래스
-var Player = function(id, startX, startY, sprite) {
-    this.id = id;
-    this.player = game.add.sprite(startX, startY, sprite);
-    this.player.anchor.setTo(0.5,0.5);
 }
 
 //  외부 플레이어 생성
@@ -70,7 +98,6 @@ function onUpdateBall(data) {
         ball.x = data.x;
         ball.y = data.y;
         ball.angle = data.angle;
-        console.log(ball.x + " | " + ball.y);
     }
 }
 
@@ -82,34 +109,13 @@ function find_playerID(id) {
         }
     }
 }
+//#endregion
 
-//  main
-var gameMulti = {
-    init: function() {
-        socket = io();
-        game.stage.disableVisibilityChange = true;
-    },
-
-    create: function() {
-        this.cursors = game.input.keyboard.createCursorKeys();
-        
-        socket.on("connect", onConnected);
-        socket.on("remove_player", onRemovePlayer);
-        socket.on("new_oPlayer", onNewPlayer);
-        socket.on("input_recieved", onInputRecieved);
-        socket.on("move_oPlayer", onMovePlayer);
-        socket.on("createBall", onCreateBall);
-        socket.on("updateBall", onUpdateBall);
-        console.log("Client started");
-    },
-
-    update: function() {
-        if (isConnected) {
-            //  움직이기
-            socket.emit("input_fired", {
-                hspd: (this.cursors.right.isDown - this.cursors.left.isDown),
-                vspd: (this.cursors.down.isDown - this.cursors.up.isDown) 
-            });
-        }
-    },
+//#region 클래스
+//  외부 플레이어 클래스
+var Player = function(id, startX, startY, sprite) {
+    this.id = id;
+    this.player = game.add.sprite(startX, startY, sprite);
+    this.player.anchor.setTo(0.5,0.5);
 }
+//#endregion
