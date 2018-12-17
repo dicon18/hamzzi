@@ -237,7 +237,7 @@ var Game = {
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////
-        //#region 공 설정
+        //#region 볼 설정
         this.ball = game.add.sprite(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "spr_ball");
         this.ball.anchor.set(0.5);
 
