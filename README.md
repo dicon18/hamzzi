@@ -9,7 +9,7 @@ language: HTML/CSS/JS
 
 frontend: phaser
 
-backend: Node.js, socket.io
+backend: Node.js(p2), socket.io
 
 Raspbard Pi 3 B Model -> Intel X3440 Server
 
