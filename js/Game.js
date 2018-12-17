@@ -7,7 +7,7 @@ var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
 var playerMaxSpeed = 150;
-var playerShootPower = 500;
+var playerShootPower = 5;
 
 //  볼
 var ballMaxSpeed = 1000;
@@ -249,8 +249,8 @@ var Game = {
         this.ball.body.setCircle(this.ball.width / 2);
         this.ball.body.setCollisionGroup(this.ballCollisionGroup);
         this.ball.body.collides([this.playerCollisionGroup, this.boxCollisionGroup]);
-        this.ball.body.createBodyCallback(this.player_1, this.kick, this);
-        this.ball.body.createBodyCallback(this.player_2, this.kick2, this);
+        // this.ball.body.createBodyCallback(this.player_1, this.kick, this);
+        // this.ball.body.createBodyCallback(this.player_2, this.kick2, this);
 
         //  이펙트 초기화
         this.ball.scale.set(ballScale * 5);
@@ -357,10 +357,44 @@ var Game = {
             this.player_2.scale.x = this.playerHspd_2 * playerScale_1;
     
         //  슛 해제
-        if (!this.kickButton_1.isDown)
+        // if (!this.kickButton_1.isDown)
+        //     this.isKick_1 = false;
+        // if (!this.kickButton_2.isDown)
+        //     this.isKick_2 = false;
+
+        // 충돌 범위 확인
+        if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
+            if (this.kickButton_1.isDown && this.isKick_1 == false) {
+                ef_kick.play();
+                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
+                this.ball.body.velocity.x *= playerShootPower;
+                this.ball.body.velocity.y *= playerShootPower;
+                this.isKick_1 = true;
+            }
+            else if(!this.kickButton_1.isDown)
+                this.isKick_1 = false;
+        } 
+        else if(Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds()) == false && !this.kickButton_1.isDown){
             this.isKick_1 = false;
-        if (!this.kickButton_2.isDown)
+        }
+
+        if (Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds())){
+            if (this.kickButton_2.isDown && this.isKick_2 == false) {
+                ef_kick.play();
+                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
+                this.ball.body.velocity.x *= playerShootPower;
+                this.ball.body.velocity.y *= playerShootPower;
+                this.isKick_2 = true;
+            }
+            else if(!this.kickButton_2.isDown)
+                this.isKick_2 = false;
+        } 
+        else if(Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds()) == false && !this.kickButton_2.isDown){
             this.isKick_2 = false;
+        }
+
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////            
@@ -489,22 +523,22 @@ var Game = {
         }
     },
 
-    kick: function() {
-        if (this.kickButton_1.isDown && this.isKick_1 == false) {
-            ef_kick.play();
-            this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-            this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-            this.isKick_1 = true;
-        }
-    },
-    kick2: function() {
-        if (this.kickButton_2.isDown && this.isKick_2 == false) {
-            ef_kick.play();
-            this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-            this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-            this.isKick_2 = true;
-        }
-    },
+    // kick: function() {
+    //     if (this.kickButton_1.isDown && this.isKick_1 == false) {
+    //         ef_kick.play();
+    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
+    //         this.isKick_1 = true;
+    //     }
+    // },
+    // kick2: function() {
+    //     if (this.kickButton_2.isDown && this.isKick_2 == false) {
+    //         ef_kick.play();
+    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
+    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
+    //         this.isKick_2 = true;
+    //     }
+    // },
 
     orangeGoalText: function() {
         var style = {
