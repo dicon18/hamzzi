@@ -25,6 +25,9 @@ var gameMulti = {
         socket.on("createBall", onCreateBall);
         socket.on("updateBall", onUpdateBall);
 
+        //  배경
+        game.add.image(0, 0, "bg_inGame_1");
+
         console.log("Client started");
     },
 

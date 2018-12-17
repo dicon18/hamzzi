@@ -1,4 +1,6 @@
 //	게임 서버
+var playerList = [];
+
 //#region 모듈
 const express = require('express');
 const app = express();
@@ -17,21 +19,15 @@ server.listen(80, function() {
 });
 //#endregion
 
-//  플레이어 리스트
-var playerList = [];
-
-//  서버 물리 세계
+//#region 서버 물리 세계
 var world = new p2.World({
     gravity : [0,0]
 });
 
-//  Delta Time
-var lastTimeSeconds = (new Date).getTime();
-
-//	볼 설정
+//#region 볼 생성
 var ball = new p2.Body({
 	mass: 1,
-	position: [300, 300],
+	position: [640, 360],
 	angle: 0,
 	velocity: [0, 0],
 	angularVelocity: 0,
@@ -39,6 +35,45 @@ var ball = new p2.Body({
 });
 ball.addShape(new p2.Circle({ radius: 16 }));
 world.addBody(ball);
+//#endregion
+
+//#region 충돌 박스 생성
+var boxes = [];
+boxes[0] = new p2.Body({ position: [640, 40] });
+    boxes[0].addShape(new p2.Box({ width: 1140, height: 2 }));
+boxes[1] = new p2.Body({ position: [640, 680] });
+    boxes[1].addShape(new p2.Box({ width: 1140, height: 2 }));
+
+boxes[2] =  new p2.Body({ position: [67, 145] });
+    boxes[2].addShape(new p2.Box({ width: 2, height: 200 }));
+boxes[3] =  new p2.Body({ position: [1210, 145] });
+    boxes[3].addShape(new p2.Box({ width: 2, height: 200 }));
+boxes[4] =  new p2.Body({ position: [67, 580] });
+    boxes[4].addShape(new p2.Box({ width: 2, height: 200 }));
+boxes[5] =  new p2.Body({ position: [1210, 580] });
+    boxes[5].addShape(new p2.Box({ width: 2, height: 200 }));
+    
+boxes[6] =  new p2.Body({ position: [34, 250] });
+    boxes[6].addShape(new p2.Box({ width: 68, height: 2 }));
+boxes[7] =  new p2.Body({ position: [34, 465] });
+    boxes[7].addShape(new p2.Box({ width: 68, height: 2 }));
+boxes[8] =  new p2.Body({ position: [1244, 250] });
+    boxes[8].addShape(new p2.Box({ width: 68, height: 2 }));
+boxes[9] =  new p2.Body({ position: [1244, 465] });
+    boxes[9].addShape(new p2.Box({ width: 68, height: 2 }));
+
+boxes[10] =  new p2.Body({ position: [4, 232] });
+    boxes[10].addShape(new p2.Box({ width: 2, height: 465 }));
+boxes[11] =  new p2.Body({ position: [1276, 232] });
+    boxes[11].addShape(new p2.Box({ width: 2, height: 465 }));
+
+for (var i = 0; i < boxes.length; i++) {
+    boxes[i].mass = 0;
+    world.addBody(boxes[i]);
+}
+//#endregion
+
+//#endregion
 
 //#region main
 io.on('connection', function(socket) {
@@ -46,6 +81,9 @@ io.on('connection', function(socket) {
     socket.on('disconnect', onDisconnect);
     socket.on('input_fired', onInputFired);
 })
+
+//  Delta Time
+var lastTimeSeconds = (new Date).getTime();
 
 setInterval(function() {
 	var dt = (new Date).getTime() - lastTimeSeconds;
