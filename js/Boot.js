@@ -40,7 +40,7 @@ var bg_name = [];
 
 //  사운드
 var bgm_inGame;
-var ef_button, ef_cheer, ef_kick, ef_startWhistle, ef_endWhistle;
+var sfx_button, sfx_cheer, sfx_kick, sfx_startWhistle, sfx_endWhistle;
 
 //  기타
 var isAnyKey = false;
@@ -92,11 +92,11 @@ var boot = {
 
         //  Sound
         game.load.audio("bgm_inGame", "assets/sound/bgm/bensound-littleidea.mp3");
-        game.load.audio("ef_cheer","assets/sound/effect/ef_cheer.wav");
-        game.load.audio("ef_kick","assets/sound/effect/ef_kick.wav");
-        game.load.audio("ef_button","assets/sound/effect/ef_button.wav");
-        game.load.audio("ef_startWhistle","assets/sound/effect/ef_startWhistle.wav");
-        game.load.audio("ef_endWhistle","assets/sound/effect/ef_endWhistle.wav");
+        game.load.audio("sfx_cheer","assets/sound/effect/sfx_cheer.wav");
+        game.load.audio("sfx_kick","assets/sound/effect/sfx_kick.wav");
+        game.load.audio("sfx_button","assets/sound/effect/sfx_button.wav");
+        game.load.audio("sfx_startWhistle","assets/sound/effect/sfx_startWhistle.wav");
+        game.load.audio("sfx_endWhistle","assets/sound/effect/sfx_endWhistle.wav");
 
         //  Plugin
         game.plugins.add(PhaserInput.Plugin);
@@ -114,11 +114,11 @@ var boot = {
         bgm_inGame.volume = 0.2;
         
         //  SFX
-        ef_button = game.add.audio("ef_button");
-        ef_cheer = game.add.audio("ef_cheer");
-        ef_kick = game.add.audio("ef_kick");
-        ef_startWhistle = game.add.audio("ef_startWhistle");
-        ef_endWhistle = game.add.audio("ef_endWhistle");
+        sfx_button = game.add.audio("sfx_button");
+        sfx_cheer = game.add.audio("sfx_cheer");
+        sfx_kick = game.add.audio("sfx_kick");
+        sfx_startWhistle = game.add.audio("sfx_startWhistle");
+        sfx_endWhistle = game.add.audio("sfx_endWhistle");
 
         game.state.start("main");
     }
