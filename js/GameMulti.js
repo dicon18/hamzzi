@@ -64,7 +64,8 @@ function onConnected() {
     isConnected = true;
     player1 = game.add.sprite(getRandomInt(0, CANVAS_WIDTH), getRandomInt(0, CANVAS_HEIGHT), chr_sprite[0]);
     player1.anchor.setTo(0.5,0.5);
-    socket.emit("new_player", { x: player1.x, y: player1.y, sprite: chr_sprite[0], radius: player1.width, speed: 10 });
+    player1.scale.set(2);
+    socket.emit("new_player", { x: player1.x, y: player1.y, sprite: chr_sprite[0], radius: player1.width, speed: 1 });
 
     console.log("Connected to server");
 }
