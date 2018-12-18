@@ -76,6 +76,8 @@ var boot = {
         game.load.spritesheet("spr_chr_7", "assets/anim/spr_chr_7.png", 20, 20, 9);
         game.load.spritesheet("spr_chr_8", "assets/anim/spr_chr_8.png", 20, 24, 9);
 
+        game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 192, 192, 20);
+
         //  Image
         game.load.image("spr_logo", "assets/sprites/spr_logo.png");
         game.load.image("spr_pressAnyKey","assets/sprites/spr_pressAnyKey.png");

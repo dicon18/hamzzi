@@ -308,19 +308,25 @@ var Game = {
             this.onPlayerName_2.strokeThickness = 3;
 
         //  킥 버튼 효과
-        this.ef_kick_1 = game.add.sprite(this.player_1.x, this.player_1.y);
+        this.ef_kick_1 = game.add.sprite(this.player_1.x, this.player_1.y, "ef_kick");
         this.ef_kick_1.anchor.set(0.5);
-        this.ef_kick_1.width = 40;
-        this.ef_kick_1.height = 40;
+        this.ef_kick_1.width = 100;
+        this.ef_kick_1.height = 100;
+        this.ef_kick_1.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],10,true);
+        this.ef_kick_1.animations.play("ef_kick");
         this.ef_kick_1.alpha = 0;
 
-        this.ef_kick_2 = game.add.sprite(this.player_2.x, this.player_2.y);
+        this.ef_kick_2 = game.add.sprite(this.player_2.x, this.player_2.y, "ef_kick");
         this.ef_kick_2.anchor.set(0.5);
-        this.ef_kick_2.width = 40;
-        this.ef_kick_2.height = 40;
+        this.ef_kick_2.width = 100;
+        this.ef_kick_2.height = 100;
+        this.ef_kick_2.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],10,true);
+        this.ef_kick_2.animations.play("ef_kick");
         this.ef_kick_2.alpha = 0;
 
         //  깊이
+        this.player_1.bringToTop();
+        this.player_2.bringToTop();
         this.onPlayerName_2.bringToTop();
         this.onPlayerName_1.bringToTop();
         this.timerText.bringToTop();
