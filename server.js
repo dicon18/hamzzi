@@ -1,6 +1,11 @@
 //	게임 서버
 var playerList = [];
 
+var timerSec = "00";
+var timerMin = 3;
+var orangeScore = 0;
+var blueScore = 0;
+
 //#region 모듈
 const express = require('express');
 const app = express();
@@ -30,7 +35,7 @@ var boxMaterial = new p2.Material();
 
 world.addContactMaterial(new p2.ContactMaterial(playerMaterial, ballMaterial, {
     friction: 0,
-    restitution: 1
+    restitution: 0.5
 }));
 world.addContactMaterial(new p2.ContactMaterial(ballMaterial, boxMaterial, {
     friction: 0,
@@ -94,11 +99,8 @@ io.on('connection', function(socket) {
     socket.on('new_player', onNewPlayer);
     socket.on('disconnect', onDisconnect);
 
-    socket.on('player1_move', onPlayer1_move);
-    // socket.on('player2_move', onPlayer2_move);
-
-    // socket.on('player1_kick', onPlayer1_move);
-    // socket.on('player2_kick', onPlayer1_move);
+    socket.on('player_move', onplayer_move);
+    //socket.on('player_kick', onplayer_move);
 
     //  Delta Time
     var lastTimeSeconds = (new Date).getTime();
@@ -114,7 +116,7 @@ io.on('connection', function(socket) {
         if (!movePlayer) {
             return;
         }
-        socket.emit('move_player1', {
+        socket.emit('move_player', {
             x: movePlayer.body.position[0],
             y: movePlayer.body.position[1]
         });
@@ -134,7 +136,7 @@ io.on('connection', function(socket) {
 //#region 함수
 //  새로운 플레이어
 function onNewPlayer(data) {
-    var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.speed);
+    var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.scale, data.speed, data.speedMax, data.shootPower, data.name);
 
     //  플레이어 물리 적용
     newPlayer.body = new p2.Body({
@@ -158,7 +160,8 @@ function onNewPlayer(data) {
             id: playerList[i].id,
             x: playerList[i].body.position[0],
             y: playerList[i].body.position[1],
-            sprite: playerList[i].sprite
+            sprite: playerList[i].sprite,
+            name: playerList[i].name
         });
     }
 
@@ -167,7 +170,8 @@ function onNewPlayer(data) {
         id: newPlayer.id, 
         x: newPlayer.x,
         y: newPlayer.y,
-        sprite: newPlayer.sprite
+        sprite: newPlayer.sprite,
+        name: newPlayer.name
     });
     playerList.push(newPlayer);
 
@@ -189,12 +193,12 @@ function onDisconnect() {
 }
 
 //  플레이어 이동
-function onPlayer1_move(data) {
+function onplayer_move(data) {
     var movePlayer = find_playerID(this.id); 
     movePlayer.body.velocity[0] += data.hspd * movePlayer.speed;
     movePlayer.body.velocity[1] += data.vspd * movePlayer.speed;
-    movePlayer.body.velocity[0] = clamp(movePlayer.body.velocity[0], -10, 10);
-    movePlayer.body.velocity[1] = clamp(movePlayer.body.velocity[1], -10, 10);
+    movePlayer.body.velocity[0] = clamp(movePlayer.body.velocity[0], -movePlayer.speedMax, movePlayer.speedMax);
+    movePlayer.body.velocity[1] = clamp(movePlayer.body.velocity[1], -movePlayer.speedMax, movePlayer.speedMax);
 }
 
 //  플레이어 ID 찾기
@@ -210,13 +214,17 @@ function find_playerID(id) {
 
 //#region 클래스
 //  플레이어 클래스
-var Player = function(id, startX, startY, sprite, radius, speed) {
+var Player = function(id, startX, startY, sprite, radius, scale, speed, speedMax, shootPower, name) {
     this.id = id;
     this.x = startX;
     this.y = startY;
     this.sprite = sprite;
     this.radius = radius;
+    this.scale = scale;
     this.speed = speed;
+    this.speedMax = speedMax;
+    this.shootPower = shootPower;
+    this.name = name;
 }
 //#endregion
 
