@@ -6,17 +6,18 @@ var playerName_2 = "";
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
-var playerMaxSpeed = 150;
+var playerMaxSpeed_1 = 150;
+var playerMaxSpeed_2 = 150;
 var playerShootPower = 500;
+
+//  대시
+var dashSpeed_1 = 200;
+var dashSpeed_2 = 200;
 
 //  볼
 var ball;
 var ballMaxSpeed = 1000;
 var ballScale = 1.5;
-
-// 킥 효과
-var ef_kick_1;
-var ef_kick_2;
 
 //  환경
 var timerSec = "00";
@@ -44,6 +45,8 @@ var Game = {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.kickButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.kickButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        this.dashButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        this.dashButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.QUOTES)
 
         //  충돌 그룹
         this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -308,6 +311,29 @@ var Game = {
             this.onPlayerName_2.stroke = "#ffffff";
             this.onPlayerName_2.strokeThickness = 3;
 
+        //  스테미너
+        this.staminaBar_1 = new HealthBar(this.game, {
+            width: 50, 
+            height: 10, 
+            x: this.player_1.x, 
+            y: this.player_1.y+40, 
+            bg: {color: '#7f8c8d'}, 
+            bar: {color: '#3c40c6'}
+        });
+        this.stamina_1 = 100;
+        this.staminaBar_1.setPercent(this.stamina_1);
+
+        this.staminaBar_2 = new HealthBar(this.game, {
+            width: 50, 
+            height: 10, 
+            x: this.player_2.x, 
+            y: this.player_2.y+40, 
+            bg: {color: '#7f8c8d'}, 
+            bar: {color: '#3c40c6'}
+        });
+        this.stamina_2 = 100;
+        this.staminaBar_2.setPercent(this.stamina_2);
+        
         //  킥 버튼 효과
         this.ef_kick_1 = game.add.sprite(this.player_1.x, this.player_1.y, "ef_kick");
         this.ef_kick_1.anchor.set(0.5);
@@ -363,10 +389,10 @@ var Game = {
         }
 
         //  속도 제한
-        this.player_1.body.velocity.x = game.math.clamp(this.player_1.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        this.player_1.body.velocity.y = game.math.clamp(this.player_1.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
-        this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+        this.player_1.body.velocity.x = game.math.clamp(this.player_1.body.velocity.x, -playerMaxSpeed_1, playerMaxSpeed_1);
+        this.player_1.body.velocity.y = game.math.clamp(this.player_1.body.velocity.y, -playerMaxSpeed_1, playerMaxSpeed_1);
+        this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed_2, playerMaxSpeed_2);
+        this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed_2, playerMaxSpeed_2);
 
         //  이름표
         this.onPlayerName_1.x = this.player_1.x;
@@ -396,6 +422,51 @@ var Game = {
             this.player_1.scale.x = this.playerHspd_1 * playerScale_1;
         if (this.playerHspd_2 != 0)
             this.player_2.scale.x = this.playerHspd_2 * playerScale_1;
+
+        //  스태미너
+        this.staminaBar_1.setPosition(this.player_1.x, this.player_1.y+40);
+        this.staminaBar_1.setPercent(this.stamina_1);
+
+        this.staminaBar_2.setPosition(this.player_2.x, this.player_2.y+40);
+        this.staminaBar_2.setPercent(this.stamina_2);
+        
+        this.stamina_1 = game.math.clamp(this.stamina_1, -100, 100);
+        this.stamina_2 = game.math.clamp(this.stamina_2, -100, 100);
+
+        //  대시 설정
+        if(this.dashButton_1.isDown){
+            playerMaxSpeed_1 = dashSpeed_1;
+            if(this.stamina_1 > 0)
+                this.stamina_1 -= 0.5;
+        }
+        else if(!this.dashButton_1.isDown){
+            playerMaxSpeed_1 = 150;
+            if(this.stamina_1 < 100){
+                setTimeout(()=>{this.stamina_1 += 0.5;}, 3000);
+            }
+        }
+
+        if(this.dashButton_2.isDown){
+            playerMaxSpeed_2 = dashSpeed_2;
+            if(this.stamina_2 > 0)
+                this.stamina_2 -= 0.5;
+        }
+        else if(!this.dashButton_1.isDown){
+            playerMaxSpeed_2 = 150;
+            if(this.stamina_2 < 100){
+                setTimeout(()=>{this.stamina_2 += 0.5;}, 3000);
+            }
+        }
+
+        if(this.stamina_1 <= 0)
+            dashSpeed_1 = 150;
+        else if(this.stamina_1 > 0)
+            dashSpeed_1 = 200;
+        if(this.stamina_2 <= 0)
+            dashSpeed_2 = 150;
+        else if(this.stamina_2 > 0)
+            dashSpeed_2 = 200;
+        
     
         //  킥 설정
         if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
