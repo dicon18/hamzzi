@@ -7,9 +7,10 @@ var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
 var playerMaxSpeed = 150;
-var playerShootPower = 5;
+var playerShootPower = 500;
 
 //  볼
+var ball;
 var ballMaxSpeed = 1000;
 var ballScale = 1.5;
 
@@ -312,7 +313,7 @@ var Game = {
         this.ef_kick_1.anchor.set(0.5);
         this.ef_kick_1.width = 100;
         this.ef_kick_1.height = 100;
-        this.ef_kick_1.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],10,true);
+        this.ef_kick_1.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],15,true);
         this.ef_kick_1.animations.play("ef_kick");
         this.ef_kick_1.alpha = 0;
 
@@ -320,7 +321,7 @@ var Game = {
         this.ef_kick_2.anchor.set(0.5);
         this.ef_kick_2.width = 100;
         this.ef_kick_2.height = 100;
-        this.ef_kick_2.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],10,true);
+        this.ef_kick_2.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],15,true);
         this.ef_kick_2.animations.play("ef_kick");
         this.ef_kick_2.alpha = 0;
 
@@ -396,20 +397,13 @@ var Game = {
         if (this.playerHspd_2 != 0)
             this.player_2.scale.x = this.playerHspd_2 * playerScale_1;
     
-        //  슛 해제
-        // if (!this.kickButton_1.isDown)
-        //     this.isKick_1 = false;
-        // if (!this.kickButton_2.isDown)
-        //     this.isKick_2 = false;
-
-        // 충돌 범위 확인(킥 기능)
+        //  킥 설정
         if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
             if (this.kickButton_1.isDown && this.isKick_1 == false) {
                 sfx_kick.play();
-                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-                this.ball.body.velocity.x *= playerShootPower;
-                this.ball.body.velocity.y *= playerShootPower;
+                this.ball.body.angle = (game.math.angleBetween(this.player_1.x,this.player_1.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
+                this.ball.body.moveForward(playerShootPower);
+                console.log(this.ball.body.angle);
                 this.isKick_1 = true;
             }
             else if(!this.kickButton_1.isDown)
@@ -422,10 +416,9 @@ var Game = {
         if (Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds())){
             if (this.kickButton_2.isDown && this.isKick_2 == false) {
                 sfx_kick.play();
-                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-                this.ball.body.velocity.x *= playerShootPower;
-                this.ball.body.velocity.y *= playerShootPower;
+                this.ball.body.angle = (game.math.angleBetween(this.player_2.x,this.player_2.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
+                this.ball.body.moveForward(playerShootPower);
+                console.log(this.ball.body.angle);
                 this.isKick_2 = true;
             }
             else if(!this.kickButton_2.isDown)
@@ -562,23 +555,6 @@ var Game = {
             }
         }
     },
-
-    // kick: function() {
-    //     if (this.kickButton_1.isDown && this.isKick_1 == false) {
-    //         sfx_kick.play();
-    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-    //         this.isKick_1 = true;
-    //     }
-    // },
-    // kick2: function() {
-    //     if (this.kickButton_2.isDown && this.isKick_2 == false) {
-    //         sfx_kick.play();
-    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-    //         this.isKick_2 = true;
-    //     }
-    // },
 
     orangeGoalText: function() {
         var style = {
