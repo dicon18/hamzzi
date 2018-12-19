@@ -1,4 +1,11 @@
 //	게임 서버
+var playerList = [];
+
+var timerSec = "00";
+var timerMin = 3;
+var orangeScore = 0;
+var blueScore = 0;
+
 //#region 모듈
 const express = require('express');
 const app = express();
@@ -17,90 +24,166 @@ server.listen(80, function() {
 });
 //#endregion
 
-//  플레이어 리스트
-var playerList = [];
-
-//  서버 물리 세계
+//#region 서버 물리 세계
 var world = new p2.World({
     gravity : [0,0]
 });
 
-//  Delta Time
-var lastTimeSeconds = (new Date).getTime();
+var playerMaterial = new p2.Material();
+var ballMaterial = new p2.Material();
+var boxMaterial = new p2.Material();
 
-//	볼 설정
+world.addContactMaterial(new p2.ContactMaterial(playerMaterial, ballMaterial, {
+    friction: 0,
+    restitution: 0.5
+}));
+world.addContactMaterial(new p2.ContactMaterial(ballMaterial, boxMaterial, {
+    friction: 0,
+    restitution: 1
+}));
+
+//#region 볼 생성
 var ball = new p2.Body({
-	mass: 1,
-	position: [300, 300],
+    mass: 1,
+    damping: 0.1,
+	position: [640, 360],
 	angle: 0,
 	velocity: [0, 0],
 	angularVelocity: 0,
 	fixedRotation: false
 });
-ball.addShape(new p2.Circle({ radius: 16 }));
+ball.addShape(new p2.Circle({ radius: 16, material: ballMaterial }));
 world.addBody(ball);
+//#endregion
+
+//#region 충돌 박스 생성
+var boxes = [];
+boxes[0] = new p2.Body({ position: [640, 40] });
+    boxes[0].addShape(new p2.Box({ width: 1140, height: 2, material: boxMaterial }));
+boxes[1] = new p2.Body({ position: [640, 680] });
+    boxes[1].addShape(new p2.Box({ width: 1140, height: 2, material: boxMaterial }));
+
+boxes[2] = new p2.Body({ position: [67, 145] });
+    boxes[2].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
+boxes[3] = new p2.Body({ position: [1210, 145] });
+    boxes[3].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
+boxes[4] = new p2.Body({ position: [67, 580] });
+    boxes[4].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
+boxes[5] = new p2.Body({ position: [1210, 580] });
+    boxes[5].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
+    
+boxes[6] = new p2.Body({ position: [34, 250] });
+    boxes[6].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
+boxes[7] = new p2.Body({ position: [34, 465] });
+    boxes[7].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
+boxes[8] = new p2.Body({ position: [1244, 250] });
+    boxes[8].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
+boxes[9] = new p2.Body({ position: [1244, 465] });
+    boxes[9].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
+
+boxes[10] = new p2.Body({ position: [4, 232] });
+    boxes[10].addShape(new p2.Box({ width: 2, height: 465, material: boxMaterial }));
+boxes[11] = new p2.Body({ position: [1276, 232] });
+    boxes[11].addShape(new p2.Box({ width: 2, height: 465, material: boxMaterial }));
+
+for (var i = 0; i < boxes.length; i++) {
+    boxes[i].mass = 0;
+    world.addBody(boxes[i]);
+}
+//#endregion
+
+//#endregion
 
 //#region main
 io.on('connection', function(socket) {
     socket.on('new_player', onNewPlayer);
     socket.on('disconnect', onDisconnect);
-    socket.on('input_fired', onInputFired);
-})
 
-setInterval(function() {
-	var dt = (new Date).getTime() - lastTimeSeconds;
-	lastTimeSeconds = (new Date).getTime();
-	world.step(1 / 60, dt, 10);
-    
-    //  Update
-    io.emit('updateBall', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
-}, 1000/60);
+    socket.on('player_move', onplayer_move);
+    //socket.on('player_kick', onplayer_move);
+
+    //  Delta Time
+    var lastTimeSeconds = (new Date).getTime();
+
+    setInterval(function() {
+        var dt = (new Date).getTime() - lastTimeSeconds;
+        lastTimeSeconds = (new Date).getTime();
+        world.step(1 / 60, dt, 10);
+        
+        //  Update
+        //  플레이어 업데이트
+        var movePlayer = find_playerID(socket.id);
+        if (!movePlayer) {
+            return;
+        }
+        socket.emit('move_player', {
+            x: movePlayer.body.position[0],
+            y: movePlayer.body.position[1]
+        });
+        socket.broadcast.emit('move_oPlayer', {
+            id: movePlayer.id,
+            x: movePlayer.body.position[0],
+            y: movePlayer.body.position[1]
+        });
+        
+        //  볼 업데이트
+        io.emit('update_ball', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
+
+        //  충돌
+        for (var i = 0; i < playerList.length; i++) {
+            if (p2.Broadphase.boundingRadiusCheck(playerList[i].body, ball)) {
+                console.log("col");
+            }
+        }
+
+    }, 1000/60);
+});
 //#endregion
 
 //#region 함수
 //  새로운 플레이어
 function onNewPlayer(data) {
-    var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.speed);
+    var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.scale, data.speed, data.speedMax, data.shootPower, data.name);
 
     //  플레이어 물리 적용
-    playerBody = new p2.Body({
-        mass: 1,
+    newPlayer.body = new p2.Body({
+        mass: 5,
+        damping: 0.1,
         position: [newPlayer.x, newPlayer.y],
         angle: 0,
         velocity: [0, 0],
         angularVelocity: 0,
         fixedRotation: true
     });
-    playerBody.addShape(new p2.Circle({ radius: newPlayer.radius }));
-    newPlayer.playerBody = playerBody;
-    world.addBody(newPlayer.playerBody);
-
-    //  플레이어 정보
-    var current_info = {
-        id: newPlayer.id, 
-        x: newPlayer.x,
-        y: newPlayer.y,
-        sprite: newPlayer.sprite,
+    newPlayer.body.addShape(new p2.Circle({ radius: newPlayer.radius }));
+    world.addBody(newPlayer.body);
+    for (var i = 0; i < boxes.length; i++) {
+        world.disableBodyCollision(newPlayer.body, boxes[i]);
     }
 
     //  접속된 플레이어 정보 가져오기
     for (var i = 0; i < playerList.length; i++) {
-        existPlayer = playerList[i];
-        var player_info = {
-            id: existPlayer.id,
-            x: existPlayer.x,
-            y: existPlayer.y,
-            sprite: existPlayer.sprite,
-        };
-        this.emit('new_oPlayer', player_info);
+        this.emit('create_oPlayer', {
+            id: playerList[i].id,
+            x: playerList[i].body.position[0],
+            y: playerList[i].body.position[1],
+            sprite: playerList[i].sprite,
+            name: playerList[i].name
+        });
     }
 
     //  나를 제외한 모든 소켓에게 나의 정보 전송
-    this.broadcast.emit('new_oPlayer', current_info);
+    this.broadcast.emit('create_oPlayer', {
+        id: newPlayer.id, 
+        x: newPlayer.x,
+        y: newPlayer.y,
+        sprite: newPlayer.sprite,
+        name: newPlayer.name
+    });
     playerList.push(newPlayer);
 
     //  볼 정보 전송
-	this.emit('createBall', { x: ball.position[0], y: ball.position[0], angle: ball.angle });
+	this.emit('create_ball', { x: ball.position[0], y: ball.position[0], angle: ball.angle });
 
     console.log("created new player with id " + this.id);
 }
@@ -116,33 +199,13 @@ function onDisconnect() {
     console.log("disconnect player " + this.id);
 }
 
-//	입력
-function onInputFired(data) {
+//  플레이어 이동
+function onplayer_move(data) {
     var movePlayer = find_playerID(this.id); 
-    if (!movePlayer || !movePlayer.isInputDelay) {
-        return;
-    }
-    //  입력 지연
-    setTimeout(function() { movePlayer.isInputDelay = true }, 10);
-    movePlayer.isInputDelay = false;
-
-    //  플레이어 이동
-    movePlayer.playerBody.velocity[0] = data.hspd * movePlayer.speed;
-    movePlayer.playerBody.velocity[1] = data.vspd * movePlayer.speed;
-    movePlayer.x = movePlayer.playerBody.position[0];
-    movePlayer.y = movePlayer.playerBody.position[1];
-
-    var info = {
-		x: movePlayer.x,
-		y: movePlayer.y
-    }
-    var movePlayerData = {
-        id: movePlayer.id,
-		x: movePlayer.x,
-		y: movePlayer.y
-    }
-	this.emit("input_recieved", info);
-	this.broadcast.emit('move_oPlayer', movePlayerData);
+    movePlayer.body.velocity[0] += data.hspd * movePlayer.speed;
+    movePlayer.body.velocity[1] += data.vspd * movePlayer.speed;
+    movePlayer.body.velocity[0] = clamp(movePlayer.body.velocity[0], -movePlayer.speedMax, movePlayer.speedMax);
+    movePlayer.body.velocity[1] = clamp(movePlayer.body.velocity[1], -movePlayer.speedMax, movePlayer.speedMax);
 }
 
 //  플레이어 ID 찾기
@@ -158,14 +221,26 @@ function find_playerID(id) {
 
 //#region 클래스
 //  플레이어 클래스
-var Player = function(id, startX, startY, sprite, radius, speed) {
+var Player = function(id, startX, startY, sprite, radius, scale, speed, speedMax, shootPower, name) {
     this.id = id;
     this.x = startX;
     this.y = startY;
     this.sprite = sprite;
     this.radius = radius;
+    this.scale = scale;
     this.speed = speed;
+    this.speedMax = speedMax;
+    this.shootPower = shootPower;
+    this.name = name;
+}
+//#endregion
 
-    this.isInputDelay = true;
+//#region UTIL
+function clamp(val, min, max) {
+    if (val > max)
+        return max
+    if (val < min)
+        return min
+    return val
 }
 //#endregion
