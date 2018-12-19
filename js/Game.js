@@ -6,17 +6,19 @@ var playerName_2 = "";
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
-var playerMaxSpeed_1 = 150;
-var playerMaxSpeed_2 = 150;
-var playerShootPower = 500;
+var maxSpeed;
+var playerMaxSpeed_1 = maxSpeed;
+var playerMaxSpeed_2 = maxSpeed;
+var playerShootPower;
 
 //  대시
-var dashSpeed_1 = 200;
-var dashSpeed_2 = 200;
+var maxDashSpeed;
+var dashSpeed_1 = maxDashSpeed;
+var dashSpeed_2 = maxDashSpeed;
 
 //  볼
 var ball;
-var ballMaxSpeed = 1000;
+var ballMaxSpeed;
 var ballScale = 1.5;
 
 //  환경
@@ -430,8 +432,8 @@ var Game = {
         this.staminaBar_2.setPosition(this.player_2.x, this.player_2.y+40);
         this.staminaBar_2.setPercent(this.stamina_2);
         
-        this.stamina_1 = game.math.clamp(this.stamina_1, -100, 100);
-        this.stamina_2 = game.math.clamp(this.stamina_2, -100, 100);
+        this.stamina_1 = game.math.clamp(this.stamina_1, 0, 100);
+        this.stamina_2 = game.math.clamp(this.stamina_2, 0, 100);
 
         //  대시 설정
         if(this.dashButton_1.isDown){
@@ -440,7 +442,7 @@ var Game = {
                 this.stamina_1 -= 0.5;
         }
         else if(!this.dashButton_1.isDown){
-            playerMaxSpeed_1 = 150;
+            playerMaxSpeed_1 = maxSpeed;
             if(this.stamina_1 < 100){
                 setTimeout(()=>{this.stamina_1 += 0.5;}, 3000);
             }
@@ -452,20 +454,20 @@ var Game = {
                 this.stamina_2 -= 0.5;
         }
         else if(!this.dashButton_1.isDown){
-            playerMaxSpeed_2 = 150;
+            playerMaxSpeed_2 = maxSpeed;
             if(this.stamina_2 < 100){
-                setTimeout(()=>{this.stamina_2 += 0.5;}, 3000);
+                setTimeout(()=>{this.stamina_2 += 0.5;}, 5000);
             }
         }
 
         if(this.stamina_1 <= 0)
-            dashSpeed_1 = 150;
+            dashSpeed_1 = maxSpeed;
         else if(this.stamina_1 > 0)
-            dashSpeed_1 = 200;
+            dashSpeed_1 = maxDashSpeed;
         if(this.stamina_2 <= 0)
-            dashSpeed_2 = 150;
+            dashSpeed_2 = maxSpeed;
         else if(this.stamina_2 > 0)
-            dashSpeed_2 = 200;
+            dashSpeed_2 = maxDashSpeed;
         
     
         //  킥 설정

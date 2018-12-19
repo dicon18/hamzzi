@@ -55,7 +55,7 @@ var custom = {
             this.bt_prevPlayer_2.scale.x = -0.5;
 
         //  맵 이름
-        this.text_mapName = game.add.text(CANVAS_WIDTH / 2, 200, bg_name[bg_select], {
+        this.text_mapName = game.add.text(CANVAS_WIDTH / 2, 250, bg_name[bg_select], {
             font: "bold 80px BMJUA",
         });
             this.text_mapName.anchor.set(0.5);
@@ -71,11 +71,6 @@ var custom = {
         this.timer = game.time.create(false);
         this.timer.loop(150, this.nextBackGround, this);
         this.timer.start();
-
-        //  게임 시작 버튼
-        this.bt_gameStart = game.add.button(CANVAS_WIDTH / 2, 600, "spr_button", this.gameStart, this);
-            this.bt_gameStart.anchor.set(0.5);
-            this.bt_gameStart.scale.set(0.5);
 
         //  햄찌 이름(별명) 입력창
         this.input_playerName_1 = game.add.inputField(100, 300, {
@@ -104,6 +99,49 @@ var custom = {
             textAlign: "center",
             type: PhaserInput.InputType.text
         });
+
+        //  게임 시작 버튼
+        this.bt_gameStart = game.add.button(CANVAS_WIDTH / 2, 600, "spr_button", this.gameStart, this);
+            this.bt_gameStart.anchor.set(0.5);
+            this.bt_gameStart.scale.set(0.5);
+
+        //  모드
+        this.text_mode = game.add.text(CANVAS_WIDTH / 2, 60, '폭렬모드', {
+            font: "bold 30px BMJUA",
+        });
+            this.text_mode.anchor.set(0.5);
+            this.text_mode.stroke = "#ffffff";
+            this.text_mode.strokeThickness = 6;
+
+        //  모드 선택 버튼
+        this.isToggle = false;
+        if(this.isToggle == false){
+            maxSpeed = 150;
+            maxDashSpeed = 250;
+            ballMaxSpeed = 500;
+            playerShootPower = 500;
+        }
+        this.toggleButton = game.add.button(CANVAS_WIDTH / 2, 120, 'spr_toggle', ()=>{
+            sfx_button.play();
+            if(this.isToggle == false){
+                this.toggleButton.setFrames(1);
+                this.isToggle = true;
+                maxSpeed = 300;
+                maxDashSpeed = 500;
+                ballMaxSpeed = 1500;
+                playerShootPower = 1500;
+            }
+            else{
+                this.toggleButton.setFrames(0);
+                this.isToggle = false;
+                maxSpeed = 150;
+                maxDashSpeed = 250;
+                ballMaxSpeed = 500;
+                playerShootPower = 500;
+            }
+        }, this);
+        this.toggleButton.anchor.set(0.5);
+        this.toggleButton.scale.set(0.5);
     },
 
     update: function() {
@@ -173,6 +211,7 @@ var custom = {
         sfx_button.play();
         playerName_1 = this.input_playerName_1.value;
         playerName_2 = this.input_playerName_2.value;
+        console.log(`MaxSpeed : ${maxSpeed}|MaxDashSpeed : ${maxDashSpeed}|BallMaxSpeed : ${ballMaxSpeed}|PlayerShootPower : ${playerShootPower}`);
         game.state.start("tutorial");
     }
 }
