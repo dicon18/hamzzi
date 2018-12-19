@@ -8,7 +8,7 @@ var playerScale_2 = 2;
 var playerAccSpeed = 10;
 var playerMaxSpeed_1 = 150;
 var playerMaxSpeed_2 = 150;
-var playerShootPower = 500;
+var playerKickPower = 500;
 
 //  대시
 var dashSpeed_1 = 200;
@@ -430,8 +430,8 @@ var Game = {
         this.staminaBar_2.setPosition(this.player_2.x, this.player_2.y+40);
         this.staminaBar_2.setPercent(this.stamina_2);
         
-        this.stamina_1 = game.math.clamp(this.stamina_1, -100, 100);
-        this.stamina_2 = game.math.clamp(this.stamina_2, -100, 100);
+        this.stamina_1 = game.math.clamp(this.stamina_1, 0, 100);
+        this.stamina_2 = game.math.clamp(this.stamina_2, 0, 100);
 
         //  대시 설정
         if(this.dashButton_1.isDown){
@@ -461,20 +461,18 @@ var Game = {
         if(this.stamina_1 <= 0)
             dashSpeed_1 = 150;
         else if(this.stamina_1 > 0)
-            dashSpeed_1 = 200;
+            dashSpeed_1 = 250;
         if(this.stamina_2 <= 0)
             dashSpeed_2 = 150;
         else if(this.stamina_2 > 0)
-            dashSpeed_2 = 200;
+            dashSpeed_2 = 250;
         
-    
         //  킥 설정
         if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
             if (this.kickButton_1.isDown && this.isKick_1 == false) {
                 sfx_kick.play();
-                this.ball.body.angle = (game.math.angleBetween(this.player_1.x,this.player_1.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
-                this.ball.body.moveForward(playerShootPower);
-                console.log(this.ball.body.angle);
+                this.ball.body.angle = (game.math.angleBetween(this.player_1.x, this.player_1.y, this.ball.x, this.ball.y) * 180 / Math.PI) + 90;
+                this.ball.body.moveForward(playerKickPower);
                 this.isKick_1 = true;
             }
             else if(!this.kickButton_1.isDown)
@@ -487,9 +485,8 @@ var Game = {
         if (Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds())){
             if (this.kickButton_2.isDown && this.isKick_2 == false) {
                 sfx_kick.play();
-                this.ball.body.angle = (game.math.angleBetween(this.player_2.x,this.player_2.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
-                this.ball.body.moveForward(playerShootPower);
-                console.log(this.ball.body.angle);
+                this.ball.body.angle = (game.math.angleBetween(this.player_2.x, this.player_2.y, this.ball.x, this.ball.y) * 180 / Math.PI) + 90;
+                this.ball.body.moveForward(playerKickPower);
                 this.isKick_2 = true;
             }
             else if(!this.kickButton_2.isDown)

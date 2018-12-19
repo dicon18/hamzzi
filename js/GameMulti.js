@@ -1,20 +1,19 @@
 //  멀티플레이 게임 클라이언트
+//#region 글로벌 변수
 //  서버
 var socket;     
 var isConnected = false;
-var isBalled = false;
+var isBall_exist = false;
 
 //  플레이어
 var playerName = "앙준하띠";
 var playerScale = 2;
-var playerAccSpeed = 1;
-var playerMaxSpeed = 10;
-var playerShootPower = 500;
 
 var oPlayerList = [];
 
-//  볼
-var ball;
+var timerSec = "00";
+var timerMin = 3;
+//#endregion
 
 //#region main
 var gameMulti = {
@@ -24,9 +23,16 @@ var gameMulti = {
     },
 
     create: function() {
+        //  환경
+        this.blueScore = 0;
+        this.orangeScore = 0;
+        this.isPause = false;
+
+        //  키 설정
         this.cursors = game.input.keyboard.createCursorKeys();
         this.kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+        //  소켓 수신
         socket.on("connect", onConnected);
         socket.on("remove_player", onRemove_oPlayer);
 
@@ -34,8 +40,11 @@ var gameMulti = {
         socket.on("move_oPlayer", onMove_oPlayer);
         socket.on("move_player", onMove_player);
 
-        socket.on("create_ball", onCreateBall);
+        socket.on("server_info", onServerInfo);
         socket.on("update_ball", onUpdateBall);
+
+        socket.on("blueGoal", onBlueGoal);
+        socket.on("reset", onReset);
 
         //  배경
         game.add.image(0, 0, bg_sprite[0]);
@@ -59,6 +68,20 @@ var gameMulti = {
         this.isKick = false;
         //#endregion 플레이어
 
+        //#region UI
+        //  점수
+        this.scoreText = game.add.text(CANVAS_WIDTH / 2, 90, this.blueScore + " : " + this.orangeScore, {
+            font: "30px BMJUA",
+            fill: "#000000"
+        });
+            this.scoreText.addColor("#4834d4", 0);
+            this.scoreText.addColor("#000000", 2);
+            this.scoreText.addColor("#e67e22", 4);
+            this.scoreText.anchor.set(0.5);
+            this.scoreText.stroke = "#ffffff";
+            this.scoreText.strokeThickness = 3;
+        //#endregion
+
         console.log("Client started");
     },
 
@@ -74,7 +97,11 @@ var gameMulti = {
                 });
             }
 
-            //  슛
+            //  킥
+            if (this.kickButton.isDown) {
+                socket.emit("player_kick");
+            }
+
             if (!this.kickButton.isDown)
                 this.isKick = false;
 
@@ -87,6 +114,8 @@ var gameMulti = {
                 oPlayerList[i].onPlayerName.y = oPlayerList[i].player.y - 30;
                 console.log(oPlayerList[i].onPlayerName.x);
             }
+
+            this.scoreText.setText(blueScore + " : " + orangeScore);
         }
     },
 }
@@ -101,14 +130,13 @@ function onConnected() {
         sprite: chr_sprite[0],
         radius: gameMulti.player.width / 2,
         scale: playerScale,
-        speed: playerAccSpeed, 
-        speedMax: playerMaxSpeed,
-        shootPower: playerShootPower,
+        speed: 2, 
+        speedMax: 15,
+        kickPower: playerKickPower,
         name: playerName
     });
 
     isConnected = true;
-
     console.log("Connected to server");
 }
 
@@ -149,25 +177,48 @@ function onRemove_oPlayer(data) {
 	removePlayer.onPlayerName.destroy();
 	oPlayerList.splice(oPlayerList.indexOf(removePlayer), 1);
 }
-//#endregion
 
-//#region 볼
-//  볼 생성
-function onCreateBall(data) {
-    ball = game.add.sprite(data.x, data.y, 'spr_ball');
-    ball.angle = data.angle
-    ball.anchor.setTo(0.5,0.5);
+//  서버 정보 수신
+function onServerInfo(data) {
+    gameMulti.ball = game.add.sprite(data.ball_x, data.ball_y, 'spr_ball');
+        gameMulti.ball.angle = data.ball_angle
+        gameMulti.ball.anchor.setTo(0.5, 0.5);
+        gameMulti.ball.scale.set(ballScale);
+    orangeScore = data.orangeScore;
+    blueScore = data.blueScore;
 
-    isBalled = true;
+    isBall_exist = true;
 }
 
 //  볼 업데이트
 function onUpdateBall(data) {
-    if (isBalled == true) {
-        ball.x = data.x;
-        ball.y = data.y;
-        ball.angle = data.angle;
+    if (isBall_exist == true) {
+        gameMulti.ball.x = data.x;
+        gameMulti.ball.y = data.y;
+        gameMulti.ball.angle = data.angle;
     }
+}
+
+//  골
+function onBlueGoal() {
+    var style = {
+        font: "100px BMJUA",
+        fill: "#4834d4",
+        align: "center"
+    };
+    this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "블루팀 득점", style);
+        this.text.anchor.set(0.5);
+        this.text.stroke = "#ffffff";
+        this.text.strokeThickness = 3;
+        this.text.bringToTop();
+    this.isPause = true;
+    blueScore++;
+}
+
+//  게임 초기화
+function onReset() {
+    this.isPause = false;
+    this.text.destroy();
 }
 //#endregion
 

@@ -56,7 +56,7 @@ function getRandomInt(min, max) {
 //#endregion
 
 var boot = {
-    preload: function () {
+    preload: function() {
         //  환경설정
         game.stage.disableVisibilityChange = true;
 
@@ -112,7 +112,7 @@ var boot = {
         });
     },
 
-    create: function () {
+    create: function() {
         /// 사운드
         //  BGM
         bgm_inGame = game.add.audio("bgm_inGame");
@@ -125,6 +125,6 @@ var boot = {
         sfx_startWhistle = game.add.audio("sfx_startWhistle");
         sfx_endWhistle = game.add.audio("sfx_endWhistle");
 
-        game.state.start("main");
+        game.state.start("gameMulti");
     }
 }
