@@ -13,6 +13,7 @@ var chr_sprite = [];
     chr_sprite[5] = "spr_chr_6";
     chr_sprite[6] = "spr_chr_7";
     chr_sprite[7] = "spr_chr_8";
+    chr_sprite[8] = "spr_chr_9";
 
 var chr_select_1 = getRandomInt(0, chr_sprite.length - 1);
 var chr_select_2 = getRandomInt(0, chr_sprite.length - 1);
@@ -26,6 +27,7 @@ var chr_name = [];
     chr_name[5] = "무지개찌";
     chr_name[6] = "흰찌";
     chr_name[7] = "토끼찌";
+    chr_name[8] = "파카찌";
 
 //  맵
 var bg_select = 0;
@@ -75,6 +77,7 @@ var boot = {
         game.load.spritesheet("spr_chr_6", "assets/anim/spr_chr_6.png", 20, 20, 9);
         game.load.spritesheet("spr_chr_7", "assets/anim/spr_chr_7.png", 20, 20, 9);
         game.load.spritesheet("spr_chr_8", "assets/anim/spr_chr_8.png", 20, 24, 9);
+        game.load.spritesheet("spr_chr_9", "assets/anim/spr_chr_9.png", 20, 23, 9);
 
         game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 192, 192, 20);
 
