@@ -33,7 +33,7 @@ var main = {
         isAnyKey = false;
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
-                ef_button.play();
+                sfx_button.play();
                 game.state.start("custom");
                 isAnyKey = true;
             }

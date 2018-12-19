@@ -6,10 +6,16 @@ var playerName_2 = "";
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
-var playerMaxSpeed = 150;
-var playerShootPower = 5;
+var playerMaxSpeed_1 = 150;
+var playerMaxSpeed_2 = 150;
+var playerShootPower = 500;
+
+//  대시
+var dashSpeed_1 = 200;
+var dashSpeed_2 = 200;
 
 //  볼
+var ball;
 var ballMaxSpeed = 1000;
 var ballScale = 1.5;
 
@@ -39,6 +45,8 @@ var Game = {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.kickButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.kickButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        this.dashButton_1 = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        this.dashButton_2 = game.input.keyboard.addKey(Phaser.Keyboard.QUOTES)
 
         //  충돌 그룹
         this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -303,7 +311,49 @@ var Game = {
             this.onPlayerName_2.stroke = "#ffffff";
             this.onPlayerName_2.strokeThickness = 3;
 
+        //  스테미너
+        this.staminaBar_1 = new HealthBar(this.game, {
+            width: 50, 
+            height: 10, 
+            x: this.player_1.x, 
+            y: this.player_1.y+40, 
+            bg: {color: '#7f8c8d'}, 
+            bar: {color: '#3c40c6'}
+        });
+        this.stamina_1 = 100;
+        this.staminaBar_1.setPercent(this.stamina_1);
+
+        this.staminaBar_2 = new HealthBar(this.game, {
+            width: 50, 
+            height: 10, 
+            x: this.player_2.x, 
+            y: this.player_2.y+40, 
+            bg: {color: '#7f8c8d'}, 
+            bar: {color: '#3c40c6'}
+        });
+        this.stamina_2 = 100;
+        this.staminaBar_2.setPercent(this.stamina_2);
+        
+        //  킥 버튼 효과
+        this.ef_kick_1 = game.add.sprite(this.player_1.x, this.player_1.y, "ef_kick");
+        this.ef_kick_1.anchor.set(0.5);
+        this.ef_kick_1.width = 100;
+        this.ef_kick_1.height = 100;
+        this.ef_kick_1.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],15,true);
+        this.ef_kick_1.animations.play("ef_kick");
+        this.ef_kick_1.alpha = 0;
+
+        this.ef_kick_2 = game.add.sprite(this.player_2.x, this.player_2.y, "ef_kick");
+        this.ef_kick_2.anchor.set(0.5);
+        this.ef_kick_2.width = 100;
+        this.ef_kick_2.height = 100;
+        this.ef_kick_2.animations.add("ef_kick",[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],15,true);
+        this.ef_kick_2.animations.play("ef_kick");
+        this.ef_kick_2.alpha = 0;
+
         //  깊이
+        this.player_1.bringToTop();
+        this.player_2.bringToTop();
         this.onPlayerName_2.bringToTop();
         this.onPlayerName_1.bringToTop();
         this.timerText.bringToTop();
@@ -339,10 +389,10 @@ var Game = {
         }
 
         //  속도 제한
-        this.player_1.body.velocity.x = game.math.clamp(this.player_1.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        this.player_1.body.velocity.y = game.math.clamp(this.player_1.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
-        this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed, playerMaxSpeed);
-        this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed, playerMaxSpeed);
+        this.player_1.body.velocity.x = game.math.clamp(this.player_1.body.velocity.x, -playerMaxSpeed_1, playerMaxSpeed_1);
+        this.player_1.body.velocity.y = game.math.clamp(this.player_1.body.velocity.y, -playerMaxSpeed_1, playerMaxSpeed_1);
+        this.player_2.body.velocity.x = game.math.clamp(this.player_2.body.velocity.x, -playerMaxSpeed_2, playerMaxSpeed_2);
+        this.player_2.body.velocity.y = game.math.clamp(this.player_2.body.velocity.y, -playerMaxSpeed_2, playerMaxSpeed_2);
 
         //  이름표
         this.onPlayerName_1.x = this.player_1.x;
@@ -350,26 +400,81 @@ var Game = {
         this.onPlayerName_2.x = this.player_2.x;
         this.onPlayerName_2.y = this.player_2.y - 30;
 
+        //  킥 버튼 효과
+        this.ef_kick_1.x = this.player_1.x;
+        this.ef_kick_1.y = this.player_1.y;
+
+        this.ef_kick_2.x = this.player_2.x;
+        this.ef_kick_2.y = this.player_2.y;
+
+        if(this.kickButton_1.isDown && this.isKick_1 == false)
+            this.ef_kick_1.alpha = 1;
+        else
+            this.ef_kick_1.alpha = 0;
+        
+        if(this.kickButton_2.isDown && this.isKick_2 == false)
+            this.ef_kick_2.alpha = 1;
+        else
+            this.ef_kick_2.alpha = 0;
+
         //  방향 설정
         if (this.playerHspd_1 != 0)
             this.player_1.scale.x = this.playerHspd_1 * playerScale_1;
         if (this.playerHspd_2 != 0)
             this.player_2.scale.x = this.playerHspd_2 * playerScale_1;
-    
-        //  슛 해제
-        // if (!this.kickButton_1.isDown)
-        //     this.isKick_1 = false;
-        // if (!this.kickButton_2.isDown)
-        //     this.isKick_2 = false;
 
-        // 충돌 범위 확인
+        //  스태미너
+        this.staminaBar_1.setPosition(this.player_1.x, this.player_1.y+40);
+        this.staminaBar_1.setPercent(this.stamina_1);
+
+        this.staminaBar_2.setPosition(this.player_2.x, this.player_2.y+40);
+        this.staminaBar_2.setPercent(this.stamina_2);
+        
+        this.stamina_1 = game.math.clamp(this.stamina_1, -100, 100);
+        this.stamina_2 = game.math.clamp(this.stamina_2, -100, 100);
+
+        //  대시 설정
+        if(this.dashButton_1.isDown){
+            playerMaxSpeed_1 = dashSpeed_1;
+            if(this.stamina_1 > 0)
+                this.stamina_1 -= 0.5;
+        }
+        else if(!this.dashButton_1.isDown){
+            playerMaxSpeed_1 = 150;
+            if(this.stamina_1 < 100){
+                setTimeout(()=>{this.stamina_1 += 0.5;}, 3000);
+            }
+        }
+
+        if(this.dashButton_2.isDown){
+            playerMaxSpeed_2 = dashSpeed_2;
+            if(this.stamina_2 > 0)
+                this.stamina_2 -= 0.5;
+        }
+        else if(!this.dashButton_1.isDown){
+            playerMaxSpeed_2 = 150;
+            if(this.stamina_2 < 100){
+                setTimeout(()=>{this.stamina_2 += 0.5;}, 3000);
+            }
+        }
+
+        if(this.stamina_1 <= 0)
+            dashSpeed_1 = 150;
+        else if(this.stamina_1 > 0)
+            dashSpeed_1 = 200;
+        if(this.stamina_2 <= 0)
+            dashSpeed_2 = 150;
+        else if(this.stamina_2 > 0)
+            dashSpeed_2 = 200;
+        
+    
+        //  킥 설정
         if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
             if (this.kickButton_1.isDown && this.isKick_1 == false) {
-                ef_kick.play();
-                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-                this.ball.body.velocity.x *= playerShootPower;
-                this.ball.body.velocity.y *= playerShootPower;
+                sfx_kick.play();
+                this.ball.body.angle = (game.math.angleBetween(this.player_1.x,this.player_1.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
+                this.ball.body.moveForward(playerShootPower);
+                console.log(this.ball.body.angle);
                 this.isKick_1 = true;
             }
             else if(!this.kickButton_1.isDown)
@@ -381,11 +486,10 @@ var Game = {
 
         if (Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds())){
             if (this.kickButton_2.isDown && this.isKick_2 == false) {
-                ef_kick.play();
-                // this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-                // this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-                this.ball.body.velocity.x *= playerShootPower;
-                this.ball.body.velocity.y *= playerShootPower;
+                sfx_kick.play();
+                this.ball.body.angle = (game.math.angleBetween(this.player_2.x,this.player_2.y,this.ball.x,this.ball.y)*180/Math.PI)+90;
+                this.ball.body.moveForward(playerShootPower);
+                console.log(this.ball.body.angle);
                 this.isKick_2 = true;
             }
             else if(!this.kickButton_2.isDown)
@@ -427,7 +531,7 @@ var Game = {
         if (this.isGoal == false && this.isTimeOver == false) {
             if (this.ball.body.x >= 1232.9 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 blueScore++;
-                ef_cheer.play();
+                sfx_cheer.play();
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
                 this.blueGoalText();
@@ -439,7 +543,7 @@ var Game = {
             }
             if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
                 orangeScore++;
-                ef_cheer.play();
+                sfx_cheer.play();
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
                 this.orangeGoalText();
@@ -491,7 +595,7 @@ var Game = {
             }
             this.timer.stop();
             this.isTimeOver = true;
-            ef_endWhistle.play();
+            sfx_endWhistle.play();
             game.time.events.add(Phaser.Timer.SECOND * 5, this.resetGame);
         }
         //#endregion
@@ -508,7 +612,7 @@ var Game = {
     startGame: function() {
         Game.isGameStart = true;
         Game.text_ready.destroy();
-        ef_startWhistle.play();
+        sfx_startWhistle.play();
     },
 
     timerSecCnt: function() {
@@ -522,23 +626,6 @@ var Game = {
             }
         }
     },
-
-    // kick: function() {
-    //     if (this.kickButton_1.isDown && this.isKick_1 == false) {
-    //         ef_kick.play();
-    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-    //         this.isKick_1 = true;
-    //     }
-    // },
-    // kick2: function() {
-    //     if (this.kickButton_2.isDown && this.isKick_2 == false) {
-    //         ef_kick.play();
-    //         this.ball.body.velocity.x = Math.sign(this.ball.body.velocity.x) * playerShootPower;
-    //         this.ball.body.velocity.y = Math.sign(this.ball.body.velocity.y) * playerShootPower;
-    //         this.isKick_2 = true;
-    //     }
-    // },
 
     orangeGoalText: function() {
         var style = {

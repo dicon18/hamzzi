@@ -1,4 +1,4 @@
-# 햄찌볼 http://todak.me
+# 햄찌볼 http://todak.me(119.207.177.10)
 ![default](https://user-images.githubusercontent.com/36301491/48978208-45925980-f0eb-11e8-9046-2ff87479a250.PNG)
 ---
 BGM<br>
@@ -9,7 +9,7 @@ language: HTML/CSS/JS
 
 frontend: phaser
 
-backend: Node.js, socket.io
+backend: Node.js(p2), socket.io
 
 Raspbard Pi 3 B Model -> Intel X3440 Server
 
