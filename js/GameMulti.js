@@ -25,7 +25,8 @@ var gameMulti = {
 
     create: function() {
         this.cursors = game.input.keyboard.createCursorKeys();
-        
+        this.kickButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
         socket.on("connect", onConnected);
         socket.on("remove_player", onRemove_oPlayer);
 
@@ -54,6 +55,8 @@ var gameMulti = {
             this.onPlayerName.stroke = "#ffffff";
             this.onPlayerName.strokeThickness = 3;
             this.onPlayerName.bringToTop();
+
+        this.isKick = false;
         //#endregion 플레이어
 
         console.log("Client started");
@@ -70,6 +73,10 @@ var gameMulti = {
                     vspd: player_vspd
                 });
             }
+
+            //  슛
+            if (!this.kickButton.isDown)
+                this.isKick = false;
 
             //  UI
             this.onPlayerName.x = this.player.x;

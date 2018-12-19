@@ -63,27 +63,27 @@ boxes[0] = new p2.Body({ position: [640, 40] });
 boxes[1] = new p2.Body({ position: [640, 680] });
     boxes[1].addShape(new p2.Box({ width: 1140, height: 2, material: boxMaterial }));
 
-boxes[2] =  new p2.Body({ position: [67, 145] });
+boxes[2] = new p2.Body({ position: [67, 145] });
     boxes[2].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
-boxes[3] =  new p2.Body({ position: [1210, 145] });
+boxes[3] = new p2.Body({ position: [1210, 145] });
     boxes[3].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
-boxes[4] =  new p2.Body({ position: [67, 580] });
+boxes[4] = new p2.Body({ position: [67, 580] });
     boxes[4].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
-boxes[5] =  new p2.Body({ position: [1210, 580] });
+boxes[5] = new p2.Body({ position: [1210, 580] });
     boxes[5].addShape(new p2.Box({ width: 2, height: 200, material: boxMaterial }));
     
-boxes[6] =  new p2.Body({ position: [34, 250] });
+boxes[6] = new p2.Body({ position: [34, 250] });
     boxes[6].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
-boxes[7] =  new p2.Body({ position: [34, 465] });
+boxes[7] = new p2.Body({ position: [34, 465] });
     boxes[7].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
-boxes[8] =  new p2.Body({ position: [1244, 250] });
+boxes[8] = new p2.Body({ position: [1244, 250] });
     boxes[8].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
-boxes[9] =  new p2.Body({ position: [1244, 465] });
+boxes[9] = new p2.Body({ position: [1244, 465] });
     boxes[9].addShape(new p2.Box({ width: 68, height: 2, material: boxMaterial }));
 
-boxes[10] =  new p2.Body({ position: [4, 232] });
+boxes[10] = new p2.Body({ position: [4, 232] });
     boxes[10].addShape(new p2.Box({ width: 2, height: 465, material: boxMaterial }));
-boxes[11] =  new p2.Body({ position: [1276, 232] });
+boxes[11] = new p2.Body({ position: [1276, 232] });
     boxes[11].addShape(new p2.Box({ width: 2, height: 465, material: boxMaterial }));
 
 for (var i = 0; i < boxes.length; i++) {
@@ -128,6 +128,13 @@ io.on('connection', function(socket) {
         
         //  볼 업데이트
         io.emit('update_ball', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
+
+        //  충돌
+        for (var i = 0; i < playerList.length; i++) {
+            if (p2.Broadphase.boundingRadiusCheck(playerList[i].body, ball)) {
+                console.log("col");
+            }
+        }
 
     }, 1000/60);
 });
