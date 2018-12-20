@@ -40,6 +40,10 @@ var selectMode = {
     // 배경 이동
     this.bg_background.tilePosition.x -= 6;
 
+    //  로고
+    this.singleLogo.angle = Math.cos((game.time.totalElapsedSeconds() * 2)) * 5;
+    this.multiLogo.angle = Math.sin((game.time.totalElapsedSeconds() * 2)) * 5;
+
     //  싱글 버튼
     if (this.bt_single.input.pointerOver()){
         this.bt_single.alpha = 1;

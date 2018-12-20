@@ -36,10 +36,14 @@ var bg_select = 0;
 var bg_sprite = [];
     bg_sprite[0] = "bg_inGame_1";
     bg_sprite[1] = "bg_inGame_2";
+    bg_sprite[2] = "bg_inGame_3";
+    bg_sprite[3] = "bg_inGame_4";
 
 var bg_name = [];
     bg_name[0] = "운동장";
     bg_name[1] = "햄스터집";
+    bg_name[2] = "눈덮인햄스터집";
+    bg_name[3] = "사탕마을";
 
 //  사운드
 var bgm_inGame;
@@ -102,6 +106,8 @@ var boot = {
         game.load.image("spr_tutorial", "assets/bg/bg_tutorial.png");
         game.load.image("bg_inGame_1", "assets/bg/bg_inGame_1.png");
         game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
+        game.load.image("bg_inGame_3", "assets/bg/bg_inGame_3.png");
+        game.load.image("bg_inGame_4", "assets/bg/bg_inGame_4.png");
 
         //  Sound
         game.load.audio("bgm_inGame", "assets/sound/bgm/bensound-littleidea.mp3");
