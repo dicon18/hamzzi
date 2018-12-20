@@ -1,13 +1,12 @@
 //	게임 서버
 var playerList = [];
 
-//  볼
-var ballScale = 1.5;
-var isGoal = false;
-
 //  환경
-var orangeScore = 77;
-var blueScore = 77;
+var timerSec = "00";
+var timerMin = 3;
+var orangeScore = 0;
+var blueScore = 0;
+var isGoal = false;
 
 //#region 모듈
 const express = require('express');
@@ -55,7 +54,7 @@ var ball = new p2.Body({
 	angularVelocity: 0,
 	fixedRotation: false
 });
-ball.addShape(new p2.Circle({ radius: 16 * ballScale, material: ballMaterial }));
+ball.addShape(new p2.Circle({ radius: 16 * 1.5, material: ballMaterial }));
 world.addBody(ball);
 //#endregion
 
@@ -97,25 +96,41 @@ for (var i = 0; i < boxes.length; i++) {
 
 //#endregion
 
-//#region main
+//#region 서버 업데이트
+//  타이머
+setInterval(function() {
+    timerSec--;
+    if(timerSec == 0)
+        timerSec = "00";
+    if(timerSec < 0) {
+        timerMin--;
+        timerSec = 59;
+    }
+
+}, 1000);
+
+//  월드
+var lastTimeSeconds = (new Date).getTime();
+setInterval(function() {
+    var dt = (new Date).getTime() - lastTimeSeconds;
+    lastTimeSeconds = (new Date).getTime();
+    world.step(1 / 60, dt, 10);
+
+}, 1000 / 60);
+
+//  전송
 io.on('connection', function(socket) {
     socket.on('new_player', onNewPlayer);
     socket.on('disconnect', onDisconnect);
-
     socket.on('player_move', onPlayer_move);
     socket.on('player_kick', onPlayer_kick);
 
-    //  Delta Time
-    var lastTimeSeconds = (new Date).getTime();
-
-    //  Update
     setInterval(function() {
-        //  플레이어
+        //  플레이어 이동
         var movePlayer = find_playerID(socket.id);
         if (!movePlayer) {
             return;
         }
-        //console.log(Math.atan2(movePlayer.body.position[0] - ball.position[0], movePlayer.body.position[1] - ball.position[1]) * 180 / Math.PI);
         socket.emit('move_player', {
             x: movePlayer.body.position[0],
             y: movePlayer.body.position[1]
@@ -125,9 +140,10 @@ io.on('connection', function(socket) {
             x: movePlayer.body.position[0],
             y: movePlayer.body.position[1]
         });
-
         movePlayer.body.position[0] = clamp(movePlayer.body.position[0], 0, 1280);
         movePlayer.body.position[1] = clamp(movePlayer.body.position[1], 0, 720);
+        movePlayer.body.velocity[0] = clamp(movePlayer.body.velocity[0], -movePlayer.speedMax, movePlayer.speedMax);
+        movePlayer.body.velocity[1] = clamp(movePlayer.body.velocity[1], -movePlayer.speedMax, movePlayer.speedMax);
 
         //  볼
         io.emit('update_ball', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
@@ -142,33 +158,28 @@ io.on('connection', function(socket) {
                 isGoal = true;
                 blueScore++;
                 io.emit("blueGoal");
-                setTimeout(function() {
-                    ball.position[0] = 640;
-                    ball.position[1] = 360;
-                    ball.velocity[0] = 0;
-                    ball.velocity[1] = 0;
-                    isGoal = false;
-                    io.emit("reset");
-                }, 3000)
+                resetGame();
             }
-            // if (this.ball.body.x <= 48.3 && this.ball.body.y >= 252.5 && this.ball.body.y <= 447.6) {
-            //     //  오렌지팀 골
-            // }
+            if (ball.position[0] <= 48.3 && ball.position[1] >= 252.5 && ball.position[1] <= 447.6) {
+                //  오렌지팀 골
+                isGoal = true;
+                orangeScore++;
+                io.emit("orangeGoal");
+                resetGame();
+            }
         }
+        
+        //  시간
+        io.emit("update_timer", { timerMin: timerMin, timerSec: timerSec });
 
-        //  월드
-        var dt = (new Date).getTime() - lastTimeSeconds;
-        lastTimeSeconds = (new Date).getTime();
-        world.step(1 / 60, dt, 10);
-
-    }, 1000/60);
+    }, 1000 / 60);
 });
 //#endregion
 
 //#region 함수
 //  새로운 플레이어
 function onNewPlayer(data) {
-    var newPlayer = new Player(this.id, data.x, data.y, data.sprite, data.radius, data.scale, data.speed, data.speedMax, data.kickPower, data.name);
+    var newPlayer = new Player(this.id, data.sprite, data.radius, data.scale, data.speed, data.speedMax, data.kickPower, data.name);
 
     //  플레이어 물리 적용
     newPlayer.body = new p2.Body({
@@ -193,7 +204,8 @@ function onNewPlayer(data) {
             x: playerList[i].body.position[0],
             y: playerList[i].body.position[1],
             sprite: playerList[i].sprite,
-            name: playerList[i].name
+            name: playerList[i].name,
+            team: playerList[i].team
         });
     }
 
@@ -203,16 +215,14 @@ function onNewPlayer(data) {
         x: newPlayer.x,
         y: newPlayer.y,
         sprite: newPlayer.sprite,
-        name: newPlayer.name
+        name: newPlayer.name,
+        team: newPlayer.team
     });
     playerList.push(newPlayer);
 
-    //  서버 정보 전송
+    //  서버 정보 전송, 내 정보 전송
 	this.emit('server_info', {
-        //  볼 좌표
-        ball_x: ball.position[0],
-        ball_y: ball.position[0],
-        ball_angle: ball.angle,
+        team: newPlayer.team,
         orangeScore: orangeScore,
         blueScore: blueScore
     });
@@ -224,6 +234,7 @@ function onNewPlayer(data) {
 function onDisconnect() {
     var removePlayer = find_playerID(this.id);
     if (removePlayer) {
+        world.removeBody(removePlayer.body);
         playerList.splice(playerList.indexOf(removePlayer), 1);
     }
     this.broadcast.emit('remove_player', { id: this.id });
@@ -236,8 +247,6 @@ function onPlayer_move(data) {
     var movePlayer = find_playerID(this.id); 
     movePlayer.body.velocity[0] += data.hspd * movePlayer.speed;
     movePlayer.body.velocity[1] += data.vspd * movePlayer.speed;
-    movePlayer.body.velocity[0] = clamp(movePlayer.body.velocity[0], -movePlayer.speedMax, movePlayer.speedMax);
-    movePlayer.body.velocity[1] = clamp(movePlayer.body.velocity[1], -movePlayer.speedMax, movePlayer.speedMax);
 }
 
 //  플레이어 킥
@@ -246,15 +255,80 @@ function onPlayer_kick() {
     if (!kickPlayer) {
         return;
     }
-
     if (p2.Broadphase.boundingRadiusCheck(kickPlayer.body, ball)) {
-        ball.angle = (Math.atan2(ball.position[1] - kickPlayer.body.position[1], ball.position[0] - kickPlayer.body.position[0]) * 180 / Math.PI) + 90;
-        ball.velocity[0] = Math.cos(ball.angle) * 1000;
-        ball.velocity[1] = Math.sin(ball.angle) * 1000;
+        // ball.angle = (Math.atan2(ball.position[1] - kickPlayer.body.position[1], ball.position[0] - kickPlayer.body.position[0]) * 180 / Math.PI) + 90;
+        // ball.velocity[0] = Math.cos(ball.angle) * 1000;
+        // ball.velocity[1] = Math.sin(ball.angle) * 1000;
+        ball.velocity[0] *= kickPlayer.kickPower;
+        ball.velocity[1] *= kickPlayer.kickPower;
     }
 }
 
-//  플레이어 ID 찾기
+//  게임 초기화
+function resetGame() {
+    setTimeout(function() {
+        ball.position[0] = 640;
+        ball.position[1] = 360;
+        ball.velocity[0] = 0;
+        ball.velocity[1] = 0;
+        ball.angle = 0;
+        isGoal = false;
+        for (var i = 0; i < playerList.length; i++) {
+            if (playerList[i].team == "blue") {
+                playerList[i].body.position[0] = 240;
+                playerList[i].body.position[1] = 360;
+            }
+            if (playerList[i].team == "orange") {
+                playerList[i].body.position[0] = 1040;
+                playerList[i].body.position[1] = 360;
+            }
+            playerList[i].body.velocity[0] = 0;
+            playerList[i].body.velocity[1] = 0;
+        }
+        io.emit("reset");
+        
+    }, 3000);
+}
+//#endregion
+
+//#region 클래스
+//  플레이어 클래스
+var Player = function(id, sprite, radius, scale, speed, speedMax, kickPower, name) {
+    this.id = id;
+    this.sprite = sprite;
+    this.radius = radius;
+    this.scale = scale;
+    this.speed = speed;
+    this.speedMax = speedMax;
+    this.kickPower = kickPower;
+    this.name = name;
+    if (blue_length() > orange_length()) {
+        this.team = "orange";
+        this.x = 1040;
+        this.y = 360;
+    }
+    else if (blue_length() < orange_length()) {
+        this.team = "blue";
+        this.x = 240;
+        this.y = 360;
+    }
+    else {
+        var r = Math.floor(Math.random() * 2);
+        if (r == 0) {
+            this.team = "blue";
+            this.x = 240;
+            this.y = 360;
+        }
+        else {
+            this.team = "orange";
+            this.x = 1040;
+            this.y = 360;
+        }
+    }
+}
+//#endregion
+
+//#region UTIL
 function find_playerID(id) {
 	for (var i = 0; i < playerList.length; i++) {
 		if (playerList[i].id == id) {
@@ -263,25 +337,6 @@ function find_playerID(id) {
 	}
 	return false; 
 }
-//#endregion
-
-//#region 클래스
-//  플레이어 클래스
-var Player = function(id, startX, startY, sprite, radius, scale, speed, speedMax, kickPower, name) {
-    this.id = id;
-    this.x = startX;
-    this.y = startY;
-    this.sprite = sprite;
-    this.radius = radius;
-    this.scale = scale;
-    this.speed = speed;
-    this.speedMax = speedMax;
-    this.kickPower = kickPower;
-    this.name = name;
-}
-//#endregion
-
-//#region UTIL
 function clamp(val, min, max) {
     if (val > max)
         return max
@@ -289,12 +344,22 @@ function clamp(val, min, max) {
         return min
     return val
 }
-function sign(val) {
-    if (val > 0) 
-        return 1;
-    else if (val < 0)
-        return -1;   
-    else
-        return 0;
+function blue_length() {
+    var blue_count = 0;
+    for(var i = 0; i < playerList.length; i++) {
+        if (playerList[i].team == "blue") {
+            blue_count++;
+        }
+    }
+    return blue_count;
+}
+function orange_length() {
+    var orange_count = 0;
+    for(var i = 0; i < playerList.length; i++) {
+        if (playerList[i].team == "orange") {
+            orange_count++;
+        }
+    }
+    return orange_count;
 }
 //#endregion

@@ -495,7 +495,6 @@ var Game = {
         else if(Phaser.Rectangle.intersects (this.player_2.getBounds(), this.ball.getBounds()) == false && !this.kickButton_2.isDown){
             this.isKick_2 = false;
         }
-
         //#endregion
 
         //////////////////////////////////////////////////////////////////////////////////////////            

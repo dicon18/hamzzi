@@ -3,7 +3,6 @@
 //  서버
 var socket;     
 var isConnected = false;
-var isBall_exist = false;
 
 //  플레이어
 var playerName = "앙준하띠";
@@ -12,7 +11,7 @@ var playerScale = 2;
 var oPlayerList = [];
 
 var timerSec = "00";
-var timerMin = 3;
+var timerMin = 0;
 //#endregion
 
 //#region main
@@ -42,23 +41,30 @@ var gameMulti = {
 
         socket.on("server_info", onServerInfo);
         socket.on("update_ball", onUpdateBall);
+        socket.on("update_timer", onUpdateTimer);
 
         socket.on("blueGoal", onBlueGoal);
+        socket.on("orangeGoal", onOrangeGoal);
         socket.on("reset", onReset);
 
         //  배경
         game.add.image(0, 0, bg_sprite[0]);
 
+        //  볼
+        this.ball = game.add.sprite(0, 0, 'spr_ball');
+        this.ball.anchor.set(0.5);
+        this.ball.scale.set(1.5);
+        
         //#region 플레이어
         //  플레이어 생성
-        this.player = game.add.sprite(getRandomInt(0, CANVAS_WIDTH), getRandomInt(0, CANVAS_HEIGHT), chr_sprite[0]);
-            this.player.anchor.setTo(0.5,0.5);
+        this.player = game.add.sprite(0, 0, chr_sprite[0]);
+            this.player.anchor.set(0.5);
             this.player.scale.set(playerScale);
 
         //  플레이어 이름
         this.onPlayerName = game.add.text(0, 0, playerName, {
             font: "bold 20px BMJUA",
-            fill: "#4834d4"
+            fill: "#ffffff"
         });
             this.onPlayerName.anchor.set(0.5);
             this.onPlayerName.stroke = "#ffffff";
@@ -69,6 +75,16 @@ var gameMulti = {
         //#endregion 플레이어
 
         //#region UI
+        //  타이머
+        this.timerText = game.add.text(CANVAS_WIDTH / 2, 50, timerMin + " : " + timerSec, {
+            font: "50px BMJUA",
+            fill: "#000000"
+        });
+            this.timerText.anchor.set(0.5);
+            this.timerText.stroke = "#ffffff";
+            this.timerText.strokeThickness = 3;
+            this.timerText.bringToTop();
+
         //  점수
         this.scoreText = game.add.text(CANVAS_WIDTH / 2, 90, this.blueScore + " : " + this.orangeScore, {
             font: "30px BMJUA",
@@ -80,6 +96,7 @@ var gameMulti = {
             this.scoreText.anchor.set(0.5);
             this.scoreText.stroke = "#ffffff";
             this.scoreText.strokeThickness = 3;
+            this.scoreText.bringToTop();
         //#endregion
 
         console.log("Client started");
@@ -90,7 +107,8 @@ var gameMulti = {
             //  이동
             var player_hspd = (game.input.keyboard.addKey(Phaser.Keyboard.D).isDown - game.input.keyboard.addKey(Phaser.Keyboard.A).isDown);
             var player_vspd = (game.input.keyboard.addKey(Phaser.Keyboard.S).isDown - game.input.keyboard.addKey(Phaser.Keyboard.W).isDown);
-            if (player_hspd != 0 || player_vspd != 0) {
+            
+            if ((player_hspd != 0 || player_vspd != 0) && this.isPause == false) {
                 socket.emit("player_move", {
                     hspd: player_hspd,
                     vspd: player_vspd
@@ -101,21 +119,22 @@ var gameMulti = {
             if (this.kickButton.isDown) {
                 socket.emit("player_kick");
             }
-
             if (!this.kickButton.isDown)
                 this.isKick = false;
 
             //  UI
+            //  플레이어 이름
             this.onPlayerName.x = this.player.x;
             this.onPlayerName.y = this.player.y - 30;
 
+            //  외부 플레이어 이름
             for (var i = 0; i < oPlayerList.length; i++) {
                 oPlayerList[i].onPlayerName.x = oPlayerList[i].player.x;
                 oPlayerList[i].onPlayerName.y = oPlayerList[i].player.y - 30;
-                console.log(oPlayerList[i].onPlayerName.x);
             }
 
             this.scoreText.setText(blueScore + " : " + orangeScore);
+            this.timerText.setText(timerMin + " : " + timerSec);
         }
     },
 }
@@ -125,14 +144,12 @@ var gameMulti = {
 //  접속 완료
 function onConnected() {
     socket.emit("new_player", { 
-        x: gameMulti.player.x,
-        y: gameMulti.player.y,
         sprite: chr_sprite[0],
         radius: gameMulti.player.width / 2,
         scale: playerScale,
         speed: 2, 
         speedMax: 15,
-        kickPower: playerKickPower,
+        kickPower: 5,
         name: playerName
     });
 
@@ -143,7 +160,7 @@ function onConnected() {
 //#region 플레이어
 //  외부 플레이어 생성
 function onNew_oPlayer(data) {
-    var new_player = new Player(data.id, data.x, data.y, data.sprite, data.name);
+    var new_player = new Player(data.id, data.x, data.y, data.sprite, data.name, data.team);
     oPlayerList.push(new_player);
 }
 
@@ -162,10 +179,6 @@ function onMove_player(data) {
     gameMulti.player.x = data.x;
     gameMulti.player.y = data.y;
 }
-function onMove_player2(data) {
-    player2.x = data.x;
-    player2.y = data.y;
-}
 
 //  플레이어 제거
 function onRemove_oPlayer(data) {
@@ -180,23 +193,26 @@ function onRemove_oPlayer(data) {
 
 //  서버 정보 수신
 function onServerInfo(data) {
-    gameMulti.ball = game.add.sprite(data.ball_x, data.ball_y, 'spr_ball');
-        gameMulti.ball.angle = data.ball_angle
-        gameMulti.ball.anchor.setTo(0.5, 0.5);
-        gameMulti.ball.scale.set(ballScale);
+    //  내 정보
+    if (data.team == "blue")
+        gameMulti.onPlayerName.fill = "#4834d4"
+    if (data.team == "orange")
+        gameMulti.onPlayerName.fill = "#e67e22"
+
+    //  점수
     orangeScore = data.orangeScore;
     blueScore = data.blueScore;
-
-    isBall_exist = true;
 }
 
-//  볼 업데이트
+//  업데이트
 function onUpdateBall(data) {
-    if (isBall_exist == true) {
-        gameMulti.ball.x = data.x;
-        gameMulti.ball.y = data.y;
-        gameMulti.ball.angle = data.angle;
-    }
+    gameMulti.ball.x = data.x;
+    gameMulti.ball.y = data.y;
+    gameMulti.ball.angle = data.angle;
+}
+function onUpdateTimer(data) {
+    timerSec = data.timerSec;
+    timerMin = data.timerMin;
 }
 
 //  골
@@ -211,13 +227,27 @@ function onBlueGoal() {
         this.text.stroke = "#ffffff";
         this.text.strokeThickness = 3;
         this.text.bringToTop();
-    this.isPause = true;
+    gameMulti.isPause = true;
     blueScore++;
+}
+function onOrangeGoal() {
+    var style = {
+        font: "100px BMJUA",
+        fill: "#e67e22",
+        align: "center"
+    };
+    this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "오렌지팀 득점", style);
+        this.text.anchor.set(0.5);
+        this.text.stroke = "#ffffff";
+        this.text.strokeThickness = 3;
+        this.text.bringToTop();
+    gameMulti.isPause = true;
+    orangeScore++;
 }
 
 //  게임 초기화
 function onReset() {
-    this.isPause = false;
+    gameMulti.isPause = false;
     this.text.destroy();
 }
 //#endregion
@@ -237,7 +267,7 @@ function find_playerID(id) {
 
 //#region 클래스
 //  외부 플레이어 클래스
-var Player = function(id, startX, startY, sprite, name) {
+var Player = function(id, startX, startY, sprite, name, team) {
     this.id = id;
 
     //  외부 플레이어 생성
@@ -246,9 +276,14 @@ var Player = function(id, startX, startY, sprite, name) {
     this.player.scale.set(playerScale);
 
     //  외부 플레이어 이름 생성
+    if (team == "blue")
+        var color = "#4834d4"
+    if (team == "orange")
+        var color = "#e67e22"
+
     this.onPlayerName = game.add.text(this.player.x, this.player.y - 30, name, {
         font: "bold 20px BMJUA",
-        fill: "#4834d4"
+        fill: color
     });
         this.onPlayerName.anchor.set(0.5);
         this.onPlayerName.stroke = "#ffffff";
