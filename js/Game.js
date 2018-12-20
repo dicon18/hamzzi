@@ -6,18 +6,21 @@ var playerName_2 = "";
 var playerScale_1 = 2;
 var playerScale_2 = 2;
 var playerAccSpeed = 10;
-var playerMaxSpeed_1 = 150;
-var playerMaxSpeed_2 = 150;
-var playerKickPower = 500;
+var maxSpeed;
+var playerMaxSpeed_1 = maxSpeed;
+var playerMaxSpeed_2 = maxSpeed;
+var playerShootPower;
 
 //  대시
-var dashSpeed_1 = 200;
-var dashSpeed_2 = 200;
+var maxDashSpeed;
+var dashSpeed_1 = maxDashSpeed;
+var dashSpeed_2 = maxDashSpeed;
 
 //  볼
 var ball;
-var ballMaxSpeed = 1000;
-var ballScale = 1.5;
+var ballMaxSpeed;
+var ballScale;
+var ballMass;
 
 //  환경
 var timerSec = "00";
@@ -250,7 +253,7 @@ var Game = {
         this.ball.anchor.set(0.5);
 
         game.physics.p2.enable(this.ball, false);
-        this.ball.body.mass = 1;
+        this.ball.body.mass = ballMass;
         this.ball.body.damping = 0.7;
         this.ball.body.fixedRotation = false;
         this.ball.scale.set(ballScale);
@@ -362,6 +365,7 @@ var Game = {
     },
 
     update: function() {
+        console.log(`player_1 : ${this.player_1.body.velocity.x}\nplayer_2 : ${this.player_2.body.velocity.x}`);
         //////////////////////////////////////////////////////////////////////////////////////////
         //#region 플레이어
         if (this.isGameStart && this.isTimeOver == false && this.isGoal == false) {
@@ -407,13 +411,17 @@ var Game = {
         this.ef_kick_2.x = this.player_2.x;
         this.ef_kick_2.y = this.player_2.y;
 
-        if(this.kickButton_1.isDown && this.isKick_1 == false)
-            this.ef_kick_1.alpha = 1;
+        if(this.kickButton_1.isDown && this.isKick_1 == false){
+            if(this.isGameStart)
+                this.ef_kick_1.alpha = 1;
+        }
         else
             this.ef_kick_1.alpha = 0;
         
-        if(this.kickButton_2.isDown && this.isKick_2 == false)
-            this.ef_kick_2.alpha = 1;
+        if(this.kickButton_2.isDown && this.isKick_2 == false){
+            if(this.isGameStart)
+                this.ef_kick_2.alpha = 1;
+        }
         else
             this.ef_kick_2.alpha = 0;
 
@@ -434,13 +442,13 @@ var Game = {
         this.stamina_2 = game.math.clamp(this.stamina_2, 0, 100);
 
         //  대시 설정
-        if(this.dashButton_1.isDown){
+        if(this.dashButton_1.isDown && this.isGameStart){
             playerMaxSpeed_1 = dashSpeed_1;
             if(this.stamina_1 > 0)
                 this.stamina_1 -= 0.5;
         }
-        else if(!this.dashButton_1.isDown){
-            playerMaxSpeed_1 = 150;
+        else if(!this.dashButton_1.isDown && this.isGameStart){
+            playerMaxSpeed_1 = maxSpeed;
             if(this.stamina_1 < 100){
                 setTimeout(()=>{this.stamina_1 += 0.5;}, 3000);
             }
@@ -448,31 +456,31 @@ var Game = {
 
         if(this.dashButton_2.isDown){
             playerMaxSpeed_2 = dashSpeed_2;
-            if(this.stamina_2 > 0)
+            if(this.stamina_2 > 0 && (this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown) && Math.max(Math.abs(this.player_2.body.velocity.x), Math.abs(this.player_2.body.velocity.y)) > 10)
                 this.stamina_2 -= 0.5;
         }
         else if(!this.dashButton_1.isDown){
-            playerMaxSpeed_2 = 150;
+            playerMaxSpeed_2 = maxSpeed;
             if(this.stamina_2 < 100){
-                setTimeout(()=>{this.stamina_2 += 0.5;}, 3000);
+                setTimeout(()=>{this.stamina_2 += 0.5;}, 5000);
             }
         }
 
         if(this.stamina_1 <= 0)
-            dashSpeed_1 = 150;
+            dashSpeed_1 = maxSpeed;
         else if(this.stamina_1 > 0)
-            dashSpeed_1 = 250;
+            dashSpeed_1 = maxDashSpeed;
         if(this.stamina_2 <= 0)
-            dashSpeed_2 = 150;
+            dashSpeed_2 = maxSpeed;
         else if(this.stamina_2 > 0)
-            dashSpeed_2 = 250;
+            dashSpeed_2 = maxDashSpeed;
         
         //  킥 설정
         if (Phaser.Rectangle.intersects (this.player_1.getBounds(), this.ball.getBounds())){
             if (this.kickButton_1.isDown && this.isKick_1 == false) {
                 sfx_kick.play();
                 this.ball.body.angle = (game.math.angleBetween(this.player_1.x, this.player_1.y, this.ball.x, this.ball.y) * 180 / Math.PI) + 90;
-                this.ball.body.moveForward(playerKickPower);
+                this.ball.body.moveForward(playerShootPower);
                 this.isKick_1 = true;
             }
             else if(!this.kickButton_1.isDown)
@@ -486,7 +494,7 @@ var Game = {
             if (this.kickButton_2.isDown && this.isKick_2 == false) {
                 sfx_kick.play();
                 this.ball.body.angle = (game.math.angleBetween(this.player_2.x, this.player_2.y, this.ball.x, this.ball.y) * 180 / Math.PI) + 90;
-                this.ball.body.moveForward(playerKickPower);
+                this.ball.body.moveForward(playerShootPower);
                 this.isKick_2 = true;
             }
             else if(!this.kickButton_2.isDown)
@@ -559,8 +567,8 @@ var Game = {
                     fill: "#4834d4"
                 });
                     this.BlueWinText.anchor.set(0.5);
-                    this.scoreText.stroke = "#ffffff";
-                    this.scoreText.strokeThickness = 3;
+                    this.BlueWinText.stroke = "#ffffff";
+                    this.BlueWinText.strokeThickness = 3;
                 this.player_1.animations.play("win");
                 this.player_2.animations.play("lose");
                 this.BlueWinText.bringToTop();
@@ -571,8 +579,8 @@ var Game = {
                     fill: "#e67e22"
                 });
                     this.OrangeWinText.anchor.set(0.5);
-                    this.scoreText.stroke = "#ffffff";
-                    this.scoreText.strokeThickness = 3;
+                    this.OrangeWinText.stroke = "#ffffff";
+                    this.OrangeWinText.strokeThickness = 3;
                 this.player_1.animations.play("lose");
                 this.player_2.animations.play("win");
                 this.OrangeWinText.bringToTop();
@@ -582,8 +590,8 @@ var Game = {
                     font: "100px BMJUA",
                     fill: "#000000"
                 });
-                    this.scoreText.stroke = "#ffffff";
-                    this.scoreText.strokeThickness = 3;
+                    this.drawText.stroke = "#ffffff";
+                    this.drawText.strokeThickness = 3;
                     this.drawText.anchor.set(0.5);
                 this.player_1.animations.play("stand");
                 this.player_2.animations.play("stand");
@@ -657,7 +665,7 @@ var Game = {
         timerMin = 3;
         orangeScore = 0;
         blueScore = 0;
-        game.state.start("custom");
+        game.state.start("singleCustom");
     }
     //#endregion
 }

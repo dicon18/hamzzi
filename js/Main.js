@@ -14,7 +14,7 @@ var main = {
         //  로고
         this.logo = game.add.image(CANVAS_WIDTH / 2, 200,"spr_logo");
             this.logo.anchor.set(0.5);
-            this.logo.scale.set(0.6);
+            this.logo.scale.set(1); //0.6
 
         //  도움말
         this.pressAnyKey = game.add.image(CANVAS_WIDTH / 2, 550,"spr_pressAnyKey");
@@ -34,8 +34,8 @@ var main = {
         game.input.keyboard.onPressCallback = function(e) {
             if (e != null && isAnyKey == false) {
                 sfx_button.play();
-                game.state.start("custom");
                 isAnyKey = true;
+                game.state.start("selectMode");
             }
         }
     },

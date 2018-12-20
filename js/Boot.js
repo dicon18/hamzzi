@@ -36,10 +36,14 @@ var bg_select = 0;
 var bg_sprite = [];
     bg_sprite[0] = "bg_inGame_1";
     bg_sprite[1] = "bg_inGame_2";
+    bg_sprite[2] = "bg_inGame_3";
+    bg_sprite[3] = "bg_inGame_4";
 
 var bg_name = [];
     bg_name[0] = "운동장";
     bg_name[1] = "햄스터집";
+    bg_name[2] = "눈덮인햄스터집";
+    bg_name[3] = "사탕마을";
 
 //  사운드
 var bgm_inGame;
@@ -80,12 +84,19 @@ var boot = {
         game.load.spritesheet("spr_chr_8", "assets/anim/spr_chr_8.png", 20, 24, 9);
         game.load.spritesheet("spr_chr_9", "assets/anim/spr_chr_9.png", 20, 23, 9);
 
-        game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 192, 192, 20);
+        game.load.spritesheet("spr_toggle", "assets/sprites/spr_toggle.png", 300, 110, 2);
+
+        game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 200, 179.75, 20);
 
         //  Image
         game.load.image("spr_logo", "assets/sprites/spr_logo.png");
         game.load.image("spr_pressAnyKey","assets/sprites/spr_pressAnyKey.png");
+        game.load.image("spr_singleLogo", "assets/sprites/spr_singleLogo.png");
+        game.load.image("spr_multiLogo", "assets/sprites/spr_multiLogo.png");
+        game.load.image("spr_singleButton", "assets/sprites/spr_singleButton.png");
+        game.load.image("spr_multiButton", "assets/sprites/spr_multiButton.png");
         game.load.image("spr_arrow", "assets/sprites/spr_arrow.png");
+        game.load.image("spr_back", "assets/sprites/spr_back.png");
         game.load.image("spr_button", "assets/sprites/spr_button.png");
         game.load.image("spr_ball", "assets/sprites/spr_ball.png");
         game.load.image("spr_box", "assets/sprites/spr_box_5x5.png");
@@ -95,6 +106,8 @@ var boot = {
         game.load.image("spr_tutorial", "assets/bg/bg_tutorial.png");
         game.load.image("bg_inGame_1", "assets/bg/bg_inGame_1.png");
         game.load.image("bg_inGame_2", "assets/bg/bg_inGame_2.png");
+        game.load.image("bg_inGame_3", "assets/bg/bg_inGame_3.png");
+        game.load.image("bg_inGame_4", "assets/bg/bg_inGame_4.png");
 
         //  Sound
         game.load.audio("bgm_inGame", "assets/sound/bgm/bensound-littleidea.mp3");
@@ -126,6 +139,6 @@ var boot = {
         sfx_startWhistle = game.add.audio("sfx_startWhistle");
         sfx_endWhistle = game.add.audio("sfx_endWhistle");
 
-        game.state.start("gameMulti");
+        game.state.start("main");
     }
 }

@@ -5,7 +5,7 @@ var socket;
 var isConnected = false;
 
 //  플레이어
-var playerName = "앙준하띠";
+var playerName = "";
 var playerScale = 2;
 
 var oPlayerList = [];
@@ -22,10 +22,16 @@ var gameMulti = {
     },
 
     create: function() {
+        //  씬 전환 효과
+        this.camera.flash("#000000");
+
         //  환경
         this.blueScore = 0;
         this.orangeScore = 0;
         this.isPause = false;
+        if (playerName == "") {
+            playerName = "플레이어";
+        }
 
         //  키 설정
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -46,11 +52,25 @@ var gameMulti = {
         socket.on("blueGoal", onBlueGoal);
         socket.on("orangeGoal", onOrangeGoal);
 
+        socket.on("waitPlayer", onWaitPlayer);
         socket.on("reset", onReset);
         socket.on("restart", onRestart);
 
+        socket.on("destroy_winText", function() {
+            gameMulti.winText.destroy();
+        });
+        socket.on("destroy_goalText", function() {
+            gameMulti.goalText.destroy();
+        });
+        socket.on("destroy_waitText", function() {
+            gameMulti.waitText.destroy();
+        });
+        socket.on("sound_kick", function() {
+            sfx_kick.play();
+        });
+
         //  배경
-        game.add.image(0, 0, bg_sprite[0]);
+        this.background = game.add.image(0, 0, bg_sprite[0]);
 
         //  볼
         this.ball = game.add.sprite(0, 0, 'spr_ball');
@@ -173,6 +193,7 @@ var gameMulti = {
                         this.winText.bringToTop();
                     this.isPause = true;
                 }
+                sfx_endWhistle.play();
             }
         }
     },
@@ -199,7 +220,7 @@ function onConnected() {
 //#region 플레이어
 //  외부 플레이어 생성
 function onNew_oPlayer(data) {
-    var new_player = new Player(data.id, data.x, data.y, data.sprite, data.name, data.team);
+    var new_player = new Player(data.id, data.x, data.y, data.sprite,  data.xdir, data.name, data.team);
     oPlayerList.push(new_player);
 }
 
@@ -211,12 +232,14 @@ function onMove_oPlayer(data) {
     }
 	movePlayer.player.x = data.x;
     movePlayer.player.y = data.y;
+    movePlayer.player.scale.x = data.xdir * playerScale;
 }
 
 //  내 플레이어 위치 받기
 function onMove_player(data) {
     gameMulti.player.x = data.x;
     gameMulti.player.y = data.y;
+    gameMulti.player.scale.x = data.xdir * playerScale;
 }
 
 //  플레이어 제거
@@ -232,6 +255,8 @@ function onRemove_oPlayer(data) {
 
 //  서버 정보 수신
 function onServerInfo(data) {
+    gameMulti.background.loadTexture(bg_sprite[data.background_index]);
+
     //  내 정보
     if (data.team == "blue")
         gameMulti.onPlayerName.fill = "#4834d4"
@@ -261,12 +286,13 @@ function onBlueGoal() {
         fill: "#4834d4",
         align: "center"
     };
-    this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "블루팀 득점", style);
-        this.text.anchor.set(0.5);
-        this.text.stroke = "#ffffff";
-        this.text.strokeThickness = 3;
-        this.text.bringToTop();
+    gameMulti.goalText = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "블루팀 득점", style);
+        gameMulti.goalText.anchor.set(0.5);
+        gameMulti.goalText.stroke = "#ffffff";
+        gameMulti.goalText.strokeThickness = 3;
+        gameMulti.goalText.bringToTop();
     gameMulti.isPause = true;
+    sfx_cheer.play();
     blueScore++;
 }
 function onOrangeGoal() {
@@ -275,29 +301,40 @@ function onOrangeGoal() {
         fill: "#e67e22",
         align: "center"
     };
-    this.text = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "오렌지팀 득점", style);
-        this.text.anchor.set(0.5);
-        this.text.stroke = "#ffffff";
-        this.text.strokeThickness = 3;
-        this.text.bringToTop();
+    gameMulti.goalText = game.add.text(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, "오렌지팀 득점", style);
+        gameMulti.goalText.anchor.set(0.5);
+        gameMulti.goalText.stroke = "#ffffff";
+        gameMulti.goalText.strokeThickness = 3;
+        gameMulti.goalText.bringToTop();
     gameMulti.isPause = true;
+    sfx_cheer.play();
     orangeScore++;
 }
 
-//  게임 초기화
+//  게임 상태
+function onWaitPlayer() {
+    gameMulti.waitText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "다른 플레이어를 기다리는중입니다", {
+        font: "60px BMJUA",
+        fill: "#000000"
+    });
+        gameMulti.waitText.stroke = "#ffffff";
+        gameMulti.waitText.strokeThickness = 3;
+        gameMulti.waitText.anchor.set(0.5);
+        gameMulti.waitText.bringToTop();
+}
 function onReset() {
     gameMulti.isPause = false;
-    this.text.destroy();
 }
-function onRestart() {
+function onRestart(background_index) {
+    gameMulti.camera.flash("#000000");
+    gameMulti.background.loadTexture(bg_sprite[background_index])
     timerSec = "00";
     timerMin = 3;
     blueScore = 0;
     orangeScore = 0;
     gameMulti.isPause = false;
-    gameMulti.winText.destroy();
+    sfx_startWhistle.play();
 }
-
 //#endregion
 
 //#region UTIL
@@ -315,13 +352,14 @@ function find_playerID(id) {
 
 //#region 클래스
 //  외부 플레이어 클래스
-var Player = function(id, startX, startY, sprite, name, team) {
+var Player = function(id, startX, startY, sprite, xdir, name, team) {
     this.id = id;
 
     //  외부 플레이어 생성
     this.player = game.add.sprite(startX, startY, sprite);
     this.player.anchor.setTo(0.5,0.5);
     this.player.scale.set(playerScale);
+    this.player.scale.x = xdir * playerScale;
 
     //  외부 플레이어 이름 생성
     if (team == "blue")
