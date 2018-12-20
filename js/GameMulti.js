@@ -11,7 +11,7 @@ var playerScale = 2;
 var oPlayerList = [];
 
 var timerSec = "00";
-var timerMin = 0;
+var timerMin = 3;
 //#endregion
 
 //#region main
@@ -45,7 +45,9 @@ var gameMulti = {
 
         socket.on("blueGoal", onBlueGoal);
         socket.on("orangeGoal", onOrangeGoal);
+
         socket.on("reset", onReset);
+        socket.on("restart", onRestart);
 
         //  배경
         game.add.image(0, 0, bg_sprite[0]);
@@ -57,7 +59,7 @@ var gameMulti = {
         
         //#region 플레이어
         //  플레이어 생성
-        this.player = game.add.sprite(0, 0, chr_sprite[0]);
+        this.player = game.add.sprite(0, 0, chr_sprite[chr_select]);
             this.player.anchor.set(0.5);
             this.player.scale.set(playerScale);
 
@@ -135,6 +137,43 @@ var gameMulti = {
 
             this.scoreText.setText(blueScore + " : " + orangeScore);
             this.timerText.setText(timerMin + " : " + timerSec);
+
+            //  경기 종료
+            if (timerMin == 0 && timerSec == "00" && this.isPause == false) {
+                if (blueScore > orangeScore) {
+                    this.winText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "블루팀 승리", {
+                        font: "100px BMJUA",
+                        fill: "#4834d4"
+                    });
+                        this.winText.anchor.set(0.5);
+                        this.winText.stroke = "#ffffff";
+                        this.winText.strokeThickness = 3;
+                        this.winText.bringToTop();
+                    this.isPause = true;
+                }
+                if (blueScore < orangeScore) {
+                    this.winText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, playerName_2 + "오렌지팀 승리", {
+                        font: "100px BMJUA",
+                        fill: "#e67e22"
+                    });
+                        this.winText.anchor.set(0.5);
+                        this.winText.stroke = "#ffffff";
+                        this.winText.strokeThickness = 3;
+                        this.winText.bringToTop();
+                    this.isPause = true;
+                }
+                if (blueScore == orangeScore) {
+                    this.winText = game.add.text(CANVAS_WIDTH / 2, game.world.centerY, "무승부", {
+                        font: "100px BMJUA",
+                        fill: "#000000"
+                    });
+                        this.winText.stroke = "#ffffff";
+                        this.winText.strokeThickness = 3;
+                        this.winText.anchor.set(0.5);
+                        this.winText.bringToTop();
+                    this.isPause = true;
+                }
+            }
         }
     },
 }
@@ -144,12 +183,12 @@ var gameMulti = {
 //  접속 완료
 function onConnected() {
     socket.emit("new_player", { 
-        sprite: chr_sprite[0],
+        sprite: chr_sprite[chr_select],
         radius: gameMulti.player.width / 2,
         scale: playerScale,
         speed: 2, 
         speedMax: 15,
-        kickPower: 5,
+        kickPower: 3,
         name: playerName
     });
 
@@ -250,6 +289,15 @@ function onReset() {
     gameMulti.isPause = false;
     this.text.destroy();
 }
+function onRestart() {
+    timerSec = "00";
+    timerMin = 3;
+    blueScore = 0;
+    orangeScore = 0;
+    gameMulti.isPause = false;
+    gameMulti.winText.destroy();
+}
+
 //#endregion
 
 //#region UTIL

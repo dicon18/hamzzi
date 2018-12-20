@@ -2,11 +2,12 @@
 var playerList = [];
 
 //  환경
-var timerSec = "00";
-var timerMin = 3;
+var timerSec = "10";
+var timerMin = 0;
 var orangeScore = 0;
 var blueScore = 0;
 var isGoal = false;
+var background_index = 0;
 
 //#region 모듈
 const express = require('express');
@@ -99,14 +100,15 @@ for (var i = 0; i < boxes.length; i++) {
 //#region 서버 업데이트
 //  타이머
 setInterval(function() {
-    timerSec--;
-    if(timerSec == 0)
-        timerSec = "00";
-    if(timerSec < 0) {
-        timerMin--;
-        timerSec = 59;
+    if (isGoal == false) {
+        timerSec--;
+        if (timerSec == 0)
+            timerSec = "00";
+        if (timerSec < 0) {
+            timerMin--;
+            timerSec = 59;
+        }
     }
-
 }, 1000);
 
 //  월드
@@ -147,8 +149,8 @@ io.on('connection', function(socket) {
 
         //  볼
         io.emit('update_ball', { x: ball.position[0], y: ball.position[1], angle: ball.angle });
-        ball.velocity[0] = clamp(ball.velocity[0], -30, 30);
-        ball.velocity[1] = clamp(ball.velocity[1], -30, 30);
+        ball.velocity[0] = clamp(ball.velocity[0], -100, 100);
+        ball.velocity[1] = clamp(ball.velocity[1], -100, 100);
         ball.angle += (Math.abs(ball.velocity[0]) > Math.abs(ball.velocity[1]) ? ball.velocity[0] : ball.velocity[1]) / 10;
 
         //  골
@@ -158,19 +160,40 @@ io.on('connection', function(socket) {
                 isGoal = true;
                 blueScore++;
                 io.emit("blueGoal");
-                resetGame();
+                setTimeout(function() {
+                    resetGame();
+
+                }, 3000);
             }
             if (ball.position[0] <= 48.3 && ball.position[1] >= 252.5 && ball.position[1] <= 447.6) {
                 //  오렌지팀 골
                 isGoal = true;
                 orangeScore++;
                 io.emit("orangeGoal");
-                resetGame();
+                setTimeout(function() {
+                    resetGame();
+
+                }, 3000);
             }
         }
         
         //  시간
         io.emit("update_timer", { timerMin: timerMin, timerSec: timerSec });
+
+        //  초기화
+        if (timerMin == 0 && timerSec == "00" && isGoal == false) {
+            isGoal = true;
+            setTimeout(function() {
+                timerSec = "00";
+                timerMin = 3;
+                orangeScore = 0;
+                blueScore = 0;
+                isGoal = false;
+                io.emit("restart");
+                resetGame();
+
+            }, 5000);
+        }
 
     }, 1000 / 60);
 });
@@ -266,28 +289,25 @@ function onPlayer_kick() {
 
 //  게임 초기화
 function resetGame() {
-    setTimeout(function() {
-        ball.position[0] = 640;
-        ball.position[1] = 360;
-        ball.velocity[0] = 0;
-        ball.velocity[1] = 0;
-        ball.angle = 0;
-        isGoal = false;
-        for (var i = 0; i < playerList.length; i++) {
-            if (playerList[i].team == "blue") {
-                playerList[i].body.position[0] = 240;
-                playerList[i].body.position[1] = 360;
-            }
-            if (playerList[i].team == "orange") {
-                playerList[i].body.position[0] = 1040;
-                playerList[i].body.position[1] = 360;
-            }
-            playerList[i].body.velocity[0] = 0;
-            playerList[i].body.velocity[1] = 0;
+    ball.position[0] = 640;
+    ball.position[1] = 360;
+    ball.velocity[0] = 0;
+    ball.velocity[1] = 0;
+    ball.angle = 0;
+    isGoal = false;
+    for (var i = 0; i < playerList.length; i++) {
+        if (playerList[i].team == "blue") {
+            playerList[i].body.position[0] = 240;
+            playerList[i].body.position[1] = 360;
         }
-        io.emit("reset");
-        
-    }, 3000);
+        if (playerList[i].team == "orange") {
+            playerList[i].body.position[0] = 1040;
+            playerList[i].body.position[1] = 360
+        }
+        playerList[i].body.velocity[0] = 0;
+        playerList[i].body.velocity[1] = 0;
+    }
+    io.emit("reset");
 }
 //#endregion
 

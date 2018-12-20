@@ -17,6 +17,7 @@ var chr_sprite = [];
 
 var chr_select_1 = getRandomInt(0, chr_sprite.length - 1);
 var chr_select_2 = getRandomInt(0, chr_sprite.length - 1);
+var chr_select = getRandomInt(0, chr_sprite.length - 1);
 
 var chr_name = [];
     chr_name[0] = "곰찌";
