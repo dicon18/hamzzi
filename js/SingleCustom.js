@@ -1,5 +1,5 @@
 //  커스텀마이징
-var custom = {
+var singleCustom = {
     create: function () {
         //  씬 전환 효과
         this.camera.flash("#000000");
@@ -100,14 +100,10 @@ var custom = {
             type: PhaserInput.InputType.text
         });
 
-        //  게임 시작 버튼
-        this.bt_gameStart = game.add.button(CANVAS_WIDTH / 2, 600, "spr_button", this.gameStart, this);
-            this.bt_gameStart.anchor.set(0.5);
-            this.bt_gameStart.scale.set(0.5);
-
         //  모드
-        this.text_mode = game.add.text(CANVAS_WIDTH / 2, 60, '폭렬모드', {
+        this.text_mode = game.add.text(CANVAS_WIDTH / 2, 60, '특별게임모드 [폭렬모드]', {
             font: "bold 30px BMJUA",
+            fill: "#ff0000"
         });
             this.text_mode.anchor.set(0.5);
             this.text_mode.stroke = "#ffffff";
@@ -116,32 +112,54 @@ var custom = {
         //  모드 선택 버튼
         this.isToggle = false;
         if(this.isToggle == false){
+            ballScale = 1.5;
+            ballMass = 1;
+            playerAccSpeed = 10;
             maxSpeed = 150;
             maxDashSpeed = 250;
             ballMaxSpeed = 500;
             playerShootPower = 500;
         }
-        this.toggleButton = game.add.button(CANVAS_WIDTH / 2, 120, 'spr_toggle', ()=>{
+        this.bt_toggle = game.add.button(CANVAS_WIDTH / 2, 120, 'spr_toggle', ()=>{
             sfx_button.play();
             if(this.isToggle == false){
-                this.toggleButton.setFrames(1);
+                this.bt_toggle.setFrames(1);
                 this.isToggle = true;
-                maxSpeed = 300;
-                maxDashSpeed = 500;
+                ballScale = 2.5;
+                ballMass = 10;
+                playerAccSpeed = 50;
+                maxSpeed = 500;
+                maxDashSpeed = 1000;
                 ballMaxSpeed = 1500;
                 playerShootPower = 1500;
             }
             else{
-                this.toggleButton.setFrames(0);
+                this.bt_toggle.setFrames(0);
                 this.isToggle = false;
+                ballScale = 1.5;
+                ballMass = 1;
+                playerAccSpeed = 10;
                 maxSpeed = 150;
                 maxDashSpeed = 250;
                 ballMaxSpeed = 500;
                 playerShootPower = 500;
             }
         }, this);
-        this.toggleButton.anchor.set(0.5);
-        this.toggleButton.scale.set(0.5);
+        this.bt_toggle.anchor.set(0.5);
+        this.bt_toggle.scale.set(0.5);
+
+        //  뒤로가기 버튼
+        this.bt_back = game.add.button(100, 625, "spr_back", ()=>{
+            sfx_button.play();
+            game.state.start("selectMode");
+        },this);
+            this.bt_back.anchor.set(0.5);
+            this.bt_back.scale.set(0.4);
+
+        //  게임 시작 버튼
+        this.bt_gameStart = game.add.button(CANVAS_WIDTH / 2, 600, "spr_button", this.gameStart, this);
+            this.bt_gameStart.anchor.set(0.5);
+            this.bt_gameStart.scale.set(0.5);
     },
 
     update: function() {
@@ -151,6 +169,61 @@ var custom = {
         // 맵
         this.text_mapName.setText(bg_name[bg_select]);
         this.sprite_mapIndex.loadTexture(bg_sprite[bg_select]);
+
+        //#region 버튼 alpha
+        //  모드 선택 버튼
+        if (this.bt_toggle.input.pointerOver()){
+            this.bt_toggle.alpha = 1;
+        }
+        else{
+            this.bt_toggle.alpha = 0.8;
+        }
+
+        //  햄찌 바꾸기 버튼
+        if (this.bt_prevPlayer_1.input.pointerOver()){
+            this.bt_prevPlayer_1.alpha = 1;
+        }
+        else{
+            this.bt_prevPlayer_1.alpha = 0.8;
+        }
+
+        if (this.bt_prevPlayer_2.input.pointerOver()){
+            this.bt_prevPlayer_2.alpha = 1;
+        }
+        else{
+            this.bt_prevPlayer_2.alpha = 0.8;
+        }
+
+        if (this.bt_nextPlayer_1.input.pointerOver()){
+            this.bt_nextPlayer_1.alpha = 1;
+        }
+        else{
+            this.bt_nextPlayer_1.alpha = 0.8;
+        }
+
+        if (this.bt_nextPlayer_2.input.pointerOver()){
+            this.bt_nextPlayer_2.alpha = 1;
+        }
+        else{
+            this.bt_nextPlayer_2.alpha = 0.8;
+        }
+
+        //  뒤로가기 버튼
+        if (this.bt_back.input.pointerOver()){
+            this.bt_back.alpha = 1;
+        }
+        else{
+            this.bt_back.alpha = 0.8;
+        }
+
+        //  시작 버튼
+        if (this.bt_gameStart.input.pointerOver()){
+            this.bt_gameStart.alpha = 1;
+        }
+        else{
+            this.bt_gameStart.alpha = 0.9;
+        }
+        //#endregion
     },
 
     //  외부 함수
@@ -211,7 +284,7 @@ var custom = {
         sfx_button.play();
         playerName_1 = this.input_playerName_1.value;
         playerName_2 = this.input_playerName_2.value;
-        console.log(`MaxSpeed : ${maxSpeed}|MaxDashSpeed : ${maxDashSpeed}|BallMaxSpeed : ${ballMaxSpeed}|PlayerShootPower : ${playerShootPower}`);
+        console.log(`BallScale : ${ballScale}|BallMass : ${ballMass}|MaxSpeed : ${maxSpeed}|PlayerAccSpeed : ${playerAccSpeed}|MaxDashSpeed : ${maxDashSpeed}|BallMaxSpeed : ${ballMaxSpeed}|PlayerShootPower : ${playerShootPower}`);
         game.state.start("tutorial");
     }
 }

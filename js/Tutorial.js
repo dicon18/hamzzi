@@ -1,4 +1,5 @@
 //  게임 설명
+var gameMode;
 var tutorial = {
     create: function () {
         //  씬 전환 효과
@@ -12,6 +13,9 @@ var tutorial = {
     },
 
     startGame: function() {
-        game.state.start("Game");
+        if(gameMode == "single")
+            game.state.start("Game");
+        else if(gameMode == "multi")
+            game.state.start("gameMulti");
     }
 }

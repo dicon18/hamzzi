@@ -30,7 +30,9 @@
     
     <script src="js/Boot.js"></script>
     <script src="js/Main.js"></script>
-    <script src="js/Custom.js"></script>
+    <script src="js/SelectMode.js"></script>
+    <script src="js/SingleCustom.js"></script>
+    <script src="js/MultiCustom.js"></script>
     <script src="js/Tutorial.js"></script>
     <script src="js/Game.js"></script>
     <script src="js/GameMulti.js"></script>
@@ -40,7 +42,9 @@
         var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.AUTO, "canvas_game", this, false, false);
         game.state.add("boot", boot);
         game.state.add("main", main);
-        game.state.add("custom", custom);
+        game.state.add("selectMode", selectMode);
+        game.state.add("singleCustom", singleCustom);
+        game.state.add("multiCustom", multiCustom);
         game.state.add("tutorial", tutorial);
         game.state.add("Game", Game);
         game.state.add("gameMulti", gameMulti);

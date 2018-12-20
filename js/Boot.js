@@ -17,6 +17,7 @@ var chr_sprite = [];
 
 var chr_select_1 = getRandomInt(0, chr_sprite.length - 1);
 var chr_select_2 = getRandomInt(0, chr_sprite.length - 1);
+var chr_select = getRandomInt(0, chr_sprite.length - 1);
 
 var chr_name = [];
     chr_name[0] = "곰찌";
@@ -81,12 +82,17 @@ var boot = {
 
         game.load.spritesheet("spr_toggle", "assets/sprites/spr_toggle.png", 300, 110, 2);
 
-        game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 192, 192, 20);
+        game.load.spritesheet("ef_kick", "assets/anim/ef_kick.png", 200, 179.75, 20);
 
         //  Image
         game.load.image("spr_logo", "assets/sprites/spr_logo.png");
         game.load.image("spr_pressAnyKey","assets/sprites/spr_pressAnyKey.png");
+        game.load.image("spr_singleLogo", "assets/sprites/spr_singleLogo.png");
+        game.load.image("spr_multiLogo", "assets/sprites/spr_multiLogo.png");
+        game.load.image("spr_singleButton", "assets/sprites/spr_singleButton.png");
+        game.load.image("spr_multiButton", "assets/sprites/spr_multiButton.png");
         game.load.image("spr_arrow", "assets/sprites/spr_arrow.png");
+        game.load.image("spr_back", "assets/sprites/spr_back.png");
         game.load.image("spr_button", "assets/sprites/spr_button.png");
         game.load.image("spr_ball", "assets/sprites/spr_ball.png");
         game.load.image("spr_box", "assets/sprites/spr_box_5x5.png");
